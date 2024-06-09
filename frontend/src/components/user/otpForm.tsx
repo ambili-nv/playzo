@@ -1,6 +1,11 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const OTP: React.FC = () => {
+    const navigate = useNavigate()
+    const submit = ()=>{
+        navigate('/login')
+    }
     return (
         <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-xl shadow-xl p-8 max-w-md w-full">
@@ -46,6 +51,7 @@ const OTP: React.FC = () => {
                     <button
                         className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
                         type="submit"
+                        onClick={submit}
                     >
                         Verify OTP
                     </button>

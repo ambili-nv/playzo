@@ -27,7 +27,7 @@ const Navbar = () => {
                   Contact Us
                 </Link>
                 <span className="text-black dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
-          <Link to="/userlogin" className="hover:underline">
+          <Link to="/login" className="hover:underline">
             Login
           </Link>
           /

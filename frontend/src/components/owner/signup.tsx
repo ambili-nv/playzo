@@ -1,13 +1,19 @@
 import React from "react";
 import '../../index.css';
+import Map from '../../assets/images/bg.png'
+import { Navigate, useNavigate } from "react-router-dom";
 
 const SignUpPage: React.FC = () => {
+  const navigate = useNavigate()
+  const submit =()=>{
+    navigate('/owner/otp')
+  }
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 bg-opacity-50">
       <div className="flex w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="w-6/12 bg-gray-100 relative overflow-hidden">
           <img 
-            src="src/assets/images/bg.png" 
+            src={Map}
             alt="Map"
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -55,6 +61,7 @@ const SignUpPage: React.FC = () => {
               <button 
                 type="submit" 
                 className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+                onClick={submit}
               >
                 Sign Up
               </button>

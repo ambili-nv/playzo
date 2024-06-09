@@ -4,6 +4,7 @@ import { MainRouter } from './routes/router';
 import VenueUpload from './pages/Owner/venues/uploadVenues';
 
 
+
 function App() {
   
 
@@ -13,7 +14,8 @@ function App() {
     <MainRouter/>
     </BrowserRouter>
 
-    {/* <VenueUpload/> */}
+    
+   
 
     </>
   )
