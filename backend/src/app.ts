@@ -1,27 +1,29 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
-import connectDB from './framework/database/mongodb/connection'; // Adjust the path according to your project structure
-import configKeys from './config'; // Adjust the path according to your project structure
+import express, {Application,NextFunction,Request,Response} from "express";
+import expressConfig from "./framework/webserver/expressconfig";
+import startServer from "./framework/webserver/server";
+import connectDB from "./framework/database/mongodb/connection";
+import CustomError from "./utils/customError";
+import errorHandlingMiddleware from "./framework/webserver/Middlewares/errorhander.middleware";
+import routes from "./framework/webserver/Routes";
+import { createServer } from "http";
 
-const app: Application = express();
-const port = configKeys.PORT;
-
-// Middleware and route configuration (adjust as needed)
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Example route
-app.get('/', (req: Request, res: Response) => {
-    res.send('Hello, World!');
-});
+import path from "path";
 
 
-const startServer = () => {
-    app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
-    });
-};
+const app:Application = express();
 
-// Connect to MongoDB and start the server
-connectDB().then(startServer).catch((error) => {
-    console.error('Failed to connect to the database and start the server', error);
+const httpServer = createServer(app);
+
+
+expressConfig(app);
+connectDB();
+routes(app);
+startServer(httpServer);
+
+
+
+
+app.use(errorHandlingMiddleware);
+app.all("*",(req, res, next: NextFunction)=>{
+    next(new CustomError(`Not found : ${req.url}`, 404));
 });

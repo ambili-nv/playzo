@@ -29,11 +29,11 @@ export const MainRouter = () => {
         <Route path = "/" element={<Home/>}/>
         <Route path = "/book" element={<UserBook/>}/>
         <Route path="/login" element={<UserLogin />} />
-        <Route path="/signup" element={<UserSignUP/>}/>
+        <Route path="/register" element={<UserSignUP/>}/>
         <Route path="/otp" element={<UserOTP/>}/>
 
         {/* Owner Routes */}
-        <Route path = "/owner/login" element={<OwnerLogin/>}/>
+        <Route path = "/login" element={<OwnerLogin/>}/>
         <Route path = "/owner/signup" element={<OwnerSignUp/>}/>
         <Route path = "/owner/otp" element={<OTP/>}/>
         <Route path = "/owner/venueupload" element={<UploadVenues/>}/>
@@ -45,10 +45,6 @@ export const MainRouter = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<UsersList />} />
-          {/* <Route path="venues" element={<UploadVenues />} />
-          <Route path="profile" element={<UploadVenues />} />
-          <Route path="settings" element={<UploadVenues />} />
-          <Route path="reports" element={<UploadVenues />} /> */}
         </Route>
       </Routes>
     </Suspense>
