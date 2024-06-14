@@ -31,7 +31,7 @@ const Navbar = () => {
             Login
           </Link>
           /
-          <Link to="/signup" className="hover:underline">
+          <Link to="/register" className="hover:underline">
             Sign Up
           </Link>
         </span>

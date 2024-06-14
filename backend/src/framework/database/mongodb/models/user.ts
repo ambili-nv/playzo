@@ -8,7 +8,7 @@ const userSchema =new mongoose.Schema({
     email:{
         type:String,
         required:true,
-        unique:true
+        // unique:true
     },
     phone:{
         type:String
@@ -32,7 +32,7 @@ const userSchema =new mongoose.Schema({
     createdAt:{
         type:Date,
         default:new Date()
-    }
+    },
 })
 
 export default mongoose.model("User",userSchema)

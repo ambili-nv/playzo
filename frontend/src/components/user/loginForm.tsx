@@ -1,6 +1,7 @@
 import React from "react";
 import '../../index.css';
 import { useNavigate } from "react-router-dom";
+import Logo from '../../assets/images/bg.png'
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate()
@@ -12,7 +13,7 @@ const LoginPage: React.FC = () => {
       <div className="flex w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="w-6/12 bg-gray-100 relative overflow-hidden">
           <img 
-            src="src/assets/images/bg.png" 
+            src={Logo}
             alt="Map"
             className="absolute inset-0 w-full h-full object-cover"
           />

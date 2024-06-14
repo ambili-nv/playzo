@@ -1,68 +1,27 @@
-// import { NextFunction,Request,Response } from "express";
-// import asynchandler from "express-async-handler";
-
-// import{userRegister} from '../app/use-cases/user/auth/userAuth';
-
-
-// import { userDbInterface } from "../app/Interfaces/userDbRepository";
-// import { UserInterface } from "../types/userInterface";
-// import { userRepositoryMongodbType } from "../framework/database/mongodb/repositories/userRepositoryMongodb";
-
-
-// const userController = (
-//     userDbRepository: userDbInterface,
-//     userRepositoryImpl: userRepositoryMongodbType,
-// )=>{
-
-//     const dbRepositoryUser = userDbRepository(userRepositoryImpl());
-
-//         // Register User POST - Method
-    
-//         const registerUser = async(
-//             req:Request,
-//             res:Response,
-//             next:NextFunction
-//         )=>{
-//             try {
-//              const user = req.body;
-//              console.log(req.body,"oooooo");
-
-//              //@ts-ignore
-//              const {createdUser} = await userRegister(user,dbRepositoryUser);
-//              res.json({
-//                 message: "User registration successful,please verify email",
-//                 newUser: createdUser,
-                
-//              });
-//             } catch (error) {
-//                 next(error);
-//             }
-//         };
-
-//         return{
-//             registerUser,
-//         }
-
-// }
-
-// export default userController
-
-
-
-
 import { NextFunction, Request, Response } from "express";
 import asynchandler from "express-async-handler";
-import { userRegister } from '../app/use-cases/user/auth/userAuth';
 import { userDbInterface } from "../app/Interfaces/userDbRepository";
-import { UserInterface } from "../types/userInterface";
 import { userRepositoryMongodbType } from "../framework/database/mongodb/repositories/userRepositoryMongodb";
+import { AuthService } from "../framework/Services/authService";
+import { AuthServiceInterfaceType} from "../app/service-interface/authServiceInrerface";
+import { UserInterface } from "../types/userInterface";
+import { HttpStatus } from "../types/httpStatus";
+import {
+     userRegister,
+     verifyUser,
+     deleteOtp
+    } from '../app/use-cases/user/auth/userAuth';
+
 
 const userController = (
     userDbRepository: userDbInterface,
     userRepositoryImpl: userRepositoryMongodbType,
+    authServiceInterface: AuthServiceInterfaceType,
+    authServiceImpl:AuthService,
 ) => {
 
     const dbRepositoryUser = userDbRepository(userRepositoryImpl());
+    const authService = authServiceInterface(authServiceImpl());
 
     // Register User POST - Method
     const registerUser = asynchandler(async (
@@ -71,10 +30,11 @@ const userController = (
         next: NextFunction
     ) => {
         try {
-            const user: UserInterface = req.body;
-
+            const user: UserInterface = req.body;            
             //@ts-ignore
-            const { createdUser } = await userRegister(user, dbRepositoryUser);
+            const { createdUser } = await userRegister(user, dbRepositoryUser,authService);
+            console.log("User registration result",createdUser);
+            
             res.json({
                 message: "User registration successful, please verify email",
                 newUser: createdUser,
@@ -84,8 +44,37 @@ const userController = (
         }
     });
 
+    //VerifyOTP - POST Method
+
+    const VerifyOTP = async(req:Request, res:Response, next:NextFunction)=>{
+        try {
+            const {otp,userId} = req.body
+            const isVerified = await verifyUser(otp,userId,dbRepositoryUser)
+            if(isVerified){
+                return res.status(HttpStatus.OK)
+                .json({message:"User account verified, please login"});
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    //resend otp - POST MEthod
+
+    const resendOtp = async (req:Request,res:Response,next:NextFunction)=>{
+        try{
+            const {userId} = req.body;
+            await deleteOtp(userId,dbRepositoryUser,authService);
+            res.json({message:"New otp sent to mail"});
+        }catch(error){
+            next(error);
+        }
+    };
+
     return {
         registerUser,
+        VerifyOTP,
+        resendOtp
     }
 }
 

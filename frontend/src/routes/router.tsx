@@ -28,7 +28,7 @@ export const MainRouter = () => {
       <Routes>
         <Route path = "/" element={<Home/>}/>
         <Route path = "/book" element={<UserBook/>}/>
-        <Route path="/login" element={<UserLogin />} />
+        <Route path="/user/login" element={<UserLogin />} />
         <Route path="/register" element={<UserSignUP/>}/>
         <Route path="/otp" element={<UserOTP/>}/>
 
