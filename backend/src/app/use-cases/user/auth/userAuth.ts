@@ -78,19 +78,19 @@ export const verifyUser = async (
 }
 
 
-export const deleteOtp = async (
+export const deleteOTP = async (
     userId: string,
     userDbRepository: ReturnType<userDbInterface>,
     authService: ReturnType<AuthServiceInterfaceType>
   ) => {
     const newOtp: string = authService.generateOTP();
-    const deleted = await userDbRepository.deleteOtpUser(userId); // delete the existing otp user from db
+    const deleted = await userDbRepository.deleteOtpUser(userId); 
     if (deleted) {
-      await userDbRepository.addOTP(newOtp, userId); // create new otp user
+      await userDbRepository.addOTP(newOtp, userId); 
     }
     const user = await userDbRepository.getUserbyId(userId);
     if (user) {
       const emailSubject = "Account verification , New OTP";
-      sentMail(user.email, emailSubject, otpEmail(newOtp, user.name)); // Sending otp to the user email
+      sentMail(user.email, emailSubject, otpEmail(newOtp, user.name)); 
     }
    };

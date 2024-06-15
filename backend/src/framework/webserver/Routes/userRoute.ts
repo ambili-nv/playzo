@@ -18,7 +18,7 @@ const userRoutes =()=>{
 
     router.post("/register",controller.registerUser);
     router.post("/verify-otp",controller.VerifyOTP)
-    router.post("/resend_otp", controller.resendOtp);
+    router.post("/resend_otp", controller.resendOTP);
 
 
 

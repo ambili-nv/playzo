@@ -9,7 +9,7 @@ import { HttpStatus } from "../types/httpStatus";
 import {
      userRegister,
      verifyUser,
-     deleteOtp
+     deleteOTP
     } from '../app/use-cases/user/auth/userAuth';
 
 
@@ -61,10 +61,10 @@ const userController = (
 
     //resend otp - POST MEthod
 
-    const resendOtp = async (req:Request,res:Response,next:NextFunction)=>{
+    const resendOTP = async (req:Request,res:Response,next:NextFunction)=>{
         try{
             const {userId} = req.body;
-            await deleteOtp(userId,dbRepositoryUser,authService);
+            await deleteOTP(userId,dbRepositoryUser,authService);
             res.json({message:"New otp sent to mail"});
         }catch(error){
             next(error);
@@ -74,7 +74,7 @@ const userController = (
     return {
         registerUser,
         VerifyOTP,
-        resendOtp
+        resendOTP
     }
 }
 
