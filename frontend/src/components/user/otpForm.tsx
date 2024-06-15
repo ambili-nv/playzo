@@ -22,7 +22,7 @@ const OTP: React.FC = () => {
                 .then(({data})=>{
                     showToast(data.message, "success");
                     removeItemFromLocalStorage("userId");
-                    setTimeout(() => navigate("/user/login"), 1000);
+                    setTimeout(() => navigate("/login"), 1000);
                 })
                 .catch(({ response }) => {
                     showToast(response.data.message, "error");
@@ -57,7 +57,7 @@ const OTP: React.FC = () => {
             });
         } else {
           showToast("something went wrong", "error");
-          return navigate("/user/login");
+          return navigate("/login");
         }
       };
  

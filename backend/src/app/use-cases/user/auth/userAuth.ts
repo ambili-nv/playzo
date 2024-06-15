@@ -14,9 +14,16 @@ export const userRegister = async(
     authService:ReturnType<AuthServiceInterfaceType>
 
 )=>{
-    console.log("Received user data in userRegister:", user);
+    // console.log("Received user data in userRegister:", user);
 
     const{ name,email,password,phoneNumber} = user
+
+    const isEmailExist = await userRepository.getUserbyEmail(email)
+    if (isEmailExist){
+        throw new CustomError("Email already Exist",HttpStatus.BAD_REQUEST)
+    }
+
+    const hashedPassword: string = await authService.encryptPassword(password);
 
 
 
@@ -24,19 +31,18 @@ export const userRegister = async(
         name,
         email,
         phoneNumber,
-        password,
+        hashedPassword,
     );
-        const isEmailExist = await userRepository.getUserbyEmail(email)
-        if (isEmailExist){
-            throw new CustomError("Email already Exist",HttpStatus.BAD_REQUEST)
-        }
+
+
+
 
         //create a new User 
         const createdUser: UserInterface = await userRepository.addUser(userEntity);
 
-        const OTP = authService.generateOTP();  //generate otp
+        const OTP = authService.generateOTP();  
         const emailSubject = "Account verification";
-        sentMail(createdUser.email,emailSubject,otpEmail(OTP, createdUser.name)); //send otp
+        sentMail(createdUser.email,emailSubject,otpEmail(OTP, createdUser.name)); 
         await userRepository.addOTP(OTP, createdUser.id);
 
 
@@ -55,7 +61,7 @@ export const verifyUser = async (
         if(!userOTP)
             throw new CustomError("Please provide an OTP",HttpStatus.BAD_REQUEST);
             const otpUser = await userRepository.findOtpUser(userId)
-            console.log(otpUser,"kityyeeeee");
+            // console.log(otpUser,"otpUser found");
 
         if(!otpUser){
             throw new CustomError(
@@ -94,3 +100,39 @@ export const deleteOTP = async (
       sentMail(user.email, emailSubject, otpEmail(newOtp, user.name)); 
     }
    };
+
+
+   export const login = async(
+    user:{email: string; password:string},
+    userDbRepository:ReturnType<userDbInterface>,
+    authService:ReturnType<AuthServiceInterfaceType>
+   )=>{
+    const {email,password} = user
+    const isEmailExist = await userDbRepository.getUserbyEmail(email)
+    console.log(isEmailExist,"ckecked.............email");
+    
+
+    if(!isEmailExist){
+        throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
+    }
+
+    if(!isEmailExist.isVerified){
+        throw new CustomError("your account is not verified",HttpStatus.UNAUTHORIZED);
+    }
+
+    if(!isEmailExist.password){
+        throw new CustomError("Invalid Credentials",HttpStatus.UNAUTHORIZED);
+    }
+
+    const isPasswordMatched = await authService.comparePassword(password,isEmailExist.password)
+    if(!isPasswordMatched){
+        throw new CustomError("Invalid credentials",HttpStatus.UNAUTHORIZED);
+    }
+
+    const accessToken = authService.createTokens(
+        isEmailExist.id,
+        isEmailExist.name,
+        isEmailExist.role
+    );
+    return {accessToken,isEmailExist};
+   }

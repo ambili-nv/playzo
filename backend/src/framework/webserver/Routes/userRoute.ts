@@ -19,7 +19,7 @@ const userRoutes =()=>{
     router.post("/register",controller.registerUser);
     router.post("/verify-otp",controller.VerifyOTP)
     router.post("/resend_otp", controller.resendOTP);
-
+    router.post("/login",controller.userLogin)
 
 
 

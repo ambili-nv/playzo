@@ -1,4 +1,3 @@
-
 import { userEntityType } from "../../../../enitity/userEntity";
 import { UserInterface } from "../../../../types/userInterface";
 import User from "../models/user";
@@ -8,14 +7,12 @@ export const userRepositoryMongodb =()=>{
 
     const getUserbyEmail = async (email:any)=>{
         const user: UserInterface | null = await User.findOne({email});
-        // console.log(isEmailExist,"///////////////");
         return user
         
     }
 
 const addUser = async(user:userEntityType)=>{
 
-    // console.log(user,"oooooooooooooo")
     const newUser:any = new User({
         name:user.name(),
         email:user.getEmail(),
@@ -31,21 +28,12 @@ const AddOTP = async (OTP: string, userId: string)=>{
     await OTPModel.create({OTP, userId});
 };
 
-// const findOtpUser = async(userId:string)=>{
-//     console.log(findOtpUser,"otp ethyaaaa");
-    
-//     const user = await OTPModel.findOne({userId})
-//     console.log(user,"user inddddddddddd");
-    
-// }
 
 
 const findOtpUser = async (userId: string) => {
-    console.log(userId, "UserId passed to findOtpUser"); // Log userId to ensure it's correct
 
     try {
         const user = await OTPModel.findOne({ userId });
-        console.log(user, "User found in findOtpUser"); // Log the result of the query
 
         return user;
     } catch (error) {

@@ -9,7 +9,6 @@ export const userDbRepository = (
     const addOTP = async (otp: string, id:string) => await repository.AddOTP(otp,id);
     const findOtpUser = async (userId: string) => {
       const user = await repository.findOtpUser(userId);
-      console.log(user, "User found in repository");
       return user;
     };
 

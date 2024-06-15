@@ -9,7 +9,8 @@ import { HttpStatus } from "../types/httpStatus";
 import {
      userRegister,
      verifyUser,
-     deleteOTP
+     deleteOTP,
+     login,
     } from '../app/use-cases/user/auth/userAuth';
 
 
@@ -33,7 +34,7 @@ const userController = (
             const user: UserInterface = req.body;            
             //@ts-ignore
             const { createdUser } = await userRegister(user, dbRepositoryUser,authService);
-            console.log("User registration result",createdUser);
+           
             
             res.json({
                 message: "User registration successful, please verify email",
@@ -71,10 +72,32 @@ const userController = (
         }
     };
 
+    //userLogin - POST Method
+
+    const userLogin = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            const {accessToken,isEmailExist} = await login(
+                req.body,
+                dbRepositoryUser,
+                authService
+            );
+
+            res.status(HttpStatus.OK)
+               .json({message:"Successfully login", user: isEmailExist,
+                accessToken:accessToken
+                })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
+
     return {
         registerUser,
         VerifyOTP,
-        resendOTP
+        resendOTP,
+        userLogin
     }
 }
 

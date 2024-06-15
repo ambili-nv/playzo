@@ -28,12 +28,12 @@ export const MainRouter = () => {
       <Routes>
         <Route path = "/" element={<Home/>}/>
         <Route path = "/book" element={<UserBook/>}/>
-        <Route path="/user/login" element={<UserLogin />} />
+        <Route path="/login" element={<UserLogin />} />
         <Route path="/register" element={<UserSignUP/>}/>
         <Route path="/otp" element={<UserOTP/>}/>
 
         {/* Owner Routes */}
-        <Route path = "/login" element={<OwnerLogin/>}/>
+        <Route path = "/admin/login" element={<OwnerLogin/>}/>
         <Route path = "/owner/signup" element={<OwnerSignUp/>}/>
         <Route path = "/owner/otp" element={<OTP/>}/>
         <Route path = "/owner/venueupload" element={<UploadVenues/>}/>
