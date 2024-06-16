@@ -30,6 +30,7 @@ const SignUpPage: React.FC = () => {
           password,
         });
         const { message,newUser } = data;
+        console.log(message,newUser._id,"ssss");
         showToast(message, "success");
         setItemToLocalStorage("userId", newUser._id);
         navigate("/otp");

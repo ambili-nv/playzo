@@ -10,6 +10,6 @@ const OTPModel = new mongoose.Schema({
     { timestamps: true }
 );
 
-OTPModel.index({ createdAt: 1 }, { expireAfterSeconds: 120 });
+OTPModel.index({ createdAt: 1 }, { expireAfterSeconds: 60 });
 
 export default mongoose.model("OTP", OTPModel);

@@ -27,7 +27,7 @@ const ownerController = (
         const owner  = req.body
         console.log(owner,"owner register data recieved");
         
-        const createdOwner = await ownerRegister(owner,dbRepositoryOwner,authService)
+        const {createdOwner} = await ownerRegister(owner,dbRepositoryOwner,authService)
         res.json({
             message:"Successfully Registered, please verify your mail",
             newOwner:createdOwner,

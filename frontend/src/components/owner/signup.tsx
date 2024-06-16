@@ -5,6 +5,7 @@ import axios from "axios";
 import { OWNER_API} from "../../constants";
 import { validateSignUp } from "../../utils/validation";
 import showToast from "../../utils/toaster";
+import { setItemToLocalStorage } from "../../utils/Set&Get";
 
 
 const SignUpPage: React.FC = () => {
@@ -22,22 +23,24 @@ const SignUpPage: React.FC = () => {
     validate: validateSignUp,
     onSubmit: async ({ name, email, phoneNumber, password }) => {
       setIsSubmitting(true);
-        axios
-        .post(OWNER_API + "/register", {
+      try {
+        const { data } = await axios.post(OWNER_API + "/register", {
           name,
           email,
           phoneNumber,
           password,
-        })
-        .then(({data})=>{
-          showToast(data.message, "success");
-          navigate("/owner/otp");
-        })
-        .catch(({ response }) => {
-          const { message } = response.data;
-          setIsSubmitting(false);
-          showToast(message, "error");
         });
+        const { message,newOwner } = data;
+        console.log(message,newOwner._id,"ownerssss");
+        
+        showToast(message, "success");
+        setItemToLocalStorage("userId", newOwner._id);
+        navigate("/owner/otp");
+      } catch (error: any) {
+        const { message } = error.response.data;
+        setIsSubmitting(false);
+        showToast(message, "error");
+      }
     },
   });
 
