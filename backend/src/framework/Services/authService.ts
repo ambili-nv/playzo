@@ -12,15 +12,10 @@ export const authService = ()=>{
         return await bcrypt.compare(inputPassword,password);
     }
 
-    //generate otp
-    // const generateOTP = () =>{
-    //     const otp = Math.floor(100000 + Math.random() * 900000)
-    //     return `${otp}`;
-    // }
 
     const generateOTP = (): string => {
     const otp = Math.floor(100000 + Math.random() * 900000);
-    return `${otp}`; // Correctly typed to return a string
+    return `${otp}`; 
     };
 
     const createToken = (id:string,name:string,role:string)=>{
@@ -30,7 +25,7 @@ export const authService = ()=>{
             role
         }
         const accessToken = jwt.sign(payload, configKeys.ACCESS_SECRET,{
-            expiresIn:"3d"
+            expiresIn:"30d"
         });
         console.log(accessToken,"accessToken generated");
         

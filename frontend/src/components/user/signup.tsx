@@ -54,7 +54,7 @@ const SignUpPage: React.FC = () => {
 
         <div className="w-2/3 bg-white flex items-center justify-center p-6">
           <div className="w-full max-w-md">
-            <h2 className="text-2xl font-semibold mb-4">Sign Up</h2>
+            <h2 className="text-2xl font-semibold mb-4">User Sign Up</h2>
             <form onSubmit={formik.handleSubmit}>
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2">Enter your Name</label>

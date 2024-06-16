@@ -7,7 +7,7 @@ import { setUser } from "../../redux/slice/userSlice";
 import { USER_API } from "../../constants";
 import showToast from "../../utils/toaster";
 import { setItemToLocalStorage } from "../../utils/Set&Get";
-
+import { validateLogin } from "../../utils/validation";
 import Logo from '../../assets/images/bg.png'
 import axios from "axios";
 
@@ -20,6 +20,7 @@ const LoginPage: React.FC = () => {
       email:"",
       password:""
     },
+    validate:validateLogin,
     onSubmit:({email,password})=>{
       setIsSubmitting(true);
       axios
@@ -54,7 +55,7 @@ const LoginPage: React.FC = () => {
 
         <div className="w-2/3 bg-white flex items-center justify-center p-6">
           <div className="w-full max-w-md">
-            <h2 className="text-2xl font-semibold mb-4">Login</h2>
+            <h2 className="text-2xl font-semibold mb-4">User Login</h2>
             <form onSubmit={formik.handleSubmit} >
               <div className="mb-4">
                 <label className="block text-gray-700 mb-2">Email</label>
