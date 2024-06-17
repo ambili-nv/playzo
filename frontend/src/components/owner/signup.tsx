@@ -34,7 +34,7 @@ const SignUpPage: React.FC = () => {
         console.log(message,newOwner._id,"ownerssss");
         
         showToast(message, "success");
-        setItemToLocalStorage("userId", newOwner._id);
+        setItemToLocalStorage("OwnerId", newOwner._id);
         navigate("/owner/otp");
       } catch (error: any) {
         const { message } = error.response.data;

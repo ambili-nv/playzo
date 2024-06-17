@@ -6,7 +6,10 @@ import { AuthService } from "../framework/Services/authService";
 import { AuthServiceInterfaceType } from "../app/service-interface/authServiceInrerface";
 import {
     ownerRegister,
+    verifyOwner
 } from '../app/use-cases/owner/ownerAuth'
+
+import { HttpStatus } from "../types/httpStatus";
 
 const ownerController = (
     ownerDbRepository:ownerDbInterface,
@@ -39,8 +42,25 @@ const ownerController = (
     })
 
 
+    //verify otp - POST Method
+
+    const VerifyOTP = async(req:Request, res:Response, next:NextFunction)=>{
+        try {
+            const {otp,OwnerId} = req.body
+            const isVerified = await verifyOwner(otp,OwnerId,dbRepositoryOwner)
+            if(isVerified){
+                return res.status(HttpStatus.OK)
+                .json({message:"User account verified, please login"});
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
     return {
-        registerOwner
+        registerOwner,
+        VerifyOTP
     }
 }
 

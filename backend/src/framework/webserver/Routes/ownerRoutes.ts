@@ -13,7 +13,8 @@ const ownerRoutes = ()=>{
         authService,
     )
 
-    router.post('/register',controller.registerOwner)
+    router.post('/register',controller.registerOwner);
+    router.post("/owner/verify-otp",controller.VerifyOTP)
 
     return router
 }

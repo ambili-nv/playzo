@@ -6,6 +6,8 @@ const OTPModel = new mongoose.Schema({
     },
 
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+
+    ownerId: {type:mongoose.Schema.Types.ObjectId,ref:"OWner"},
 },
     { timestamps: true }
 );
