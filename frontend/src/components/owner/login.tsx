@@ -1,14 +1,18 @@
-import React from "react";
+import React,{useState} from "react";
 import { useNavigate } from 'react-router-dom';
 import '../../index.css';
 import Map from '../../assets/images/bg.png'
+import axios from "axios";
+import { OWNER_API } from "../../constants";
+import { validateLogin } from "../../utils/validation";
+import { setItemToLocalStorage } from "../../utils/Set&Get";
 
 const OwnerLoginPage: React.FC = () => {
 
   const navigate = useNavigate();
-const submit = ()=>{
-  navigate( "/owner/homepage")
-}
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 bg-opacity-50">
@@ -39,7 +43,7 @@ const submit = ()=>{
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none "
                 />
               </div>
-              <button onClick={submit}
+              <button 
                 type="submit" 
                 className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
               >

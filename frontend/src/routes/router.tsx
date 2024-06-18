@@ -33,7 +33,7 @@ export const MainRouter = () => {
         <Route path="/otp" element={<UserOTP/>}/>
 
         {/* Owner Routes */}
-        <Route path = "/admin/login" element={<OwnerLogin/>}/>
+        <Route path = "/owner/login" element={<OwnerLogin/>}/>
         <Route path = "/owner/signup" element={<OwnerSignUp/>}/>
         <Route path = "/owner/otp" element={<OTP/>}/>
         <Route path = "/owner/venueupload" element={<UploadVenues/>}/>

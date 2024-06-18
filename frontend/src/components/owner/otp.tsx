@@ -22,14 +22,14 @@ const OTP: React.FC = () => {
                 .then(({data})=>{
                     showToast(data.message, "success");
                     removeItemFromLocalStorage("OwnerId");
-                    setTimeout(() => navigate("/login"), 1000);
+                    setTimeout(() => navigate("/owner/login"), 1000);
                 })
                 .catch(({ response }) => {
                     showToast(response.data.message, "error");
                   });
             } else {
                 showToast("something went wrong", "error");
-                return navigate("/login", { replace: true });
+                return navigate("/owner/login", { replace: true });
             }
         }
     });
@@ -46,6 +46,8 @@ const OTP: React.FC = () => {
       const resendCode = () => {
         setSeconds(60);
         const OwnerId = getItemFromLocalStorage("OwnerId");
+        console.log(OwnerId,"ownerIDD");
+        
         if (OwnerId) {
           axios
             .post(OWNER_API + "/owner/resend_otp", { OwnerId })
@@ -57,7 +59,7 @@ const OTP: React.FC = () => {
             });
         } else {
           showToast("something went wrong", "error");
-          return navigate("/login");
+          return navigate("/owner/login");
         }
       };
  

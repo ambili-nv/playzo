@@ -38,12 +38,16 @@ const findOtpOwner = async (ownerId:string)=>{
 
 const updateOwnerInfo = async (id:string,updateData:Record<string,any>)=>await Owner.findByIdAndUpdate(id,updateData,{new:true})
 
+const deleteOtpOwner = async(ownerId:string)=>await OTPmodel.deleteOne({ownerId})
+const getOwnerById = async (id:string)=>await Owner.findById(id)
 return {
     addOwner,
     getOwnerbyEmail,
     findOtpOwner,
     updateOwnerInfo,
-    AddOTP
+    AddOTP,
+    deleteOtpOwner,
+    getOwnerById
 }
 }
 

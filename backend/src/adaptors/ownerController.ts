@@ -6,10 +6,14 @@ import { AuthService } from "../framework/Services/authService";
 import { AuthServiceInterfaceType } from "../app/service-interface/authServiceInrerface";
 import {
     ownerRegister,
-    verifyOwner
+    verifyOwner,
+    deleteOTP
 } from '../app/use-cases/owner/ownerAuth'
 
 import { HttpStatus } from "../types/httpStatus";
+
+
+
 
 const ownerController = (
     ownerDbRepository:ownerDbInterface,
@@ -56,11 +60,26 @@ const ownerController = (
             next(error);
         }
     }
+    //resend otp
+
+    const resendOTP = async (req:Request,res:Response,next:NextFunction)=>{
+        try {
+            console.log('Request body:', req.body);
+            const {OwnerId} = req.body
+            console.log(OwnerId,"owner - resend ");
+            //@ts-ignore
+            await deleteOTP(OwnerId,dbRepositoryOwner,authService)
+            res.json({message:"New otp sent to mail"});
+        } catch (error) {
+            next(error)
+        }
+    }
 
 
     return {
         registerOwner,
-        VerifyOTP
+        VerifyOTP,
+        resendOTP
     }
 }
 

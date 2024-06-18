@@ -8,24 +8,26 @@ export const ownerDbRepository = (
 
   const getOwnerbyEmail = async (email:string)=>await repository.getOwnerbyEmail(email)
     
- const findOtpOwner = async(ownerId:string)=>{
-    const owner = await repository.findOtpOwner(ownerId)
+ const findOtpOwner = async(OwnerId:string)=>{
+    const owner = await repository.findOtpOwner(OwnerId)
     console.log(owner,"id...");
     
     return owner
  }   
 
- const updateOwnerProfile = async (ownerId:string,ownerData:Record<string,any>)=>await repository.updateOwnerInfo(ownerId,ownerData)
+ const updateOwnerProfile = async (OwnerId:string,ownerData:Record<string,any>)=>await repository.updateOwnerInfo(OwnerId,ownerData)
 
  const addOTP = async (otp: string, id:string) => await repository.AddOTP(otp,id);
-
-
+const deleteOtpOwner = async(OwnerId:string)=>await repository.deleteOtpOwner(OwnerId)
+const getOwnerbyId = async(id:string)=>await repository.getOwnerById(id)
    return {
     addOwner,
     getOwnerbyEmail,
     findOtpOwner,
     updateOwnerProfile,
-    addOTP
+    addOTP,
+    deleteOtpOwner,
+    getOwnerbyId
    }
 
 }

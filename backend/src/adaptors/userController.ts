@@ -64,7 +64,10 @@ const userController = (
 
     const resendOTP = async (req:Request,res:Response,next:NextFunction)=>{
         try{
+            console.log(req.body,"user otp");
             const {userId} = req.body;
+            console.log(userId,"resend otp - user");
+            
             await deleteOTP(userId,dbRepositoryUser,authService);
             res.json({message:"New otp sent to mail"});
         }catch(error){

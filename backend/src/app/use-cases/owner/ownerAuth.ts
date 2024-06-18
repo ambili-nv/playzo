@@ -6,6 +6,9 @@ import { HttpStatus } from "../../../types/httpStatus";
 import { AuthServiceInterfaceType } from "../../service-interface/authServiceInrerface";
 import sentMail from "../../../utils/sendMail";
 import { otpEmail } from "../../../utils/userEmail";
+import { log } from "console";
+
+
 
 // owner Register
 
@@ -23,16 +26,21 @@ export const ownerRegister:any = async(
         throw new CustomError("Email already Exist",HttpStatus.BAD_REQUEST)
     }
 
+    const hashedPassword: string = await authService.encryptPassword(password);
+
+
     const ownerEntity : ownerEntityType = createOwnerEntity(
         name,
         email,
         phoneNumber,
-        password
+        hashedPassword
     )
     
     //@ts-ignore
     const createdOwner : OwnerInterface = await ownerRepository.addOwner(ownerEntity)
     const OTP = authService.generateOTP();
+    console.log(OTP,"owner otp");
+    
     const emailSubject = "Account verification";
     sentMail(createdOwner.email,emailSubject,otpEmail(OTP,createdOwner.name))
     await ownerRepository.addOTP(OTP,createdOwner.id)
@@ -45,14 +53,14 @@ export const ownerRegister:any = async(
 
 export const verifyOwner = async (
     ownerOTP:string,
-    ownerId:string,
+    OwnerId:string,
     ownerRepository:ReturnType<ownerDbInterface>
     )=>{
-        console.log(ownerId,"ownerID get");
+        console.log(OwnerId,"ownerID get");
         
         if(!ownerOTP)
             throw new CustomError("Please provide an OTP",HttpStatus.BAD_REQUEST);
-            const otpOwner = await ownerRepository.findOtpOwner(ownerId)
+            const otpOwner = await ownerRepository.findOtpOwner(OwnerId)
             console.log(otpOwner,"otpUser found");
 
         if(!otpOwner){
@@ -63,7 +71,7 @@ export const verifyOwner = async (
         }
 
         if(otpOwner.OTP === ownerOTP){
-            await ownerRepository.updateOwnerProfile(ownerId,{
+            await ownerRepository.updateOwnerProfile(OwnerId,{
                 isVerified:true
             });
             return true
@@ -73,4 +81,23 @@ export const verifyOwner = async (
                 HttpStatus.BAD_REQUEST
             )
         }
+}
+
+export const deleteOTP = async(
+    OwnerId :string,
+    ownerDbRepository:ReturnType<ownerDbInterface>,
+    authService:ReturnType<AuthServiceInterfaceType>
+)=>{
+    const newOtp: string = authService.generateOTP();
+    console.log(newOtp,"new otp -owner");
+    
+    const deleted = await ownerDbRepository.deleteOtpOwner(OwnerId);
+    if(deleted){
+        await ownerDbRepository.addOTP(newOtp,OwnerId)
+    }
+    const owner = await ownerDbRepository.getOwnerbyId(OwnerId)
+    if(owner){
+        const emailSubject = "Account verification , New OTP";
+        sentMail(owner.email,emailSubject,otpEmail(newOtp,owner.name))
+    }
 }

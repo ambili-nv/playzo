@@ -6,7 +6,7 @@ import { OWNER_API} from "../../constants";
 import { validateSignUp } from "../../utils/validation";
 import showToast from "../../utils/toaster";
 import { setItemToLocalStorage } from "../../utils/Set&Get";
-
+import Map from '../../assets/images/bg.png'
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const SignUpPage: React.FC = () => {
       <div className="flex w-full max-w-4xl bg-white rounded-lg shadow-lg overflow-hidden">
         <div className="w-6/12 bg-gray-100 relative overflow-hidden">
           <img
-            src="src/assets/images/bg.png"
+            src={Map}
             alt="Map"
             className="absolute inset-0 w-full h-full object-cover"
           />
