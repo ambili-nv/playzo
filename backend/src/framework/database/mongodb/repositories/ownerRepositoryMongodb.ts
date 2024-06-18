@@ -6,6 +6,8 @@ export const ownerRepositoryMongodb = () =>{
 
     const getOwnerbyEmail = async (email:any)=>{
         const owner : OwnerInterface | null = await Owner.findOne({email})
+        console.log(owner,"owner db");
+        
         return owner
     }
 

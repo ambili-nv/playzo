@@ -10,6 +10,7 @@ import { log } from "console";
 
 
 
+
 // owner Register
 
 export const ownerRegister:any = async(
@@ -100,4 +101,38 @@ export const deleteOTP = async(
         const emailSubject = "Account verification , New OTP";
         sentMail(owner.email,emailSubject,otpEmail(newOtp,owner.name))
     }
+}
+
+
+export const login = async(
+    owner:{email:string,password:string},
+    ownerDbRepository:ReturnType<ownerDbInterface>,
+    authService:ReturnType<AuthServiceInterfaceType>
+)=>{
+    const {email,password} = owner
+    const isEmailExist = await ownerDbRepository.getOwnerbyEmail(email)
+    console.log(isEmailExist,"Email checked-owner login");
+
+    if(!isEmailExist){
+        throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
+    }
+
+    if(!isEmailExist.isVerified){
+        throw new CustomError("Your account is not is verified",HttpStatus.UNAUTHORIZED)
+    }
+
+    if (!isEmailExist.password) {
+        throw new CustomError("Invalid credentials2",HttpStatus.UNAUTHORIZED)
+    }
+    const isPasswordMatched = await authService.comparePassword(password,isEmailExist.password)
+    if(!isPasswordMatched){
+        throw new CustomError("Invalid credentials3",HttpStatus.UNAUTHORIZED)
+    }
+
+    const accessToken = authService.createTokens(
+        isEmailExist.id,
+        isEmailExist.name,
+        isEmailExist.role
+    )
+    return {accessToken,isEmailExist};
 }

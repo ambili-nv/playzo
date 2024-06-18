@@ -7,7 +7,8 @@ import { AuthServiceInterfaceType } from "../app/service-interface/authServiceIn
 import {
     ownerRegister,
     verifyOwner,
-    deleteOTP
+    deleteOTP,
+    login
 } from '../app/use-cases/owner/ownerAuth'
 
 import { HttpStatus } from "../types/httpStatus";
@@ -76,10 +77,31 @@ const ownerController = (
     }
 
 
+    // Login - POST Method
+
+    const ownerLogin = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            // const {accessToken,isEmailExist} = await login(
+            const {accessToken,isEmailExist} = await login(
+                req.body,
+                dbRepositoryOwner,
+                authService
+            );
+
+            res.status(HttpStatus.OK)
+            .json({message:"Successfully login", owner: isEmailExist,
+             accessToken:accessToken
+             })  
+        } catch (error) {
+            next(error)
+        }
+    }
+
     return {
         registerOwner,
         VerifyOTP,
-        resendOTP
+        resendOTP,
+        ownerLogin
     }
 }
 

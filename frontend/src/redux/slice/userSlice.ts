@@ -5,7 +5,6 @@ interface UserState {
     isAuthenticated:boolean | null,
     role : string | null,
     id? : string | null,
-    access_token?:string | null
 }
 
 const initialState:UserState={
@@ -13,7 +12,6 @@ const initialState:UserState={
     isAuthenticated: null,
     role: null,
     id:null,
-    access_token:null
 };
 
 const Userslice = createSlice({

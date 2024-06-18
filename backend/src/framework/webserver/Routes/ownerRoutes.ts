@@ -16,6 +16,7 @@ const ownerRoutes = ()=>{
     router.post('/register',controller.registerOwner);
     router.post("/owner/verify-otp",controller.VerifyOTP)
     router.post("/owner/resend_otp",controller.resendOTP)
+    router.post("/login",controller.ownerLogin)
 
     return router
 }
