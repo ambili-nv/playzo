@@ -1,4 +1,4 @@
-import { userEntityType } from "../../../../enitity/userEntity";
+import { googleSignInUserEntityType, userEntityType } from "../../../../enitity/userEntity";
 import { UserInterface } from "../../../../types/userInterface";
 import User from "../models/user";
 import OTPModel from "../models/OTPmodel";
@@ -46,6 +46,14 @@ const updateUserInfo = async (id: string, updateData:Record<string,any>)=>await 
 const deleteOtpUser = async (userId: string) =>await OTPModel.deleteOne({ userId });
 const getUserbyId = async (id: string) => await User.findById(id);
 
+const registerGoogleSignInUser = async(user:googleSignInUserEntityType)=>{
+    await User.create({
+        name:user.name(),
+        email:user.email(),
+        isVerified:user.email_verified(),
+
+    })
+}
 
 
 
@@ -56,7 +64,8 @@ return {
     findOtpUser,
     updateUserInfo,
     deleteOtpUser,
-    getUserbyId
+    getUserbyId,
+    registerGoogleSignInUser
 }
 
 }

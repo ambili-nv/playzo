@@ -1,4 +1,4 @@
-import { userEntityType } from "../../enitity/userEntity";
+import { userEntityType,googleSignInUserEntityType } from "../../enitity/userEntity";
 import { userRepositoryMongodbType } from "../../framework/database/mongodb/repositories/userRepositoryMongodb";
 
 export const userDbRepository = (
@@ -16,6 +16,8 @@ export const userDbRepository = (
     const deleteOtpUser = async (userId: string) =>await repository.deleteOtpUser(userId);
     const getUserbyId = async (id: string)=> await repository.getUserbyId(id);    
 
+    const registerGoogleSignInUser = async(user:googleSignInUserEntityType) => await repository.registerGoogleSignInUser(user)
+
     return{
         addUser,
         getUserbyEmail,
@@ -23,7 +25,8 @@ export const userDbRepository = (
         findOtpUser,
         updateProfile,
         deleteOtpUser,
-        getUserbyId
+        getUserbyId,
+        registerGoogleSignInUser
     }
 }
 

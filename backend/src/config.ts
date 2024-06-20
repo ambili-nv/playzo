@@ -9,7 +9,8 @@ const configKeys = {
     APP_PASSWORD : process.env.APP_PASSWORD as string,
     ACCESS_SECRET : process.env.ACCESS_SECRET as string,
     ADMIN_EMAIL : process.env.ADMIN_EMAIL as string,
-    ADMIN_PASSWORD : process.env.ADMIN_PASSWORD as string
+    ADMIN_PASSWORD : process.env.ADMIN_PASSWORD as string,
+    CLIENT_ID : process.env.CLIENT_ID as string,
 }
 
 export default configKeys

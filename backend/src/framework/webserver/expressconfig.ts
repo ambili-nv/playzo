@@ -10,6 +10,7 @@ const expressConfig = (app:Application)=>{
     app.use(morgan("dev"));
     const corsConfig = {
         origin : "http://localhost:5173",
+        // origin : true,
         credentials: true,
 
     };

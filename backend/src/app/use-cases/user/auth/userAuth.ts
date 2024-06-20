@@ -1,5 +1,5 @@
 import { CreateUserInterface,UserInterface } from "../../../../types/userInterface";
-import createUserEntity,{userEntityType} from '../../../../enitity/userEntity'
+import createUserEntity,{userEntityType,googleSignInUserEntity,googleSignInUserEntityType} from '../../../../enitity/userEntity'
 import { userDbInterface } from "../../../Interfaces/userDbRepository";
 import CustomError from "../../../../utils/customError";
 import { HttpStatus } from "../../../../types/httpStatus";
@@ -135,4 +135,33 @@ export const deleteOTP = async (
         isEmailExist.role
     );
     return {accessToken,isEmailExist};
+   }
+
+
+   export const authGoogleSinginUser = async(
+    userData:{
+        name: string;
+        email: string;
+       email_verified: boolean;
+    },
+    userDbRepository:ReturnType<userDbInterface>,
+    // authService:ReturnType<AuthServiceInterfaceType>
+
+   )=>{
+    const {name,email,email_verified} = userData
+    const isEmailExist = await userDbRepository.getUserbyEmail(email)
+    console.log(isEmailExist,"Email checked");
+    if(isEmailExist){
+        return {isEmailExist}
+    } else {
+        const googleSignInUser : googleSignInUserEntityType = googleSignInUserEntity(
+            name,email,email_verified
+        )
+
+        const createdUser = await userDbRepository.registerGoogleSignInUser(
+            googleSignInUser
+        )
+
+        return {createdUser}
+    }
    }

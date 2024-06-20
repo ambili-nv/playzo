@@ -11,6 +11,7 @@ import {
      verifyUser,
      deleteOTP,
      login,
+     authGoogleSinginUser
     } from '../app/use-cases/user/auth/userAuth';
 
 
@@ -94,13 +95,33 @@ const userController = (
         }
     }
 
+    const loginWithGoogle = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+        const userData = req.body
+        console.log(userData,"got useData");
+        const {isEmailExist,createdUser} = await authGoogleSinginUser(
+        // const {isEmailExist,createdUser} = await authGoogleSinginUser(
+            userData,
+            dbRepositoryUser,
+            // authService
+        )
+        const user = isEmailExist ? isEmailExist : createdUser;
+        res.status(HttpStatus.OK).json({ message: "login success", user,}); 
+        } catch (error) {
+            
+        }
+
+
+    }
+
 
 
     return {
         registerUser,
         VerifyOTP,
         resendOTP,
-        userLogin
+        userLogin,
+        loginWithGoogle
     }
 }
 
