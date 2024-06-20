@@ -1,6 +1,7 @@
-import { ownerEntityType } from "../../../../enitity/ownerEntity"
+import { googleSignInOwnerEntityType, ownerEntityType } from "../../../../enitity/ownerEntity"
 import { OwnerInterface } from "../../../../types/ownerInterface"
 import OTPmodel from "../models/OTPmodel"
+import owner from "../models/owner"
 import Owner from "../models/owner"
 export const ownerRepositoryMongodb = () =>{
 
@@ -42,6 +43,14 @@ const updateOwnerInfo = async (id:string,updateData:Record<string,any>)=>await O
 
 const deleteOtpOwner = async(ownerId:string)=>await OTPmodel.deleteOne({ownerId})
 const getOwnerById = async (id:string)=>await Owner.findById(id)
+
+const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>{
+    await Owner.create({
+        name:owner.name(),
+        email:owner.email(),
+        isVerified:owner.email_verified()
+    })
+}
 return {
     addOwner,
     getOwnerbyEmail,
@@ -49,7 +58,8 @@ return {
     updateOwnerInfo,
     AddOTP,
     deleteOtpOwner,
-    getOwnerById
+    getOwnerById,
+    registerGoogleSignInOwner
 }
 }
 

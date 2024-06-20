@@ -13,3 +13,17 @@ export default function ownerEntity(
     };
 }
 export type ownerEntityType = ReturnType<typeof ownerEntity>;
+
+export function googleSignInOwnerEntity(
+    name:string,
+    email:string,
+    email_verified:boolean,
+) {
+    return {
+        name:():string=>name,
+        email:():string=>email,
+        email_verified:():boolean=>email_verified
+    }
+}
+
+export type googleSignInOwnerEntityType = ReturnType<typeof googleSignInOwnerEntity>

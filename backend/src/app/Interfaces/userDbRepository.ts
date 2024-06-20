@@ -16,7 +16,12 @@ export const userDbRepository = (
     const deleteOtpUser = async (userId: string) =>await repository.deleteOtpUser(userId);
     const getUserbyId = async (id: string)=> await repository.getUserbyId(id);    
 
-    const registerGoogleSignInUser = async(user:googleSignInUserEntityType) => await repository.registerGoogleSignInUser(user)
+    const registerGoogleSignInUser = async(user:googleSignInUserEntityType) => await repository.registerGoogleSignInUser(user);
+
+    const updateVerificationCode = async(email:string, verificationCode:string)=> await repository.updateVerificationCode(email,verificationCode)
+
+    const verifyAndResetPassword = async (verificationCode: string,password: string) =>await repository.findVerificationCodeAndUpdate(verificationCode, password);
+
 
     return{
         addUser,
@@ -26,7 +31,9 @@ export const userDbRepository = (
         updateProfile,
         deleteOtpUser,
         getUserbyId,
-        registerGoogleSignInUser
+        registerGoogleSignInUser,
+        updateVerificationCode,
+        verifyAndResetPassword
     }
 }
 

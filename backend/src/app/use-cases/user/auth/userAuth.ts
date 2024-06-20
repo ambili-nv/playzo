@@ -5,7 +5,7 @@ import CustomError from "../../../../utils/customError";
 import { HttpStatus } from "../../../../types/httpStatus";
 import {AuthServiceInterfaceType } from "../../../service-interface/authServiceInrerface";
 import sentMail from "../../../../utils/sendMail";
-import { otpEmail } from "../../../../utils/userEmail";
+import { forgotPasswordEmail, otpEmail } from "../../../../utils/userEmail";
 
 
 export const userRegister = async(
@@ -164,4 +164,55 @@ export const deleteOTP = async (
 
         return {createdUser}
     }
-   }
+}
+
+
+export const sendVerificationCode = async(
+    email:string,
+    userDbRepository:ReturnType<userDbInterface>,
+    authService:ReturnType<AuthServiceInterfaceType>
+)=>{
+    const isEmailExist = await userDbRepository.getUserbyEmail(email)
+
+    if(!isEmailExist){
+        throw new CustomError(`${email} does not exist`,HttpStatus.BAD_REQUEST)
+    }
+    const verificationCode = authService.getRandomString()
+
+    const isUpdated = await userDbRepository.updateVerificationCode(
+        email,
+        verificationCode
+    )
+    sentMail(
+        email,
+        "Reset password",
+        forgotPasswordEmail(isEmailExist.name, verificationCode)
+    );    
+}
+
+
+
+export const verifyTokenAndPassword = async(
+    verificationCode: string,
+    password: string,
+    userDbRepository: ReturnType<userDbInterface>,
+    authService: ReturnType<AuthServiceInterfaceType>
+)=>{
+    if (!verificationCode)
+        throw new CustomError(
+          "Please provide a verification code",
+          HttpStatus.BAD_REQUEST
+        );
+      const hashedPassword = await authService.encryptPassword(password);
+      const isPasswordUpdated = await userDbRepository.verifyAndResetPassword(
+        verificationCode,
+        hashedPassword
+      );
+    
+      if (!isPasswordUpdated)
+        throw new CustomError(
+          "Invalid token or token expired",
+          HttpStatus.BAD_REQUEST
+    );
+    
+}

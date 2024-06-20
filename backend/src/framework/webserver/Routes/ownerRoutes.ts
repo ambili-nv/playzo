@@ -17,6 +17,7 @@ const ownerRoutes = ()=>{
     router.post("/owner/verify-otp",controller.VerifyOTP)
     router.post("/owner/resend_otp",controller.resendOTP)
     router.post("/login",controller.ownerLogin)
+    router.post("/google-signIn",controller.OwnerLoginWithGoogle)
 
     return router
 }

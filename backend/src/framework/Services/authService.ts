@@ -1,6 +1,7 @@
 import configKeys from "../../config";
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import crypto from 'crypto'
 export const authService = ()=>{
 
     const encryptPassword = async (password:string)=>{
@@ -32,13 +33,15 @@ export const authService = ()=>{
         return accessToken;
     }
 
+    const getRandomString = () => crypto.randomUUID();
+
 
     return {
         generateOTP,
         createToken,
         encryptPassword,
         comparePassword,
-        
+        getRandomString
     }
 }
 

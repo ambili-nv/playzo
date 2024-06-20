@@ -21,8 +21,8 @@ const userRoutes =()=>{
     router.post("/resend_otp", controller.resendOTP);
     router.post("/login",controller.userLogin)
     router.post("/google-signIn",controller.loginWithGoogle)
-
-
+    router.post("/forgot-password",controller.forgotPassword)
+    router.post("/reset-password/:token",controller.resetPassword)
 
     return router;
 }

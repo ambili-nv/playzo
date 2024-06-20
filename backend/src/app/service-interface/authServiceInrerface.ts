@@ -10,12 +10,15 @@ export const authServiceInterface = (service:AuthserviceReturn)=>{
 
     // const generateOTP = () => service.generateOTP();
         const generateOTP = (): string => service.generateOTP();
+
+        const getRandomString = () => service.getRandomString();
     
     return {
         generateOTP,
         encryptPassword,
         comparePassword,
-        createTokens
+        createTokens,
+        getRandomString
     }
 }
 

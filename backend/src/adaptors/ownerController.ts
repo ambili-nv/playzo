@@ -8,7 +8,8 @@ import {
     ownerRegister,
     verifyOwner,
     deleteOTP,
-    login
+    login,
+    authGoogleSigninOwner
 } from '../app/use-cases/owner/ownerAuth'
 
 import { HttpStatus } from "../types/httpStatus";
@@ -97,11 +98,27 @@ const ownerController = (
         }
     }
 
+    const OwnerLoginWithGoogle = async(req:Request,res:Response,next:NextFunction)=>{
+        try{
+            const ownerData = req.body
+            console.log(ownerData,"Owner data recieved");
+            const {isEmailExist,createdOwner} = await authGoogleSigninOwner(
+                ownerData,
+                dbRepositoryOwner
+            )
+            const owner = isEmailExist ? isEmailExist : createdOwner;
+            res.status(HttpStatus.OK).json({ message: "login success", owner,}); 
+        } catch(error){
+            next(error)
+        }
+    }
+
     return {
         registerOwner,
         VerifyOTP,
         resendOTP,
-        ownerLogin
+        ownerLogin,
+        OwnerLoginWithGoogle
     }
 }
 

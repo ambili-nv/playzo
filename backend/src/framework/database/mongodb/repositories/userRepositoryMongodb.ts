@@ -55,6 +55,17 @@ const registerGoogleSignInUser = async(user:googleSignInUserEntityType)=>{
     })
 }
 
+const updateVerificationCode = async (email:string,code:string)=>await User.findOneAndUpdate({email},{verificationCode:code})
+
+const findVerificationCodeAndUpdate = async (
+    code: string,
+    newPassword: string
+  ) =>
+    await User.findOneAndUpdate(
+      { verificationCode: code },
+      { password: newPassword, verificationCode: null },
+      { upsert: true }
+    );
 
 
 return {
@@ -65,7 +76,9 @@ return {
     updateUserInfo,
     deleteOtpUser,
     getUserbyId,
-    registerGoogleSignInUser
+    registerGoogleSignInUser,
+    updateVerificationCode,
+    findVerificationCodeAndUpdate
 }
 
 }

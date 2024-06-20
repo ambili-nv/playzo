@@ -7,6 +7,8 @@ const UserLogin = lazy(() => import('../pages/User/Login'));
 const UserSignUP = lazy(()=>import ('../pages/User/signup'))
 const UserOTP = lazy(()=>import('../pages/User/OTP'))
 const UserBook = lazy(()=>import('../pages/User/Book'))
+const ForgotPassword = lazy(()=>import ('../pages/User/ForgotPAssword'))
+const ResetPassword = lazy(()=>import ('../pages/User/resetPassword'))
 
             // Owner Routes
 
@@ -31,6 +33,8 @@ export const MainRouter = () => {
         <Route path="/login" element={<UserLogin />} />
         <Route path="/register" element={<UserSignUP/>}/>
         <Route path="/otp" element={<UserOTP/>}/>
+        <Route path="/forgot-password" element={<ForgotPassword/>}/>
+        <Route path="/reset-password/:id" element={<ResetPassword/>}/>
 
         {/* Owner Routes */}
         <Route path = "/owner/login" element={<OwnerLogin/>}/>

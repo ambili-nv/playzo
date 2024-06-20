@@ -136,6 +136,12 @@ const LoginPage: React.FC = () => {
               </button>
             </form>
 
+            <div className="mt-4 text-right">
+              <a href="/forgot-password" className="text-sm text-black hover:underline">
+                Forgot Password?
+              </a>
+            </div>
+
 
             <div className="flex items-center mt-4">
               <div className="border-b border-gray-300 flex-1 "></div>
@@ -156,8 +162,6 @@ const LoginPage: React.FC = () => {
               </button>
 
             </div>
-
-
             <p className="mt-4 text-center text-gray-600">
               Don't have an account? <a href="/signup" className="text-green-500 hover:underline">Sign Up</a>
             </p>

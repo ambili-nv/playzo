@@ -33,6 +33,7 @@ const userSchema =new mongoose.Schema({
         type:Date,
         default:new Date()
     },
+    verificationCode: String,
 })
 
 export default mongoose.model("User",userSchema)

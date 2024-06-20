@@ -1,5 +1,5 @@
 import { CreateOwnerInterface,OwnerInterface } from "../../../types/ownerInterface";
-import createOwnerEntity,{ownerEntityType} from "../../../enitity/ownerEntity"
+import createOwnerEntity,{googleSignInOwnerEntity, googleSignInOwnerEntityType, ownerEntityType} from "../../../enitity/ownerEntity"
 import { ownerDbInterface } from "../../Interfaces/ownerDbRepository";
 import CustomError from "../../../utils/customError";
 import { HttpStatus } from "../../../types/httpStatus";
@@ -7,6 +7,8 @@ import { AuthServiceInterfaceType } from "../../service-interface/authServiceInr
 import sentMail from "../../../utils/sendMail";
 import { otpEmail } from "../../../utils/userEmail";
 import { log } from "console";
+import owner from "../../../framework/database/mongodb/models/owner";
+import { userDbRepository } from "../../Interfaces/userDbRepository";
 
 
 
@@ -135,4 +137,32 @@ export const login = async(
         isEmailExist.role
     )
     return {accessToken,isEmailExist};
+}
+
+
+export const authGoogleSigninOwner = async(
+    ownerData:{
+        name:string;
+        email:string;
+        email_verified:boolean;
+    },
+    ownerDbRepository:ReturnType<ownerDbInterface>
+)=>{
+    const {name,email,email_verified} = ownerData
+    const isEmailExist = await ownerDbRepository.getOwnerbyEmail(email)
+    console.log(isEmailExist,"Owner email checked");
+    if(isEmailExist){
+        return{isEmailExist}
+    } else {
+        const googleSigninOwner : googleSignInOwnerEntityType = googleSignInOwnerEntity(
+            name,email,email_verified
+        )
+
+        const createdOwner = await ownerDbRepository.registerGoogleSignInOwner(
+            googleSigninOwner
+        )
+
+        return {createdOwner}
+    }
+    
 }

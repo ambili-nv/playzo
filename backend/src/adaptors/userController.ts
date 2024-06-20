@@ -11,7 +11,9 @@ import {
      verifyUser,
      deleteOTP,
      login,
-     authGoogleSinginUser
+     authGoogleSinginUser,
+     sendVerificationCode,
+     verifyTokenAndPassword
     } from '../app/use-cases/user/auth/userAuth';
 
 
@@ -110,10 +112,44 @@ const userController = (
         } catch (error) {
             
         }
-
-
     }
 
+    const forgotPassword = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            console.log(req.body);
+            
+            const {email} = req.body
+            console.log(email,"email forget password recieved");
+            await sendVerificationCode (email,dbRepositoryUser,authService)
+            return res.status(HttpStatus.OK).json({
+                success :true,
+                message:"Reset password code sent to your mail",
+            });
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
+    const resetPassword = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            const {password} = req.body
+            const {token} = req.params
+            console.log(password,token,"token and password recieved");
+            await verifyTokenAndPassword (
+                token,
+                password,
+                dbRepositoryUser,
+                authService
+            )
+            return res.status(HttpStatus.OK).json({
+                success: true,
+                message: "Reset password success,you can login with your new password",
+              });
+        } catch (error) {
+            next(error)
+        }
+    }
 
 
     return {
@@ -121,7 +157,9 @@ const userController = (
         VerifyOTP,
         resendOTP,
         userLogin,
-        loginWithGoogle
+        loginWithGoogle,
+        forgotPassword,
+        resetPassword
     }
 }
 
