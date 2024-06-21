@@ -41,6 +41,8 @@ export const userRegister = async(
         const createdUser: UserInterface = await userRepository.addUser(userEntity);
 
         const OTP = authService.generateOTP();  
+        console.log(OTP,"otp-user");
+        
         const emailSubject = "Account verification";
         sentMail(createdUser.email,emailSubject,otpEmail(OTP, createdUser.name)); 
         await userRepository.addOTP(OTP, createdUser.id);

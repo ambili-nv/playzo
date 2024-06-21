@@ -22,6 +22,30 @@ export const userDbRepository = (
 
     const verifyAndResetPassword = async (verificationCode: string,password: string) =>await repository.findVerificationCodeAndUpdate(verificationCode, password);
 
+    const updateUserBlock = async(id:string,status:boolean)=>{
+        await repository.updateUserBlock(id,status)
+    }
+
+    // const getAllUsers = async()=> {
+    //     // const allUsers =
+    //      await repository.getAllusers()
+    //     // return allUsers
+    // }
+
+
+    const getAllUsers = async () => {
+        try {
+            const allUsers = await repository.getAllusers();
+            console.log(allUsers, "users - service");
+            return allUsers;
+        } catch (error) {
+            console.error("Error in service function:", error);
+            throw error;
+        }
+    };
+
+    
+
 
     return{
         addUser,
@@ -33,7 +57,9 @@ export const userDbRepository = (
         getUserbyId,
         registerGoogleSignInUser,
         updateVerificationCode,
-        verifyAndResetPassword
+        verifyAndResetPassword,
+        getAllUsers,
+        updateUserBlock
     }
 }
 

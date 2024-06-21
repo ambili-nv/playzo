@@ -20,13 +20,13 @@ const SignUpPage: React.FC = () => {
       confirmPassword: "",
     },
     validate: validateSignUp,
-    onSubmit: async ({ name, email, phoneNumber, password }) => {
+    onSubmit: async ({ name, email, password }) => {
       setIsSubmitting(true);
       try {
         const { data } = await axios.post(USER_API + "/register", {
           name,
           email,
-          phoneNumber,
+          // phoneNumber,
           password,
         });
         const { message,newUser } = data;

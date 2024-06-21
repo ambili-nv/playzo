@@ -20,6 +20,8 @@ const addUser = async(user:userEntityType)=>{
         phoneNumber:user.getphoneNumber(),
         
     })
+    console.log(newUser,"refister details");
+    
     await newUser.save()
     return newUser
 }
@@ -68,6 +70,30 @@ const findVerificationCodeAndUpdate = async (
     );
 
 
+    // const getAllusers = async ()=>{
+    //     const allUSers = await User.find({isVerified:true})
+    // console.log(allUSers,"users - repo");
+    // return allUSers
+    // }
+
+
+    const getAllusers = async () => {
+        try {
+            const allUsers = await User.find({ isVerified: true });
+            console.log(allUsers, "users - repo");
+            return allUsers;
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            throw error;
+        }
+    };
+
+
+    const updateUserBlock = async (id: string, status: boolean) =>{
+        await User.findByIdAndUpdate(id, { isBlocked: status });
+    }
+    
+
 return {
     addUser,
     getUserbyEmail,
@@ -78,7 +104,9 @@ return {
     getUserbyId,
     registerGoogleSignInUser,
     updateVerificationCode,
-    findVerificationCodeAndUpdate
+    findVerificationCodeAndUpdate,
+    getAllusers,
+    updateUserBlock
 }
 
 }
