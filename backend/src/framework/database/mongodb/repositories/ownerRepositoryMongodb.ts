@@ -1,7 +1,6 @@
 import { googleSignInOwnerEntityType, ownerEntityType } from "../../../../enitity/ownerEntity"
 import { OwnerInterface } from "../../../../types/ownerInterface"
 import OTPmodel from "../models/OTPmodel"
-import owner from "../models/owner"
 import Owner from "../models/owner"
 export const ownerRepositoryMongodb = () =>{
 
@@ -51,6 +50,21 @@ const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>{
         isVerified:owner.email_verified()
     })
 }
+
+const getAllOwners = async()=>{
+    try{
+        const allOwners = await Owner.find({isVerified:true})
+        console.log(allOwners,"owners-mongodb-repo");
+        return allOwners
+    } catch(error){
+        throw error
+    }
+}
+
+const updateOWnerBlock = async(id:string,status:boolean)=>{
+    await Owner.findByIdAndUpdate(id,{isBlocked:status})
+}
+
 return {
     addOwner,
     getOwnerbyEmail,
@@ -59,7 +73,9 @@ return {
     AddOTP,
     deleteOtpOwner,
     getOwnerById,
-    registerGoogleSignInOwner
+    registerGoogleSignInOwner,
+    getAllOwners,
+    updateOWnerBlock
 }
 }
 

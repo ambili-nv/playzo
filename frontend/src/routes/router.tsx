@@ -23,6 +23,7 @@ const HomePage = lazy(()=>import('../pages/Owner/Home'))
 const AdminLogin = lazy(()=>import('../pages/Admin/login'))     
 const AdminDashboard = lazy(()=>import('../pages/Admin/adminDashboard'))      
 const UsersList = lazy(()=>import('../pages/Admin/usersList')) 
+const OwnerList  = lazy(()=>import('../pages/Admin/ownerList'))
 
 export const MainRouter = () => {
   return (
@@ -49,6 +50,7 @@ export const MainRouter = () => {
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<UsersList />} />
+          <Route path="owners" element={<OwnerList/>} />
         </Route>
       </Routes>
     </Suspense>

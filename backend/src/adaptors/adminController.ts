@@ -3,20 +3,27 @@ import { HttpStatus } from "../types/httpStatus";
 import { AuthService } from "../framework/Services/authService";
 import { AuthServiceInterfaceType } from "../app/service-interface/authServiceInrerface";
 import { userDbInterface } from "../app/Interfaces/userDbRepository";
+import { ownerDbInterface } from "../app/Interfaces/ownerDbRepository";
 import { userRepositoryMongodbType } from "../framework/database/mongodb/repositories/userRepositoryMongodb";
+import { ownerRepositoryMongodbType } from "../framework/database/mongodb/repositories/ownerRepositoryMongodb";
 import { login } from "../app/use-cases/Admin/adminAuth";
 import { getUsers } from "../app/use-cases/Admin/adminRead";
-import { userBlock } from "../app/use-cases/Admin/adminUpdate";
+import { userBlock,OwnerBlock } from "../app/use-cases/Admin/adminUpdate";
+import { getOwners } from "../app/use-cases/Admin/adminRead";
 
 const adminController = (
     authServiceInterface: AuthServiceInterfaceType,
     authServiceImpl: AuthService,
     userDbRepository:userDbInterface,
     userDbRepositoryImpl: userRepositoryMongodbType,
+    ownerDbRepository:ownerDbInterface,
+    ownerDbRepositoryImpl:ownerRepositoryMongodbType
+
 
 ) => {
     const dbUserRepository = userDbRepository(userDbRepositoryImpl());
     const authService = authServiceInterface(authServiceImpl());
+    const dbOwnerRepository = ownerDbRepository(ownerDbRepositoryImpl())
 
     const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -41,6 +48,15 @@ const adminController = (
         return res.status(HttpStatus.OK).json({ success: true, users });
     }
 
+    const getAllOwners = async(req:Request,res:Response,next:NextFunction)=>{
+        console.log("request got - owners");
+
+        const owners = await getOwners(dbOwnerRepository)
+        console.log(owners,"owners in adminController");
+        
+        return res.status(HttpStatus.OK).json({success:true,owners})
+    }
+
 
     const blockUser = async(req:Request,res:Response,next:NextFunction)=>{
         try {
@@ -58,10 +74,28 @@ const adminController = (
         }
     }
 
+    const blockOwner = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            const {id} = req.params
+            console.log(id,"owner-block, id");
+            const updatedOwner = await OwnerBlock(id,dbOwnerRepository);
+            return res.status(HttpStatus.OK).json({
+                success:true,
+                message:"Status updated Successfully",
+                owner:updatedOwner
+            })
+            
+        } catch (error) {
+            next(error)
+        }
+    }
+
     return {
         adminLogin,
         getAllUsers,
-        blockUser
+        blockUser,
+        getAllOwners,
+        blockOwner
     };
 };
 

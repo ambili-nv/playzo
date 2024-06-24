@@ -123,6 +123,10 @@ export const login = async(
         throw new CustomError("Your account is not is verified",HttpStatus.UNAUTHORIZED)
     }
 
+    if(isEmailExist.isBlocked){
+        throw new CustomError("your account has been blocked",HttpStatus.UNAUTHORIZED);
+    }
+
     if (!isEmailExist.password) {
         throw new CustomError("Invalid credentials2",HttpStatus.UNAUTHORIZED)
     }

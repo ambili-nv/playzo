@@ -10,7 +10,7 @@ import { setItemToLocalStorage } from "../../utils/Set&Get";
 import { validateLogin } from "../../utils/validation";
 import Logo from '../../assets/images/bg.png'
 import axios from "axios";
-import { auth, provider, signInWithPopup } from '../../firebase/firebase';
+// import { auth, provider, signInWithPopup } from '../../firebase/firebase';
 
 
 interface UserData {
@@ -56,36 +56,36 @@ const LoginPage: React.FC = () => {
   })
 
 
-  const handleGoogleSignup = () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const user = result.user;
-        const access_token = user.getIdToken()
-        console.log(access_token,"accessToken is .............");
+  // const handleGoogleSignup = () => {
+  //   signInWithPopup(auth, provider)
+  //     .then((result) => {
+  //       const user = result.user;
+  //       const access_token = user.getIdToken()
+  //       console.log(access_token,"accessToken is .............");
         
-        console.log('Google user', user);
-        setItemToLocalStorage("accessToken", access_token)
-        const userData = {
-          name: user.displayName,
-          email: user.email,
-          email_verified: user.emailVerified,
-          isAuthenticated: true,
-          role: "user",
-          id: user.uid
-        };
+  //       console.log('Google user', user);
+  //       setItemToLocalStorage("accessToken", access_token)
+  //       const userData = {
+  //         name: user.displayName,
+  //         email: user.email,
+  //         email_verified: user.emailVerified,
+  //         isAuthenticated: true,
+  //         role: "user",
+  //         id: user.uid
+  //       };
 
-        dispatch(setUser(userData));
-        // console.log(userData, "userdata");
-        return axios.post(`${USER_API}/google-signIn`, userData);
-      })
-      .then((response) => {
-        const { message } = response.data;
-        showToast(message, "success");
-        navigate("/");
-      })
+  //       dispatch(setUser(userData));
+  //       // console.log(userData, "userdata");
+  //       return axios.post(`${USER_API}/google-signIn`, userData);
+  //     })
+  //     .then((response) => {
+  //       const { message } = response.data;
+  //       showToast(message, "success");
+  //       navigate("/");
+  //     })
 
-      .catch(({ response }) => showToast(response.data.message, "error"));
-  };
+  //     .catch(({ response }) => showToast(response.data.message, "error"));
+  // };
 
 
   return (
@@ -152,7 +152,7 @@ const LoginPage: React.FC = () => {
 
               <button
                 type="button"
-                onClick={handleGoogleSignup}
+                // onClick={handleGoogleSignup}
                 className="text-white w-full bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mb-2"
               >
                 <svg className="mr-2 -ml-1 w-4 h-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">

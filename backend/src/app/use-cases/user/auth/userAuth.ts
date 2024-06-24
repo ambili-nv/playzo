@@ -122,6 +122,10 @@ export const deleteOTP = async (
         throw new CustomError("your account is not verified",HttpStatus.UNAUTHORIZED);
     }
 
+    if(isEmailExist.isBlocked){
+        throw new CustomError("your account has been blocked",HttpStatus.UNAUTHORIZED);
+    }
+
     if(!isEmailExist.password){
         throw new CustomError("Invalid Credentials",HttpStatus.UNAUTHORIZED);
     }

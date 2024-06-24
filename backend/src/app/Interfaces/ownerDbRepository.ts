@@ -22,6 +22,23 @@ const deleteOtpOwner = async(OwnerId:string)=>await repository.deleteOtpOwner(Ow
 const getOwnerbyId = async(id:string)=>await repository.getOwnerById(id)
 
 const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>await repository.registerGoogleSignInOwner(owner)
+
+const getAllOwners = async()=>{
+   try {
+      const allOwners = await repository.getAllOwners();
+      console.log(allOwners,"from db");
+      return allOwners
+
+   } catch (error) {
+      
+   }
+}
+
+const updateOwnerBlock = async(id:string,status:boolean)=>{
+   await repository.updateOWnerBlock(id,status)
+}
+
+
    return {
     addOwner,
     getOwnerbyEmail,
@@ -30,7 +47,10 @@ const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>awai
     addOTP,
     deleteOtpOwner,
     getOwnerbyId,
-    registerGoogleSignInOwner
+    registerGoogleSignInOwner,
+    getAllOwners,
+    updateOwnerBlock
+
    }
 
 }

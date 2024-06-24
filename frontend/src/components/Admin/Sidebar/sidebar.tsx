@@ -65,12 +65,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }) =>
               Users
             </Link>
           </li>
-          <li className={linkClasses('/admin/profile')}>
+          <li className={linkClasses('/admin/owners')}>
             <Building className="mr-3" />
             <Link
-              to="/admin/profile"
+              to="/admin/owners"
               className="text-white"
-              onClick={() => handleLinkClick('/admin/profile')}
+              onClick={() => handleLinkClick('/admin/owners')}
             >
               Owners
             </Link>

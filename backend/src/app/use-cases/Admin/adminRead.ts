@@ -1,3 +1,4 @@
+import { ownerDbInterface, ownerDbRepository } from "../../Interfaces/ownerDbRepository";
 import { userDbInterface} from "../../Interfaces/userDbRepository";
 
 // export const getUsers = async(userDbRepository:ReturnType<userDbInterface>)=>{
@@ -17,3 +18,15 @@ export const getUsers = async (userDbRepository: ReturnType<userDbInterface>) =>
         throw error;
     }
 };
+
+
+export const getOwners  = async(ownerDbRepository:ReturnType<ownerDbInterface>)=>{
+    try {
+        const owners = await ownerDbRepository.getAllOwners();
+        console.log(owners,"owners data in use-case");
+        return owners
+        
+    } catch (error) {
+        
+    }
+}
