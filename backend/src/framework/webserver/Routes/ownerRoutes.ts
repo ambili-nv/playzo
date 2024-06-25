@@ -18,6 +18,7 @@ const ownerRoutes = ()=>{
     router.post("/owner/resend_otp",controller.resendOTP)
     router.post("/login",controller.ownerLogin)
     router.post("/google-signIn",controller.OwnerLoginWithGoogle)
+    router.post("/upload-venues",controller.uploadVenueHandler)
 
     return router
 }

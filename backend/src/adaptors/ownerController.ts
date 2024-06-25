@@ -12,6 +12,8 @@ import {
     authGoogleSigninOwner
 } from '../app/use-cases/owner/ownerAuth'
 
+import { uploadVenue } from "../app/use-cases/owner/venueUpload";
+
 import { HttpStatus } from "../types/httpStatus";
 
 
@@ -113,12 +115,51 @@ const ownerController = (
         }
     }
 
+    // const uploadVenueHandler = async(req:Request,res:Response,next:NextFunction)=>{
+    //     try {
+    //         console.log("Request recieved");
+    //         const venueData = req.body
+    //         console.log(venueData,"venue data got");
+            
+            
+    //     } catch (error) {
+            
+    //     }
+    // }
+
+
+    const uploadVenueHandler = asynchandler(async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const {  venueData } = req.body;
+            const ownerId = venueData.ownerId
+            console.log(ownerId,"owner id - ownnercontroller");
+            
+            const place = venueData.place
+            console.log(typeof place,"location type");
+            
+            console.log(venueData, "venue data received");
+
+            const newVenue = await uploadVenue(ownerId, venueData, dbRepositoryOwner);
+            res.status(HttpStatus.CREATED).json({
+                message: "Venue uploaded successfully",
+                venue: newVenue,
+            });
+        } catch (error) {
+            next(error);
+        }
+    });
+
     return {
         registerOwner,
         VerifyOTP,
         resendOTP,
         ownerLogin,
-        OwnerLoginWithGoogle
+        OwnerLoginWithGoogle,
+        uploadVenueHandler
     }
 }
 

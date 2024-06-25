@@ -1,7 +1,9 @@
 import { googleSignInOwnerEntityType, ownerEntityType } from "../../../../enitity/ownerEntity"
+import { VenueEntity } from "../../../../enitity/venueEntity"
 import { OwnerInterface } from "../../../../types/ownerInterface"
 import OTPmodel from "../models/OTPmodel"
 import Owner from "../models/owner"
+import venues from "../models/venues"
 export const ownerRepositoryMongodb = () =>{
 
     const getOwnerbyEmail = async (email:any)=>{
@@ -65,6 +67,24 @@ const updateOWnerBlock = async(id:string,status:boolean)=>{
     await Owner.findByIdAndUpdate(id,{isBlocked:status})
 }
 
+const addVenue = async (venue: VenueEntity) => {
+    const newVenue = new venues({
+        ownerId: venue.ownerId,
+        name: venue.name,
+        sportsitem:venue.sportsitem,
+        // location: venue.location,
+        place: venue.place,
+        price: venue.price,
+        description: venue.description,
+        primaryImage: venue.primaryImage,
+        secondaryImages: venue.secondaryImages,
+    });
+    console.log(newVenue.ownerId,"owner id - db");
+    
+    await newVenue.save();
+    return newVenue;
+};
+
 return {
     addOwner,
     getOwnerbyEmail,
@@ -75,7 +95,8 @@ return {
     getOwnerById,
     registerGoogleSignInOwner,
     getAllOwners,
-    updateOWnerBlock
+    updateOWnerBlock,
+    addVenue
 }
 }
 

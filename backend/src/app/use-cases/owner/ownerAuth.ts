@@ -6,12 +6,6 @@ import { HttpStatus } from "../../../types/httpStatus";
 import { AuthServiceInterfaceType } from "../../service-interface/authServiceInrerface";
 import sentMail from "../../../utils/sendMail";
 import { otpEmail } from "../../../utils/userEmail";
-import { log } from "console";
-import owner from "../../../framework/database/mongodb/models/owner";
-import { userDbRepository } from "../../Interfaces/userDbRepository";
-
-
-
 
 // owner Register
 

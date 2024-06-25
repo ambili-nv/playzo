@@ -1,4 +1,5 @@
 import { googleSignInOwnerEntityType, ownerEntityType } from "../../enitity/ownerEntity"
+import { VenueEntity } from "../../enitity/venueEntity"
 import { ownerRepositoryMongodbType } from "../../framework/database/mongodb/repositories/ownerRepositoryMongodb"
 
 export const ownerDbRepository = (
@@ -38,6 +39,8 @@ const updateOwnerBlock = async(id:string,status:boolean)=>{
    await repository.updateOWnerBlock(id,status)
 }
 
+const addVenue = async (venue: VenueEntity) => await repository.addVenue(venue);
+
 
    return {
     addOwner,
@@ -49,8 +52,8 @@ const updateOwnerBlock = async(id:string,status:boolean)=>{
     getOwnerbyId,
     registerGoogleSignInOwner,
     getAllOwners,
-    updateOwnerBlock
-
+    updateOwnerBlock,
+    addVenue
    }
 
 }

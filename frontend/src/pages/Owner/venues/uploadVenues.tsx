@@ -7,12 +7,17 @@ import { useFormik } from 'formik';
 import uploadImagesToCloudinary from '../../../API/uploadImages';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../redux/store/store';
 
 const VenueUpload = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [primaryImagePreview, setPrimaryImagePreview] = useState<string | null>(null);
   const [secondaryImagesPreview, setSecondaryImagesPreview] = useState<string[]>([]);
   const navigate = useNavigate();
+  const ownerId = useSelector((state: RootState) => state.ownerSlice.id);
+  console.log(ownerId, "ownerid");
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, files } = e.target;
@@ -45,8 +50,9 @@ const VenueUpload = () => {
   const formik = useFormik({
     initialValues: {
       name: '',
-      sports: '',
-      location: '',
+      sportsitem: '',
+      // location: '',
+      place:'',
       price: '',
       description: '',
       primaryImage: null,
@@ -63,21 +69,21 @@ const VenueUpload = () => {
 
         const venueData = {
           name: values.name,
-          sports: values.sports,
-          location: values.location,
+          sportsitem: values.sportsitem,
+          // location: values.location,
+          place: values.place,
           price: values.price,
           description: values.description,
           primaryImage: primaryImageUrl?.[0] || '',
           secondaryImages: secondaryImagesUrls,
+          ownerId: ownerId, // Include owner ID in the data
         };
+        console.log(venueData, "venue data in frnt end");
 
-        const response = await axios.post(`${OWNER_API}/upload-venues`, venueData);
-        if (response.status === 200) {
+
+        const response = await axios.post(`${OWNER_API}/upload-venues`, { venueData });
           showToast('Venue uploaded successfully', 'success');
           navigate('/owner/venues');
-        } else {
-          showToast('Failed to upload venue', 'error');
-        }
       } catch (error) {
         showToast('Error uploading venue', 'error');
       } finally {
@@ -100,12 +106,21 @@ const VenueUpload = () => {
                   <input type="text" className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" id='name' {...formik.getFieldProps("name")} />
                 </div>
                 <div>
-                  <label className="block text-gray-700 font-medium">Sports</label>
-                  <input type="text" className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" id='sports' {...formik.getFieldProps("sports")} />
+                  <label className="block text-gray-700 font-medium">Sports Item</label>
+                  <input type="text" className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" id='sportsitem' {...formik.getFieldProps("sportsitem")} />
                 </div>
+
                 <div>
                   <label className="block text-gray-700 font-medium">Location</label>
-                  <input type="text" className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" id='location' {...formik.getFieldProps("location")} />
+                  <input
+                    type="text"
+                    className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    // id='location'
+                    id='place'
+                    // {...formik.getFieldProps("location")}
+                    {...formik.getFieldProps("place")}
+                  />
+                  {/* <input type="text" className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" id='location' {...formik.getFieldProps("location")} /> */}
                 </div>
                 <div>
                   <label className="block text-gray-700 font-medium">Price</label>
