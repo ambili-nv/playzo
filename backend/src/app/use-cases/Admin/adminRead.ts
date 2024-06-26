@@ -1,6 +1,6 @@
-import { ownerDbInterface, ownerDbRepository } from "../../Interfaces/ownerDbRepository";
+import { ownerDbInterface} from "../../Interfaces/ownerDbRepository";
 import { userDbInterface} from "../../Interfaces/userDbRepository";
-
+import { venueDbInterface, venueDbRepository } from "../../Interfaces/venueDbRepository";
 // export const getUsers = async(userDbRepository:ReturnType<userDbInterface>)=>{
 //     await userDbRepository.getAllUsers();
 //     console.log(getUsers,"get users data from db");
@@ -28,5 +28,17 @@ export const getOwners  = async(ownerDbRepository:ReturnType<ownerDbInterface>)=
         
     } catch (error) {
         
+    }
+}
+
+
+export const getVenues = async(venueDbRepository:ReturnType<venueDbInterface>,ownerId:string)=>{
+    try {
+        const venues = await venueDbRepository.getVenuesByOwner(ownerId);
+        console.log(venues,"venues adminread");
+        
+        return venues;
+    } catch (error) {
+        throw error;
     }
 }

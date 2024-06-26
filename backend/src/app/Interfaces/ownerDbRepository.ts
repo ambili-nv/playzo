@@ -20,6 +20,8 @@ export const ownerDbRepository = (
 
  const addOTP = async (otp: string, id:string) => await repository.AddOTP(otp,id);
 const deleteOtpOwner = async(OwnerId:string)=>await repository.deleteOtpOwner(OwnerId)
+
+
 const getOwnerbyId = async(id:string)=>await repository.getOwnerById(id)
 
 const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>await repository.registerGoogleSignInOwner(owner)
@@ -40,6 +42,9 @@ const updateOwnerBlock = async(id:string,status:boolean)=>{
 }
 
 const addVenue = async (venue: VenueEntity) => await repository.addVenue(venue);
+
+
+
 
 
    return {

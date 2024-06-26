@@ -3,14 +3,13 @@ import axios from 'axios';
 import { OwnerInterface } from '../../types/OwnerInterface';
 import { ADMIN_API } from '../../constants';
 import showToast from '../../utils/toaster';
-
+import { Link } from 'react-router-dom';
 
 
 const OwnersList: React.FC = () => {
     const [owners,setOwners] = useState<OwnerInterface[]>([]);
     const [isLoading,setIsLoading] = useState(true)
     const [error,setError] = useState<string |null>(null)
-
 
     useEffect(()=>{
         const fetchOwners = async () => {
@@ -59,7 +58,10 @@ const OwnersList: React.FC = () => {
                 <td className="py-3 px-4 border-b border-gray-200">{index + 1}</td>
                 <td className="py-3 px-4 border-b border-gray-200">{owner.name}</td>
                 <td className="py-3 px-4 border-b border-gray-200">{owner.email}</td>
-                <td className="py-3 px-4 border-b border-gray-200 text-blue-600 cursor-pointer hover:text-blue-800">View</td>
+                {/* <td className="py-3 px-4 border-b border-gray-200 text-blue-600 cursor-pointer hover:text-blue-800">View</td> */}
+                <td className="py-3 px-4 border-b border-gray-200">
+                                    <Link to={`/admin/venue-list/${owner._id}`} className="text-blue-600 cursor-pointer hover:text-blue-800">View</Link>
+                                </td>
                 <td className={`py-3 px-4 border-b border-gray-200 ${owner.isBlocked ? 'text-red-600' : 'text-green-600'}`}>
                   {owner.isBlocked ? 'Blocked' : 'Active'}
                 </td>
@@ -81,3 +83,8 @@ const OwnersList: React.FC = () => {
 };
 
 export default OwnersList;
+
+
+
+
+

@@ -13,6 +13,8 @@ export interface VenueEntity {
     description?: string;
     primaryImage?: string;
     secondaryImages?: string[];
+    isApproved?:boolean;
+    isRejected?:boolean
 }
 
 export const createVenueEntity = (
@@ -28,7 +30,9 @@ export const createVenueEntity = (
     price: number,
     description?: string,
     primaryImage?: string,
-    secondaryImages?: string[]
+    secondaryImages?: string[],
+    isApproved?:boolean,
+    isRejected?:boolean
 ): VenueEntity => ({
     ownerId,
     name,
@@ -39,4 +43,6 @@ export const createVenueEntity = (
     description,
     primaryImage,
     secondaryImages,
+    isApproved,
+    isRejected
 });

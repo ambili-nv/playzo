@@ -7,6 +7,8 @@ import { userDbRepository } from "../../../app/Interfaces/userDbRepository";
 import { userRepositoryMongodb } from "../../database/mongodb/repositories/userRepositoryMongodb";
 import { ownerDbRepository } from "../../../app/Interfaces/ownerDbRepository";
 import { ownerRepositoryMongodb } from "../../database/mongodb/repositories/ownerRepositoryMongodb";
+import { venueDbRepository } from "../../../app/Interfaces/venueDbRepository";
+import { venueRepositoryMongodb } from "../../database/mongodb/repositories/venueRepositoryMongodb";
 
 
 const adminRoutes =()=>{
@@ -17,14 +19,19 @@ const adminRoutes =()=>{
         userDbRepository,
         userRepositoryMongodb,
         ownerDbRepository,
-        ownerRepositoryMongodb
+        ownerRepositoryMongodb,
+        venueDbRepository,
+        venueRepositoryMongodb
         )
     
         router.post("/login",controller.adminLogin)
         router.get("/users",controller.getAllUsers)
         router.patch("/block-user/:id",controller.blockUser)
         router.get("/owners",controller.getAllOwners)
+        router.get("/venues/:ownerId",controller.getVenuesByOwner)
         router.patch("/block-owner/:id",controller.blockOwner)
+        router.post("/accept-venues/:venueId",controller.handleAccept)
+        router.post("/reject-venues/:venueId",controller.handleReject)
 
 
 

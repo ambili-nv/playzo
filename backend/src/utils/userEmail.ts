@@ -119,3 +119,51 @@ export const forgotPasswordEmail = (name: string, verificationCode: string) => {
     </html>`;
 };
   
+
+
+export const venueAcceptanceEmail = (ownerEmail: string, venueName: string) => {
+    return `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                /* Your CSS styles for the email template */
+            </style>
+        </head>
+        <body>
+            <div>
+                <h2>Venue Accepted</h2>
+                <p>Dear Owner,</p>
+                <p>Your venue "${venueName}" has been accepted by the admin.</p>
+                <p>Regards,<br>The Admin Team</p>
+            </div>
+        </body>
+        </html>
+    `;
+};
+
+
+export const venueRejectionEmail = (ownerEmail: string, venueName: string) => {
+    return `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                /* Your CSS styles for the email template */
+            </style>
+        </head>
+        <body>
+            <div>
+                <h2>Venue Rejected</h2>
+                <p>Dear Owner,</p>
+                <p>Unfortunately, your venue "${venueName}" has been rejected by the admin.</p>
+                <p>Regards,<br>The Admin Team</p>
+            </div>
+        </body>
+        </html>
+    `;
+};

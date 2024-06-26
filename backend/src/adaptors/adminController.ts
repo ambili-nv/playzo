@@ -10,6 +10,10 @@ import { login } from "../app/use-cases/Admin/adminAuth";
 import { getUsers } from "../app/use-cases/Admin/adminRead";
 import { userBlock,OwnerBlock } from "../app/use-cases/Admin/adminUpdate";
 import { getOwners } from "../app/use-cases/Admin/adminRead";
+import { venueRepositoryMongodbType } from "../framework/database/mongodb/repositories/venueRepositoryMongodb";
+import { venueDbInterface } from "../app/Interfaces/venueDbRepository";
+import { getVenues } from "../app/use-cases/Admin/adminRead";
+import { acceptVenue,rejectVenue} from "../app/use-cases/Admin/adminUpdate";
 
 const adminController = (
     authServiceInterface: AuthServiceInterfaceType,
@@ -17,13 +21,16 @@ const adminController = (
     userDbRepository:userDbInterface,
     userDbRepositoryImpl: userRepositoryMongodbType,
     ownerDbRepository:ownerDbInterface,
-    ownerDbRepositoryImpl:ownerRepositoryMongodbType
+    ownerDbRepositoryImpl:ownerRepositoryMongodbType,
+    venueDbRepository:venueDbInterface,
+    venueDbRepositoryImpl:venueRepositoryMongodbType
 
 
 ) => {
     const dbUserRepository = userDbRepository(userDbRepositoryImpl());
     const authService = authServiceInterface(authServiceImpl());
     const dbOwnerRepository = ownerDbRepository(ownerDbRepositoryImpl())
+    const dbVenueRepository = venueDbRepository(venueDbRepositoryImpl());
 
     const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -90,12 +97,78 @@ const adminController = (
         }
     }
 
+    const getVenuesByOwner = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            console.log(req.params,"req-paramsa");
+            
+            const ownerId = req.params.ownerId
+            console.log(ownerId,"owner id,venues- controller ");
+
+            const venues = await getVenues(dbVenueRepository,ownerId)
+            console.log(venues,"venues controller");
+            
+            return res.status(HttpStatus.OK).json({ success: true, venues });
+            
+        } catch (error) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, error: 'Failed to fetch venues' });
+        }
+    }
+
+    const handleAccept = async(req:Request,res:Response,next:NextFunction)=>{
+        console.log(req.params,"reqparams id - con");
+        
+        const venueId = req.params.venueId
+        console.log(venueId,"venue id - con");
+
+        try {
+            const { venue, ownerEmail } = await acceptVenue(venueId,dbVenueRepository,dbOwnerRepository);
+            res.json({
+                message: `Venue '${venue.name}' accepted successfully.`,
+                venue,
+                ownerEmail
+            });
+        } catch (error) {
+            next(error);
+        }
+        
+    }
+
+
+     const handleReject = async (req: Request, res: Response, next: NextFunction) => {
+        const { venueId } = req.params;
+    
+        try {
+            const { venue, ownerEmail } = await rejectVenue(
+                venueId, 
+                dbVenueRepository, 
+                dbOwnerRepository
+            );
+            res.status(200).json({
+                message: 'Venue rejected successfully',
+                venue,
+                ownerEmail
+            });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+
+
+
+    // const handleReject = async(req:Request,res:Response,next:NextFunction)=>{
+
+    // }
+
     return {
         adminLogin,
         getAllUsers,
         blockUser,
         getAllOwners,
-        blockOwner
+        blockOwner,
+        getVenuesByOwner,
+        handleAccept,
+        handleReject
     };
 };
 
