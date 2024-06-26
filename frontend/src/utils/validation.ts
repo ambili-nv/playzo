@@ -119,9 +119,74 @@ const validateResetPassword = ({
 };
 
 
+const validateVenueUpload = (values: {
+  name: string;
+  sportsitem: string;
+  place: string;
+  price: string;
+  description: string;
+  primaryImage: File | null;
+  secondaryImage: File[] | null;
+}) => {
+  const errors: Partial<{
+    name: string;
+    sportsitem: string;
+    place: string;
+    price: string;
+    description: string;
+    primaryImage: string;
+    secondaryImage: string;
+  }> = {};
+
+  if (!values.name.trim()) {
+    errors.name = "Required*";
+  } else if (!isNaN(Number(values.name))) {
+    errors.name = "Name cannot be a number.";
+  }
+
+  if (!values.sportsitem.trim()) {
+    errors.sportsitem = "Required*";
+  } else if (!isNaN(Number(values.sportsitem))) {
+    errors.sportsitem = "Sports item cannot be a number.";
+  }
+
+  if (!values.place.trim()) {
+    errors.place = "Required*";
+  } else if (!isNaN(Number(values.place))) {
+    errors.place = "Place cannot be a number.";
+  }
+
+  if (!values.price.trim()) {
+    errors.price = "Required*";
+  } else if (isNaN(Number(values.price)) || Number(values.price) <= 0) {
+    errors.price = "Price must be a positive number.";
+  }
+
+  if (!values.description.trim()) {
+    errors.description = "Required*";
+  }
+
+  if (!values.primaryImage) {
+    errors.primaryImage = "Primary image is required*";
+  }
+
+  if (!values.secondaryImage || values.secondaryImage.length === 0) {
+    errors.secondaryImage = "At least one secondary image is required*";
+  }
+
+  return errors;
+};
+
+
 
 export {
   validateSignUp,
   validateLogin,
-  validateResetPassword
+  validateResetPassword,
+  validateVenueUpload
 };
+
+
+
+
+
