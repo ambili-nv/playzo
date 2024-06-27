@@ -11,6 +11,7 @@ const expressConfig = (app:Application)=>{
     const corsConfig = {
         origin : "http://localhost:5173",
         // origin : true,
+        methods:['GET','POST','PUT','DELETE','PATCH'],
         credentials: true,
 
     };

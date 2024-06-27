@@ -3,6 +3,7 @@ import axios from 'axios';
 import { UserInterface } from '../../types/UserInterface';
 import { ADMIN_API } from '../../constants';
 import showToast from '../../utils/toaster';
+import axiosInstance from '../../utils/axiosInstance';
 
 const UsersList: React.FC = () => {
   const [users, setUsers] = useState<UserInterface[]>([]);
@@ -12,10 +13,10 @@ const UsersList: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(ADMIN_API + "/users", {
-          // headers:{
-          //   'Authorization': `Bearer ${localStorage.getItem('access_token')}` 
-          // }
+        const response = await axiosInstance.get(ADMIN_API + "/users", {
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}` 
+          }
         });
         setUsers(response.data.users);
       } catch (error: any) {

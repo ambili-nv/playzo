@@ -9,7 +9,7 @@ import { ownerDbRepository } from "../../../app/Interfaces/ownerDbRepository";
 import { ownerRepositoryMongodb } from "../../database/mongodb/repositories/ownerRepositoryMongodb";
 import { venueDbRepository } from "../../../app/Interfaces/venueDbRepository";
 import { venueRepositoryMongodb } from "../../database/mongodb/repositories/venueRepositoryMongodb";
-
+import { authenticateAdmin } from "../Middlewares/authMiddleware";
 
 const adminRoutes =()=>{
     const router = express.Router();
@@ -25,13 +25,13 @@ const adminRoutes =()=>{
         )
     
         router.post("/login",controller.adminLogin)
-        router.get("/users",controller.getAllUsers)
-        router.patch("/block-user/:id",controller.blockUser)
-        router.get("/owners",controller.getAllOwners)
-        router.get("/venues/:ownerId",controller.getVenuesByOwner)
-        router.patch("/block-owner/:id",controller.blockOwner)
-        router.post("/accept-venues/:venueId",controller.handleAccept)
-        router.post("/reject-venues/:venueId",controller.handleReject)
+        router.get("/users",authenticateAdmin,controller.getAllUsers)
+        router.patch("/block-user/:id",authenticateAdmin,controller.blockUser)
+        router.get("/owners",authenticateAdmin,controller.getAllOwners)
+        router.patch("/block-owner/:id",authenticateAdmin,controller.blockOwner)
+        router.get("/venues/:ownerId",authenticateAdmin,controller.getVenuesByOwner)
+        router.post("/accept-venues/:venueId",authenticateAdmin,controller.handleAccept)
+        router.post("/reject-venues/:venueId",authenticateAdmin,controller.handleReject)
 
 
 

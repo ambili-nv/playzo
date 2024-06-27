@@ -4,6 +4,7 @@ import { OwnerInterface } from '../../types/OwnerInterface';
 import { ADMIN_API } from '../../constants';
 import showToast from '../../utils/toaster';
 import { Link } from 'react-router-dom';
+import axiosInstance from '../../utils/axiosInstance';
 
 
 const OwnersList: React.FC = () => {
@@ -14,8 +15,10 @@ const OwnersList: React.FC = () => {
     useEffect(()=>{
         const fetchOwners = async () => {
             try {
-                const response = await axios.get(ADMIN_API+ "/owners",{
-
+                const response = await axiosInstance.get(ADMIN_API+ "/owners",{
+                  headers:{
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}` 
+                  }
                 });
                 setOwners(response.data.owners)
             } catch (error) {
@@ -28,7 +31,7 @@ const OwnersList: React.FC = () => {
 
     const toggleBlockStatus = async (ownerId : string, isBlocked:boolean)=>{
         try {
-            await axios.patch(`${ADMIN_API}/block-owner/${ownerId}`,{isBlocked:!isBlocked})
+            await axiosInstance.patch(`${ADMIN_API}/block-owner/${ownerId}`,{isBlocked:!isBlocked})
             setOwners(owners.map(owner => owner._id === ownerId ? {...owner,isBlocked:!isBlocked}:owner))
         } catch (error) {
             showToast('Failed to Update owner status')

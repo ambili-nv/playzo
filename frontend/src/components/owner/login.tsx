@@ -10,7 +10,7 @@ import { useAppDispatch } from "../../redux/store/store";
 import { useFormik } from "formik";
 import showToast from "../../utils/toaster";
 import { setOwner } from "../../redux/slice/ownerSlice";
-// import { auth,provider,signInWithPopup} from '../../firebase/firebase';
+import { auth,provider,signInWithPopup} from '../../firebase/firebase';
 
 interface ownerData {
   name:string | null;
@@ -54,36 +54,36 @@ const OwnerLoginPage: React.FC = () => {
     }
   })
 
-  // const handleGoogleSignup = () => {
-  //   signInWithPopup(auth, provider)
-  //     .then((result) => {
-  //       const owner = result.user;
-  //       const access_token = owner.getIdToken()
-  //       console.log(access_token,"accessToken is .............");
+  const handleGoogleSignup = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const owner = result.user;
+        const access_token = owner.getIdToken()
+        console.log(access_token,"accessToken is .............");
         
-  //       console.log('Google owner', owner);
-  //       setItemToLocalStorage("accessToken", access_token)
-  //       const userData = {
-  //         name: owner.displayName,
-  //         email: owner.email,
-  //         email_verified: owner.emailVerified,
-  //         isAuthenticated: true,
-  //         role: "owner",
-  //         id: owner.uid
-  //       };
+        console.log('Google owner', owner);
+        setItemToLocalStorage("accessToken", access_token)
+        const userData = {
+          name: owner.displayName,
+          email: owner.email,
+          email_verified: owner.emailVerified,
+          isAuthenticated: true,
+          role: "owner",
+          id: owner.uid
+        };
 
-  //       dispatch(setOwner(userData));
-  //       // console.log(userData, "userdata");
-  //       return axios.post(`${OWNER_API}/google-signIn`, userData);
-  //     })
-  //     .then((response) => {
-  //       const { message } = response.data;
-  //       showToast(message, "success");
-  //       navigate("/owner/homepage");
-  //     })
+        dispatch(setOwner(userData));
+        // console.log(userData, "userdata");
+        return axios.post(`${OWNER_API}/google-signIn`, userData);
+      })
+      .then((response) => {
+        const { message } = response.data;
+        showToast(message, "success");
+        navigate("/owner/homepage");
+      })
 
-  //     .catch(({ response }) => showToast(response.data.message, "error"));
-  // };
+      .catch(({ response }) => showToast(response.data.message, "error"));
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 bg-opacity-50">
@@ -145,7 +145,7 @@ const OwnerLoginPage: React.FC = () => {
             <div className="px-4 py-2 w-full flex justify-center gap-2">
               <button
                 type="button"
-                // onClick={handleGoogleSignup}
+                onClick={handleGoogleSignup}
                 className="text-white w-full bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center mb-2"
               >
                 <svg className="mr-2 -ml-1 w-4 h-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { ADMIN_API } from '../../constants';
 import showToast from '../../utils/toaster';
+import axiosInstance from '../../utils/axiosInstance';
 
 interface Venue {
     _id: string;
@@ -27,7 +28,7 @@ const VenuesList: React.FC = () => {
     useEffect(() => {
         const fetchVenues = async () => {
             try {
-                const response = await axios.get(`${ADMIN_API}/venues/${ownerId}`);
+                const response = await axiosInstance.get(`${ADMIN_API}/venues/${ownerId}`);
                 setVenues(response.data.venues);
             } catch (error) {
                 showToast('Failed to fetch venues');
@@ -41,7 +42,7 @@ const VenuesList: React.FC = () => {
 
     const handleAccept = async (venueId: string) => {
         try {
-            const response = await axios.post(`${ADMIN_API}/accept-venues/${venueId}`);
+            const response = await axiosInstance.post(`${ADMIN_API}/accept-venues/${venueId}`);
             showToast(response.data.message, 'success');
             // Optionally update the state or handle re-fetching venues
         } catch (error) {
@@ -51,7 +52,7 @@ const VenuesList: React.FC = () => {
 
     const handleReject = async (venueId: string) => {
         try {
-            const response = await axios.post(`${ADMIN_API}/reject-venues/${venueId}`);
+            const response = await axiosInstance.post(`${ADMIN_API}/reject-venues/${venueId}`);
             showToast(response.data.message, 'success');
             // Optionally update the state or handle re-fetching venues
         } catch (error) {
