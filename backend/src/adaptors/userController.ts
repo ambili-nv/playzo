@@ -5,6 +5,8 @@ import { userRepositoryMongodbType } from "../framework/database/mongodb/reposit
 import { AuthService } from "../framework/Services/authService";
 import { AuthServiceInterfaceType} from "../app/service-interface/authServiceInrerface";
 import { UserInterface } from "../types/userInterface";
+import { venueDbInterface } from "../app/Interfaces/venueDbRepository";
+import { venueRepositoryMongodbType } from "../framework/database/mongodb/repositories/venueRepositoryMongodb";
 import { HttpStatus } from "../types/httpStatus";
 import {
      userRegister,
@@ -15,17 +17,20 @@ import {
      sendVerificationCode,
      verifyTokenAndPassword
     } from '../app/use-cases/user/auth/userAuth';
-
+import { getVenue } from "../app/use-cases/user/auth/userRead";
 
 const userController = (
     userDbRepository: userDbInterface,
     userRepositoryImpl: userRepositoryMongodbType,
     authServiceInterface: AuthServiceInterfaceType,
     authServiceImpl:AuthService,
+    venueDbRepository:venueDbInterface,
+    venueRepositoryImpl:venueRepositoryMongodbType
 ) => {
 
     const dbRepositoryUser = userDbRepository(userRepositoryImpl());
     const authService = authServiceInterface(authServiceImpl());
+    const dbRepositoryVenue = venueDbRepository(venueRepositoryImpl())
 
     // Register User POST - Method
     const registerUser = asynchandler(async (
@@ -151,6 +156,16 @@ const userController = (
         }
     }
 
+    const getAllVenues = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            console.log("venue req got");
+            const venues = await getVenue(dbRepositoryVenue)
+            return res.status(200).json({ success: true, venues });
+        } catch (error) {
+            next(error)
+        }
+    }
+
 
     return {
         registerUser,
@@ -159,7 +174,8 @@ const userController = (
         userLogin,
         loginWithGoogle,
         forgotPassword,
-        resetPassword
+        resetPassword,
+        getAllVenues
     }
 }
 

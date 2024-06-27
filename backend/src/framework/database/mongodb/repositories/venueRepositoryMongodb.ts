@@ -21,10 +21,20 @@ export const venueRepositoryMongodb = ()=>{
             return await venues.findByIdAndUpdate(venueId, updateFields, { new: true });
         };
 
+        const getAllVenues = async ()=>{
+            try {
+                const allVenues = await venues.find({isApproved:true})
+                return allVenues
+            } catch (error) {
+                
+            }
+        }
+
         return{
             getVenuesByOwner,
             getVenueById,
-            updateVenue
+            updateVenue,
+            getAllVenues
         }
     
 }
