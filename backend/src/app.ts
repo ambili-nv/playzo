@@ -6,8 +6,7 @@ import CustomError from "./utils/customError";
 import errorHandlingMiddleware from "./framework/webserver/Middlewares/errorhander.middleware";
 import routes from "./framework/webserver/Routes";
 import { createServer } from "http";
-import { Server } from "socket.io";
-import path from "path";
+
 
 
 const app:Application = express();

@@ -5,7 +5,7 @@ import { userDbInterface } from "../../../Interfaces/userDbRepository";
 export const getVenue = async (venueDbRepository:ReturnType<venueDbInterface>)=>{
     try {
         const venues = await venueDbRepository.getAllVenues();
-        console.log(venues,"venues from repo");
+        // console.log(venues,"venues from repo");
         
         return venues;
     } catch (error) {

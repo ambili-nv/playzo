@@ -51,12 +51,21 @@ const deleteOtpUser = async (userId: string) =>await OTPModel.deleteOne({ userId
 const getUserbyId = async (id: string) => await User.findById(id);
 
 const registerGoogleSignInUser = async(user:googleSignInUserEntityType)=>{
-    await User.create({
+    // await User.create({
+    //     name:user.name(),
+    //     email:user.email(),
+    //     isVerified:user.email_verified(),
+
+    // })
+    const newUser : any = new User({
         name:user.name(),
         email:user.email(),
         isVerified:user.email_verified(),
-
     })
+
+    await newUser.save()
+
+    return newUser
 }
 
 const updateVerificationCode = async (email:string,code:string)=>await User.findOneAndUpdate({email},{verificationCode:code})

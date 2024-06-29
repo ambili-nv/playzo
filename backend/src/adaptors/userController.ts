@@ -76,7 +76,7 @@ const userController = (
         try{
             console.log(req.body,"user otp");
             const {userId} = req.body;
-            console.log(userId,"resend otp - user");
+            // console.log(userId,"resend otp - user");
             
             await deleteOTP(userId,dbRepositoryUser,authService);
             res.json({message:"New otp sent to mail"});
@@ -108,14 +108,24 @@ const userController = (
         try {
         const userData = req.body
         console.log(userData,"got useData");
-        const {isEmailExist,createdUser} = await authGoogleSinginUser(
+        const {
+            accessToken,
+            isEmailExist,createdUser} = await authGoogleSinginUser(
         // const {isEmailExist,createdUser} = await authGoogleSinginUser(
             userData,
             dbRepositoryUser,
-            // authService
+            authService
         )
+        console.log(isEmailExist,"email -g");
+        // console.log(accessToken,"accessToken - g");
+        
+        
         const user = isEmailExist ? isEmailExist : createdUser;
-        res.status(HttpStatus.OK).json({ message: "login success", user,}); 
+        console.log(user,"user-g autj");
+        
+        res.status(HttpStatus.OK).json({ message: "login success", user,
+            accessToken: accessToken
+        }); 
         } catch (error) {
             
         }
@@ -123,10 +133,10 @@ const userController = (
 
     const forgotPassword = async(req:Request,res:Response,next:NextFunction)=>{
         try {
-            console.log(req.body);
+            // console.log(req.body);
             
             const {email} = req.body
-            console.log(email,"email forget password recieved");
+            // console.log(email,"email forget password recieved");
             await sendVerificationCode (email,dbRepositoryUser,authService)
             return res.status(HttpStatus.OK).json({
                 success :true,
@@ -142,7 +152,7 @@ const userController = (
         try {
             const {password} = req.body
             const {token} = req.params
-            console.log(password,token,"token and password recieved");
+            // console.log(password,token,"token and password recieved");
             await verifyTokenAndPassword (
                 token,
                 password,
@@ -160,7 +170,7 @@ const userController = (
 
     const getAllVenues = async(req:Request,res:Response,next:NextFunction)=>{
         try {
-            console.log("venue req got");
+            // console.log("venue req got");
             const venues = await getVenue(dbRepositoryVenue)
             return res.status(200).json({ success: true, venues });
         } catch (error) {
@@ -189,8 +199,8 @@ const userController = (
 
     const editUserProfile = async(req:Request,res:Response,next:NextFunction)=>{
         try {
-            console.log("edit - req");
-            console.log(req.body,"reqb");
+            // console.log("edit - req");
+            // console.log(req.body,"reqb");
             const userId = req.user.id
             console.log(userId,"userId - edit");
             const updateData = req.body

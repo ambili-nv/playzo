@@ -1,6 +1,14 @@
 import { userEntityType,googleSignInUserEntityType } from "../../enitity/userEntity";
 import { userRepositoryMongodbType } from "../../framework/database/mongodb/repositories/userRepositoryMongodb";
 
+interface User {
+    _id: string;
+    name: string;
+    role: string;
+    email: string;
+    email_verified: boolean;
+}
+
 export const userDbRepository = (
     repository : ReturnType<userRepositoryMongodbType>
 )=>{
@@ -14,9 +22,19 @@ export const userDbRepository = (
 
     const updateProfile = async (userID:string, userData : Record<string,any>)=>await repository.updateUserInfo(userID,userData);
     const deleteOtpUser = async (userId: string) =>await repository.deleteOtpUser(userId);
-    const getUserbyId = async (id: string)=> await repository.getUserbyId(id);    
+    const getUserbyId = async (id: string)=> await repository.getUserbyId(id);  
+    
+    
 
-    const registerGoogleSignInUser = async(user:googleSignInUserEntityType) => await repository.registerGoogleSignInUser(user);
+
+    const registerGoogleSignInUser = async(user:googleSignInUserEntityType) => {
+         const googleUser = await repository.registerGoogleSignInUser(user);
+         console.log(googleUser,"gppgleuser");
+         
+         return googleUser
+        }
+
+    
 
     const updateVerificationCode = async(email:string, verificationCode:string)=> await repository.updateVerificationCode(email,verificationCode)
 
@@ -36,7 +54,7 @@ export const userDbRepository = (
     const getAllUsers = async () => {
         try {
             const allUsers = await repository.getAllusers();
-            console.log(allUsers, "users - service");
+            // console.log(allUsers, "users - service");
             return allUsers;
         } catch (error) {
             console.error("Error in service function:", error);

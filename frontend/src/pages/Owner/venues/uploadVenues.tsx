@@ -256,7 +256,7 @@ const VenueUpload = () => {
   const [secondaryImagesPreview, setSecondaryImagesPreview] = useState<string[]>([]);
   const navigate = useNavigate();
   const ownerId = useSelector((state: RootState) => state.ownerSlice.id);
-  console.log(ownerId, "ownerid");
+  // console.log(ownerId, "ownerid");
 
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -305,8 +305,8 @@ const VenueUpload = () => {
         const primaryImageUrl = values.primaryImage ? await uploadImagesToCloudinary([values.primaryImage]) : [];
         const secondaryImagesUrls = values.secondaryImage ? await uploadImagesToCloudinary(values.secondaryImage) : [];
 
-        console.log("Primary Image URL:", primaryImageUrl);
-        console.log("Secondary Images URLs:", secondaryImagesUrls);
+        // console.log("Primary Image URL:", primaryImageUrl);
+        // console.log("Secondary Images URLs:", secondaryImagesUrls);
 
         const venueData = {
           name: values.name,
@@ -319,11 +319,10 @@ const VenueUpload = () => {
           secondaryImages: secondaryImagesUrls,
           ownerId: ownerId, // Include owner ID in the data
         };
-        console.log(venueData, "venue data in frnt end");
+        // console.log(venueData, "venue data in frnt end");
 
 
         const response = await axiosInstance.post(`${OWNER_API}/upload-venues`, { venueData });
-        // if (response.status === 200) {
           showToast('Venue uploaded successfully', 'success');
           navigate('/owner/venues');
       } catch (error) {

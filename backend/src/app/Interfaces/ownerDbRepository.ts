@@ -11,7 +11,7 @@ export const ownerDbRepository = (
     
  const findOtpOwner = async(OwnerId:string)=>{
     const owner = await repository.findOtpOwner(OwnerId)
-    console.log(owner,"id...");
+   //  console.log(owner,"id...");
     
     return owner
  }   
@@ -29,7 +29,7 @@ const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>awai
 const getAllOwners = async()=>{
    try {
       const allOwners = await repository.getAllOwners();
-      console.log(allOwners,"from db");
+      // console.log(allOwners,"from db");
       return allOwners
 
    } catch (error) {

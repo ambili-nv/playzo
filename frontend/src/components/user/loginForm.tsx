@@ -60,11 +60,6 @@ const LoginPage: React.FC = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
-        const access_token = user.getIdToken()
-        console.log(access_token,"accessToken is .............");
-        
-        console.log('Google user', user);
-        setItemToLocalStorage("accessToken", access_token)
         const userData = {
           name: user.displayName,
           email: user.email,
@@ -74,13 +69,22 @@ const LoginPage: React.FC = () => {
           id: user.uid
         };
 
-        dispatch(setUser(userData));
-        // console.log(userData, "userdata");
+        // dispatch(setUser(userData));
+        console.log(userData, "userdata");
         return axios.post(`${USER_API}/google-signIn`, userData);
       })
       .then((response) => {
-        const { message } = response.data;
+        const { message, user, accessToken  } = response.data;
         showToast(message, "success");
+        localStorage.setItem("access_token",accessToken)
+        dispatch(
+          setUser({
+            name: user.name,
+            isAuthenticated: true,
+            role: user.role,
+            id: user._id,
+          })
+        )
         navigate("/");
       })
 

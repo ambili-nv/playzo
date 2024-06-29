@@ -6,7 +6,7 @@ export const venueDbRepository = (
 )=>{
     const getVenuesByOwner = async (ownerId: string) => {
         const venues = await repository.getVenuesByOwner(ownerId);
-        console.log(venues, "venues db repo");
+        // console.log(venues, "venues db repo");
         return venues;
     };
 
@@ -17,7 +17,7 @@ export const venueDbRepository = (
     const getAllVenues = async ()=>{
         try {
             const getAllVenues = await repository.getAllVenues()
-            console.log(getAllVenues,"venues from db");
+            // console.log(getAllVenues,"venues from db");
             return getAllVenues;
         } catch (error) {
             

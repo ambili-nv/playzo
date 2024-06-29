@@ -8,6 +8,17 @@ import sentMail from "../../../../utils/sendMail";
 import { forgotPasswordEmail, otpEmail } from "../../../../utils/userEmail";
 
 
+
+interface createdUser {
+    _id: string;
+    name: string;
+    role: string;
+    email: string;
+    email_verified: boolean;
+}
+
+
+
 export const userRegister = async(
     user:CreateUserInterface,
     userRepository:ReturnType<userDbInterface>,
@@ -111,7 +122,7 @@ export const deleteOTP = async (
    )=>{
     const {email,password} = user
     const isEmailExist = await userDbRepository.getUserbyEmail(email)
-    console.log(isEmailExist,"ckecked.............email");
+    // console.log(isEmailExist,"ckecked.............email");
     
 
     if(!isEmailExist){
@@ -151,12 +162,12 @@ export const deleteOTP = async (
        email_verified: boolean;
     },
     userDbRepository:ReturnType<userDbInterface>,
-    // authService:ReturnType<AuthServiceInterfaceType>
+    authService:ReturnType<AuthServiceInterfaceType>
 
    )=>{
     const {name,email,email_verified} = userData
     const isEmailExist = await userDbRepository.getUserbyEmail(email)
-    console.log(isEmailExist,"Email checked");
+    // console.log(isEmailExist,"Email checked");
     if(isEmailExist){
         return {isEmailExist}
     } else {
@@ -164,13 +175,34 @@ export const deleteOTP = async (
             name,email,email_verified
         )
 
+        console.log(googleSignInUser,"googleSignUser");
+        
+
         const createdUser = await userDbRepository.registerGoogleSignInUser(
             googleSignInUser
         )
+      
+        const userId = createdUser._id as unknown as string
+        console.log(userId,"userid-g auth");
+        console.log(createdUser,"created user - g");
+        
+        
+        const accessToken = authService.createTokens(
+            userId,
+            
+            createdUser.name,
+           
+            createdUser.role
+        )
 
-        return {createdUser}
+        return {
+            accessToken,
+            createdUser}
     }
 }
+
+
+
 
 
 export const sendVerificationCode = async(

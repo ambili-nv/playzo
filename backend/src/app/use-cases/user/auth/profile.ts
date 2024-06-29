@@ -7,7 +7,7 @@ export const getUser = async (
     userRepository:ReturnType<userDbInterface>
 )=>{
     const user = await userRepository.getUserbyId(userId)
-    console.log(user,"user in repo");
+    // console.log(user,"user in repo");
     return user
     
 }
@@ -17,7 +17,7 @@ export const updateUser = async (
     updateData:UserInterface,
     userRepository:ReturnType<userDbInterface>
 )=>{
-    console.log(updateData,"update data - prifle url check");
+    // console.log(updateData,"update data - prifle url check");
     
     const user = await userRepository.editProfile(userId,updateData)
     console.log(user,"user - edit - profile");

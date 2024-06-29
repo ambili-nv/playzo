@@ -9,7 +9,7 @@ export const uploadVenue = async (
     venueData: any,
     ownerRepository: ReturnType<ownerDbInterface>
 ) => {
-    console.log(venueData,"venue data in usecase");
+    // console.log(venueData,"venue data in usecase");
     
     const { name, sportsitem, place, price, description, primaryImage, secondaryImages } = venueData;
 
