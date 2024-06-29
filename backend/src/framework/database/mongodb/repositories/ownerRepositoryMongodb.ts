@@ -46,11 +46,18 @@ const deleteOtpOwner = async(ownerId:string)=>await OTPmodel.deleteOne({ownerId}
 const getOwnerById = async (id:string)=>await Owner.findById(id)
 
 const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>{
-    await Owner.create({
+    // await Owner.create({
+    //     name:owner.name(),
+    //     email:owner.email(),
+    //     isVerified:owner.email_verified()
+    // })
+    const newOwner : any = new Owner({
         name:owner.name(),
         email:owner.email(),
-        isVerified:owner.email_verified()
+        isVerified:owner.email_verified(),
     })
+    await newOwner.save()
+    return newOwner
 }
 
 const getAllOwners = async()=>{

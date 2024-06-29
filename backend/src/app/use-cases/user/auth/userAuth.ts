@@ -182,7 +182,7 @@ export const deleteOTP = async (
             googleSignInUser
         )
       
-        const userId = createdUser._id as unknown as string
+        const userId = createdUser._id 
         console.log(userId,"userid-g auth");
         console.log(createdUser,"created user - g");
         

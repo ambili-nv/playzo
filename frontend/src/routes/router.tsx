@@ -1,6 +1,8 @@
 import React, { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AdminLayout from "../components/Admin/AdminLayout";
+import { ProtectRoute,OwnerProtectRoute,AdminProtectRoute} from "./protectRoutes";
+import { PublicRouteUser,PublicRouteOwner,PublicRouteAdmin } from "./publicRoutes";
 
 const Home = lazy(()=> import ('../pages/User/Home'))
 const UserLogin = lazy(() => import('../pages/User/Login'));
@@ -31,31 +33,45 @@ export const MainRouter = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
-        <Route path = "/" element={<Home/>}/>
+        <Route path = "/" element={<Home/>}>
         <Route path = "/book" element={<UserBook/>}/>
+        <Route path = "" element = {<PublicRouteUser/>}/>
         <Route path="/login" element={<UserLogin />} />
         <Route path="/register" element={<UserSignUP/>}/>
         <Route path="/otp" element={<UserOTP/>}/>
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/reset-password/:id" element={<ResetPassword/>}/>
-        <Route path="/user-profile" element={<UserProfile/>}/>
+        </Route>
 
+        <Route path = "" element = {<ProtectRoute/>}>
+        <Route path="/user-profile" element={<UserProfile/>}/>
+        </Route>
 
         {/* Owner Routes */}
+
+        <Route path = "" element={<PublicRouteAdmin/>}>
         <Route path = "/owner/login" element={<OwnerLogin/>}/>
         <Route path = "/owner/signup" element={<OwnerSignUp/>}/>
         <Route path = "/owner/otp" element={<OTP/>}/>
+        </Route>
+
+        <Route path = "" element = {<OwnerProtectRoute/>}>
         <Route path = "/owner/venueupload" element={<UploadVenues/>}/>
         <Route path = "/owner/homepage" element={<HomePage/>}/>
-
+        </Route>
 
         {/* admin routes */}
+        <Route path = "" element = {<PublicRouteAdmin/>}>
         <Route path = "/admin/login" element={<AdminLogin/>}/>
+        </Route>
+
+        <Route path = "" element = {<AdminProtectRoute/>}>
         <Route path="/admin" element={<AdminLayout />}>
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<UsersList />} />
           <Route path="owners" element={<OwnerList/>} />
           <Route path="venue-list/:ownerId" element={<VenuesList/>} />
+        </Route>
         </Route>
       </Routes>
     </Suspense>

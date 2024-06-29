@@ -6,6 +6,7 @@ import { HttpStatus } from "../../../types/httpStatus";
 import { AuthServiceInterfaceType } from "../../service-interface/authServiceInrerface";
 import sentMail from "../../../utils/sendMail";
 import { otpEmail } from "../../../utils/userEmail";
+import { authService } from "../../../framework/Services/authService";
 
 // owner Register
 
@@ -144,7 +145,8 @@ export const authGoogleSigninOwner = async(
         email:string;
         email_verified:boolean;
     },
-    ownerDbRepository:ReturnType<ownerDbInterface>
+    ownerDbRepository:ReturnType<ownerDbInterface>,
+    authService:ReturnType<AuthServiceInterfaceType>
 )=>{
     const {name,email,email_verified} = ownerData
     const isEmailExist = await ownerDbRepository.getOwnerbyEmail(email)
@@ -160,7 +162,17 @@ export const authGoogleSigninOwner = async(
             googleSigninOwner
         )
 
-        return {createdOwner}
+        const ownerId = createdOwner._id 
+        console.log(ownerId,"owner id - ");
+
+        const accessToken = authService.createTokens(
+            ownerId,
+            createdOwner.name,
+            createdOwner.role
+        )
+        
+
+        return {accessToken,createdOwner}
     }
     
 }

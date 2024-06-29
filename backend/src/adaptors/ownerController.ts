@@ -104,12 +104,13 @@ const ownerController = (
         try{
             const ownerData = req.body
             console.log(ownerData,"Owner data recieved");
-            const {isEmailExist,createdOwner} = await authGoogleSigninOwner(
+            const {accessToken, isEmailExist,createdOwner} = await authGoogleSigninOwner(
                 ownerData,
-                dbRepositoryOwner
+                dbRepositoryOwner,
+                authService
             )
             const owner = isEmailExist ? isEmailExist : createdOwner;
-            res.status(HttpStatus.OK).json({ message: "login success", owner,}); 
+            res.status(HttpStatus.OK).json({ message: "login success", owner, accessToken: accessToken}); 
         } catch(error){
             next(error)
         }
