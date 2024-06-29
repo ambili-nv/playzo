@@ -4,6 +4,7 @@ import { ownerDbRepository } from '../../../app/Interfaces/ownerDbRepository';
 import { authService } from '../../Services/authService';
 import { ownerRepositoryMongodb } from '../../database/mongodb/repositories/ownerRepositoryMongodb';
 import { authServiceInterface } from '../../../app/service-interface/authServiceInrerface';
+import { authenticateOwner } from '../Middlewares/authMiddleware';
 const ownerRoutes = ()=>{
     const router = express.Router();
     const controller = ownerController(
@@ -18,7 +19,7 @@ const ownerRoutes = ()=>{
     router.post("/owner/resend_otp",controller.resendOTP)
     router.post("/login",controller.ownerLogin)
     router.post("/google-signIn",controller.OwnerLoginWithGoogle)
-    router.post("/upload-venues",controller.uploadVenueHandler)
+    router.post("/upload-venues",authenticateOwner,controller.uploadVenueHandler)
 
     return router
 }

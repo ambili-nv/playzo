@@ -3,6 +3,7 @@ export type UserInterface = {
     name: string;
     email: string;
     phoneNumber?:number;
+    profilePic?: string;
     role: "user";
     isVerified: boolean;
     isBlocked: boolean;

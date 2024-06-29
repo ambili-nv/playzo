@@ -11,6 +11,7 @@ export interface UserInterface{
     name: string;
     email: string;
     phoneNumber: string;
+    profilePicture?:string;
     password: string;
     role: string;
     isVerified: boolean;

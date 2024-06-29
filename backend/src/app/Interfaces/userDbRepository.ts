@@ -44,6 +44,18 @@ export const userDbRepository = (
         }
     };
 
+   
+
+    const editProfile = async (userID: string, userData: Record<string, any>) => {
+        try {
+          return await repository.editUserInfo(userID, userData);
+        } catch (error) {
+          console.error('Error in updateProfile:', error);
+          throw error;
+        }
+      };
+      
+
     
 
 
@@ -59,7 +71,8 @@ export const userDbRepository = (
         updateVerificationCode,
         verifyAndResetPassword,
         getAllUsers,
-        updateUserBlock
+        updateUserBlock,
+        editProfile
     }
 }
 

@@ -45,6 +45,8 @@ const findOtpUser = async (userId: string) => {
 };
 
 const updateUserInfo = async (id: string, updateData:Record<string,any>)=>await User.findByIdAndUpdate(id,updateData,{new:true});
+console.log(updateUserInfo,"user info -edit db");
+
 const deleteOtpUser = async (userId: string) =>await OTPModel.deleteOne({ userId });
 const getUserbyId = async (id: string) => await User.findById(id);
 
@@ -94,6 +96,28 @@ const findVerificationCodeAndUpdate = async (
     }
     
 
+    const editUserInfo = async (id: string, updateData: Record<string, any>) => {
+        try {
+          console.log(`Updating user with ID: ${id}`);
+          console.log('Update data: db.....', updateData);
+          const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true });
+          console.log('Updated user:', updatedUser);
+          return updatedUser;
+        } catch (error) {
+          console.error('Error updating user:', error);
+          throw error;
+        }
+      };
+
+
+    
+
+
+
+
+
+      
+
 return {
     addUser,
     getUserbyEmail,
@@ -106,7 +130,8 @@ return {
     updateVerificationCode,
     findVerificationCodeAndUpdate,
     getAllusers,
-    updateUserBlock
+    updateUserBlock,
+    editUserInfo
 }
 
 }

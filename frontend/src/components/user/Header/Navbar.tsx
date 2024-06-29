@@ -44,7 +44,7 @@ const Navbar = () => {
 
                 {user.isAuthenticated && user.role === "user" ? (
                   <>
-                 <Link to="/contact" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
+                 <Link to="/user-profile" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
                  Profile
                  </Link>
 

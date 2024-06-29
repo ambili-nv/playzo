@@ -18,6 +18,8 @@ import {
      verifyTokenAndPassword
     } from '../app/use-cases/user/auth/userAuth';
 import { getVenue } from "../app/use-cases/user/auth/userRead";
+import { getUser,updateUser } from "../app/use-cases/user/auth/profile";
+
 
 const userController = (
     userDbRepository: userDbInterface,
@@ -167,6 +169,41 @@ const userController = (
     }
 
 
+    const getUserProfile = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            console.log("userProfile req got");
+            const userId = req.user.id
+            console.log(userId,"got user id controller-p");
+            console.log(req.user,"requser");
+            const user = await getUser(
+                userId,
+                dbRepositoryUser,
+            )
+            console.log(user,"user - controller P");
+            
+            res.status(200).json({ success: true, user});
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    const editUserProfile = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            console.log("edit - req");
+            console.log(req.body,"reqb");
+            const userId = req.user.id
+            console.log(userId,"userId - edit");
+            const updateData = req.body
+            const user = await updateUser (userId,updateData,dbRepositoryUser)
+            res.json({success:true,user,message:"profile Updated"})
+            
+            
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
     return {
         registerUser,
         VerifyOTP,
@@ -175,7 +212,9 @@ const userController = (
         loginWithGoogle,
         forgotPassword,
         resetPassword,
-        getAllVenues
+        getAllVenues,
+        getUserProfile,
+        editUserProfile
     }
 }
 
