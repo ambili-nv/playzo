@@ -14,11 +14,11 @@ import {
     updateOwner
 } from '../app/use-cases/owner/ownerAuth'
 
-import { uploadVenue } from "../app/use-cases/owner/venueUpload";
+import { uploadVenue,findVenues } from "../app/use-cases/owner/venueUpload";
 
 import { HttpStatus } from "../types/httpStatus";
-import { log } from "console";
-
+import { venueDbInterface } from "../app/Interfaces/venueDbRepository";
+import { venueRepositoryMongodbType } from "../framework/database/mongodb/repositories/venueRepositoryMongodb";
 
 
 
@@ -26,11 +26,13 @@ const ownerController = (
     ownerDbRepository:ownerDbInterface,
     ownerRepositoryImpl:ownerRepositoryMongodbType,
     authServiceInterface:AuthServiceInterfaceType,
-    authServiceImpl:AuthService
+    authServiceImpl:AuthService,
+    venueDbRepository:venueDbInterface,
+    venueDbRepositoryImpl:venueRepositoryMongodbType
 )=>{
     const dbRepositoryOwner = ownerDbRepository(ownerRepositoryImpl())
     const authService = authServiceInterface(authServiceImpl())
-
+    const dbVenueRepository = venueDbRepository(venueDbRepositoryImpl());
     //owner Register - POST Method
     const registerOwner = asynchandler(async(
         req:Request,
@@ -178,6 +180,20 @@ const ownerController = (
         }
     }
 
+    const getVenues = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            console.log("get req");
+            const ownerId = req.params.ownerId
+            console.log(ownerId,"ownerId - contr");
+            const venues = await findVenues(dbVenueRepository,ownerId)
+            console.log(venues,"venue - owner - get from db");
+            
+            return res.status(HttpStatus.OK).json({ success: true, venues });
+        } catch (error) {
+            
+        }
+    }
+
 
 
     return {
@@ -188,7 +204,8 @@ const ownerController = (
         OwnerLoginWithGoogle,
         uploadVenueHandler,
         getOwnerProfile,
-        editOwnerProfile
+        editOwnerProfile,
+        getVenues
     }
 }
 

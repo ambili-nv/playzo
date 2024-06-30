@@ -5,6 +5,8 @@ import { authService } from '../../Services/authService';
 import { ownerRepositoryMongodb } from '../../database/mongodb/repositories/ownerRepositoryMongodb';
 import { authServiceInterface } from '../../../app/service-interface/authServiceInrerface';
 import { authenticateOwner } from '../Middlewares/authMiddleware';
+import { venueDbRepository } from "../../../app/Interfaces/venueDbRepository";
+import { venueRepositoryMongodb } from "../../database/mongodb/repositories/venueRepositoryMongodb";
 const ownerRoutes = ()=>{
     const router = express.Router();
     const controller = ownerController(
@@ -12,6 +14,8 @@ const ownerRoutes = ()=>{
         ownerRepositoryMongodb,
         authServiceInterface,
         authService,
+        venueDbRepository,
+        venueRepositoryMongodb,
     )
 
     router.post('/register',controller.registerOwner);
@@ -22,6 +26,8 @@ const ownerRoutes = ()=>{
     router.post("/upload-venues",authenticateOwner,controller.uploadVenueHandler)
     router.get("/ownerprofile",authenticateOwner,controller.getOwnerProfile)
     router.patch("/edit-ownerprofile",authenticateOwner,controller.editOwnerProfile)
+    // router.get("/venue-details",authenticateOwner,controller.venueDetails)
+    router.get("/myvenue-list/:ownerId",authenticateOwner,controller.getVenues)
 
     return router
 }

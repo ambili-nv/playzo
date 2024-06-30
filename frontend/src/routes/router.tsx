@@ -22,6 +22,7 @@ const UploadVenues = lazy(()=>import('../pages/Owner/venues/uploadVenues'))
 const HomePage = lazy(()=>import('../pages/Owner/Home'))  
 const OwnerProfile = lazy(()=>import ('../pages/Owner/OwnerProfile'))
 const Venues = lazy(()=>import('../pages/Owner/Venues'))
+const OwnerVenuesList = lazy(()=>import('../pages/Owner/venuesList'))
 
             // Admin Routes
 
@@ -35,8 +36,8 @@ export const MainRouter = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
-        <Route path = "" element = {<PublicRouteUser/>}>
         <Route path = "/" element={<Home/>}/>
+        <Route path = "" element = {<PublicRouteUser/>}>
         <Route path = "/book" element={<UserBook/>}/>
         <Route path="/login" element={<UserLogin />} />
         <Route path="/register" element={<UserSignUP/>}/>
@@ -62,6 +63,7 @@ export const MainRouter = () => {
         <Route path = "/owner/homepage" element={<HomePage/>}/>
         <Route path = "/owner/profile" element={<OwnerProfile/>}/>
         <Route path = "/owner/venue-details" element={<Venues/>}/>
+        <Route path = "/owner/myvenue/:ownerId" element={<OwnerVenuesList/>}/>
         </Route>
 
         {/* admin routes */}

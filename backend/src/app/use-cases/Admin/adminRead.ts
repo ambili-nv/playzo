@@ -1,6 +1,6 @@
 import { ownerDbInterface} from "../../Interfaces/ownerDbRepository";
 import { userDbInterface} from "../../Interfaces/userDbRepository";
-import { venueDbInterface, venueDbRepository } from "../../Interfaces/venueDbRepository";
+import { venueDbInterface} from "../../Interfaces/venueDbRepository";
 // export const getUsers = async(userDbRepository:ReturnType<userDbInterface>)=>{
 //     await userDbRepository.getAllUsers();
 //     console.log(getUsers,"get users data from db");

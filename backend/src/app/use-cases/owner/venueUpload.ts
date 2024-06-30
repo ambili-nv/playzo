@@ -3,6 +3,7 @@ import { ownerDbInterface } from "../../Interfaces/ownerDbRepository";
 import { VenueEntity, createVenueEntity } from '../../../enitity/venueEntity';
 import CustomError from "../../../utils/customError";
 import { HttpStatus } from "../../../types/httpStatus";
+import { venueDbInterface} from "../../Interfaces/venueDbRepository";
 
 export const uploadVenue = async (
     ownerId: string,
@@ -34,3 +35,15 @@ export const uploadVenue = async (
 
     return newVenue;
 };
+
+
+export const findVenues= async(venueDbRepository:ReturnType<venueDbInterface>,ownerId:string)=>{
+    try {
+        const venues = await venueDbRepository.getVenuesByOwner(ownerId);
+        console.log(venues,"venues adminread");
+        
+        return venues;
+    } catch (error) {
+        throw error;
+    }
+}

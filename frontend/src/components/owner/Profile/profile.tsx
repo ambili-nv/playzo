@@ -31,7 +31,7 @@ const ProfilePage: React.FC = () => {
                         Authorization: `Bearer ${token}`
                     }
                 });
-
+                console.log(response.data.owner,"owner data front end");
                 setProfile(response.data.owner);
             } catch (error) {
                 console.error('Failed to fetch profile', error);
@@ -91,8 +91,11 @@ const ProfilePage: React.FC = () => {
         }
     };
 
+    const ownerId = profile?._id
+    console.log(ownerId,"idowner");
+    
     const handleVenueDetailsClick = () => {
-        navigate('/owner/venue-details');
+        navigate(`/owner/myvenue/${ownerId}`);
     };
 
     return (
