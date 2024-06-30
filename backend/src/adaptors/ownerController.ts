@@ -9,12 +9,15 @@ import {
     verifyOwner,
     deleteOTP,
     login,
-    authGoogleSigninOwner
+    authGoogleSigninOwner,
+    getOwner,
+    updateOwner
 } from '../app/use-cases/owner/ownerAuth'
 
 import { uploadVenue } from "../app/use-cases/owner/venueUpload";
 
 import { HttpStatus } from "../types/httpStatus";
+import { log } from "console";
 
 
 
@@ -116,17 +119,7 @@ const ownerController = (
         }
     }
 
-    // const uploadVenueHandler = async(req:Request,res:Response,next:NextFunction)=>{
-    //     try {
-    //         console.log("Request recieved");
-    //         const venueData = req.body
-    //         console.log(venueData,"venue data got");
-            
-            
-    //     } catch (error) {
-            
-    //     }
-    // }
+
 
 
     const uploadVenueHandler = asynchandler(async (
@@ -154,13 +147,48 @@ const ownerController = (
         }
     });
 
+    const getOwnerProfile= async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            console.log("OWner Profile - req");
+            const ownerId = req.owner.id
+            console.log(ownerId,"ownerid get");
+            
+            const owner = await getOwner(
+                ownerId,
+                dbRepositoryOwner
+            )
+            console.log(owner,"owner from db");
+            
+            res.status(200).json({ success: true, owner});
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    const editOwnerProfile = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            console.log("Edit - req got");
+            console.log(req.body,"req b");
+            const ownerId = req.owner.id
+            const updateData = req.body
+            const owner = await updateOwner(ownerId,updateData,dbRepositoryOwner)
+            res.json({success:true,owner,message:"profile Updated"})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
+
     return {
         registerOwner,
         VerifyOTP,
         resendOTP,
         ownerLogin,
         OwnerLoginWithGoogle,
-        uploadVenueHandler
+        uploadVenueHandler,
+        getOwnerProfile,
+        editOwnerProfile
     }
 }
 

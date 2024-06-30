@@ -176,3 +176,21 @@ export const authGoogleSigninOwner = async(
     }
     
 }
+
+export const getOwner = async(
+    ownerId : string,
+    ownerRepository:ReturnType<ownerDbInterface>
+)=>{
+    const owner  = await ownerRepository.getOwnerbyId(ownerId)
+    return owner
+}
+
+export const updateOwner = async (
+    ownerId : string,
+    updateData:OwnerInterface,
+    ownerDbRepository:ReturnType<ownerDbInterface>
+)=>{
+    const owner  = await ownerDbRepository.editProfileOwner(ownerId,updateData)
+    console.log(owner,"edit owner ownerAuth");
+    
+}

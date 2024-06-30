@@ -20,6 +20,8 @@ const ownerRoutes = ()=>{
     router.post("/login",controller.ownerLogin)
     router.post("/google-signIn",controller.OwnerLoginWithGoogle)
     router.post("/upload-venues",authenticateOwner,controller.uploadVenueHandler)
+    router.get("/ownerprofile",authenticateOwner,controller.getOwnerProfile)
+    router.patch("/edit-ownerprofile",authenticateOwner,controller.editOwnerProfile)
 
     return router
 }

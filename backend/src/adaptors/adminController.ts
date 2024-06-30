@@ -155,11 +155,6 @@ const adminController = (
 
 
 
-
-    // const handleReject = async(req:Request,res:Response,next:NextFunction)=>{
-
-    // }
-
     return {
         adminLogin,
         getAllUsers,
@@ -168,7 +163,7 @@ const adminController = (
         blockOwner,
         getVenuesByOwner,
         handleAccept,
-        handleReject
+        handleReject,
     };
 };
 

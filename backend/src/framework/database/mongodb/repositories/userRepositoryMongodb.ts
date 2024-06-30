@@ -2,6 +2,7 @@ import { googleSignInUserEntityType, userEntityType } from "../../../../enitity/
 import { UserInterface } from "../../../../types/userInterface";
 import User from "../models/user";
 import OTPModel from "../models/OTPmodel";
+import owner from "../models/owner";
 
 export const userRepositoryMongodb =()=>{
 
@@ -119,7 +120,7 @@ const findVerificationCodeAndUpdate = async (
       };
 
 
-    
+  
 
 
 
@@ -140,7 +141,8 @@ return {
     findVerificationCodeAndUpdate,
     getAllusers,
     updateUserBlock,
-    editUserInfo
+    editUserInfo,
+
 }
 
 }

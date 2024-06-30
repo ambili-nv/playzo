@@ -44,7 +44,13 @@ const updateOwnerBlock = async(id:string,status:boolean)=>{
 const addVenue = async (venue: VenueEntity) => await repository.addVenue(venue);
 
 
-
+const editProfileOwner = async(ownerId : string,ownerData:Record<string,any>)=>{
+   try {
+      return await repository.editOwnerInfo(ownerId,ownerData)
+   } catch (error) {
+      throw error
+   }
+}
 
 
    return {
@@ -58,7 +64,8 @@ const addVenue = async (venue: VenueEntity) => await repository.addVenue(venue);
     registerGoogleSignInOwner,
     getAllOwners,
     updateOwnerBlock,
-    addVenue
+    addVenue,
+    editProfileOwner
    }
 
 }

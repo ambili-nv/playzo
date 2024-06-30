@@ -92,6 +92,16 @@ const addVenue = async (venue: VenueEntity) => {
     return newVenue;
 };
 
+const editOwnerInfo = async (id:string,updateData:Record<string,any>)=>{
+    try {
+        const updateOwner = await Owner.findByIdAndUpdate(id,updateData,{new:true})
+        return updateOwner
+    } catch (error) {
+        throw error
+    }
+}
+
+
 return {
     addOwner,
     getOwnerbyEmail,
@@ -103,7 +113,8 @@ return {
     registerGoogleSignInOwner,
     getAllOwners,
     updateOWnerBlock,
-    addVenue
+    addVenue,
+    editOwnerInfo
 }
 }
 
