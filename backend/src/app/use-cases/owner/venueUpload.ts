@@ -58,3 +58,20 @@ export const findVenueDetails = async (venueDbRepository: ReturnType<venueDbInte
         throw error;
     }
 };
+
+    // export const updateVenue = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string)=>{
+        
+    // }
+
+
+
+    export const updateVenue = async (venueRepository:  ReturnType<venueDbInterface>, venueId: string, updateData: Record<string, any>) => {
+        try {
+            // Perform business logic/validation if needed
+    
+            const updatedVenue = await venueRepository.updateVenue(venueId, updateData);
+            return updatedVenue;
+        } catch (error) {
+            throw error; // Throw to be caught by controller's error handling middleware
+        }
+    };

@@ -14,7 +14,7 @@ import {
     updateOwner
 } from '../app/use-cases/owner/ownerAuth'
 
-import { uploadVenue,findVenues,findVenueDetails } from "../app/use-cases/owner/venueUpload";
+import { uploadVenue,findVenues,findVenueDetails,updateVenue } from "../app/use-cases/owner/venueUpload";
 
 import { HttpStatus } from "../types/httpStatus";
 import { venueDbInterface } from "../app/Interfaces/venueDbRepository";
@@ -206,6 +206,19 @@ const ownerController = (
         }
     }
 
+    const updateVenueDetails = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { venueId } = req.params;
+            const updateData = req.body; // Assuming req.body contains the updated venue details
+    
+            const updatedVenue = await updateVenue(dbVenueRepository, venueId, updateData);
+    
+            res.status(HttpStatus.OK).json({ success: true, venue: updatedVenue, message: 'Venue details updated' });
+        } catch (error) {
+            next(error); // Pass any errors to the error handling middleware
+        }
+    };
+
 
 
     return {
@@ -218,7 +231,8 @@ const ownerController = (
         getOwnerProfile,
         editOwnerProfile,
         getVenues,
-        getVenueDetails
+        getVenueDetails,
+        updateVenueDetails
     }
 }
 
