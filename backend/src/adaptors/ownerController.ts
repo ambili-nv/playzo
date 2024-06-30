@@ -14,7 +14,7 @@ import {
     updateOwner
 } from '../app/use-cases/owner/ownerAuth'
 
-import { uploadVenue,findVenues } from "../app/use-cases/owner/venueUpload";
+import { uploadVenue,findVenues,findVenueDetails } from "../app/use-cases/owner/venueUpload";
 
 import { HttpStatus } from "../types/httpStatus";
 import { venueDbInterface } from "../app/Interfaces/venueDbRepository";
@@ -194,6 +194,18 @@ const ownerController = (
         }
     }
 
+    const getVenueDetails = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            const venueId = req.params.venueId
+            console.log(venueId,"parasm");
+            const venueDetails = await findVenueDetails(dbVenueRepository, venueId);
+            console.log(venueDetails, "venue details from db");
+            return res.status(HttpStatus.OK).json({ success: true, venueDetails });
+        } catch (error) {
+            next(error);
+        }
+    }
+
 
 
     return {
@@ -205,7 +217,8 @@ const ownerController = (
         uploadVenueHandler,
         getOwnerProfile,
         editOwnerProfile,
-        getVenues
+        getVenues,
+        getVenueDetails
     }
 }
 

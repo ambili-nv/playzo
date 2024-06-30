@@ -21,8 +21,9 @@ const OTP = lazy(()=>import('../pages/Owner/OwnerOtp'))
 const UploadVenues = lazy(()=>import('../pages/Owner/venues/uploadVenues'))   
 const HomePage = lazy(()=>import('../pages/Owner/Home'))  
 const OwnerProfile = lazy(()=>import ('../pages/Owner/OwnerProfile'))
-const Venues = lazy(()=>import('../pages/Owner/Venues'))
+const Venues = lazy(()=>import('../pages/Owner/VenueDetails'))
 const OwnerVenuesList = lazy(()=>import('../pages/Owner/venuesList'))
+const VenueDetails = lazy(()=>import('../pages/Owner/VenueDetails'))
 
             // Admin Routes
 
@@ -64,6 +65,7 @@ export const MainRouter = () => {
         <Route path = "/owner/profile" element={<OwnerProfile/>}/>
         <Route path = "/owner/venue-details" element={<Venues/>}/>
         <Route path = "/owner/myvenue/:ownerId" element={<OwnerVenuesList/>}/>
+        <Route path="/owner/edit-venue/:venueId" element={<VenueDetails />} />
         </Route>
 
         {/* admin routes */}

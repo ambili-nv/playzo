@@ -28,6 +28,7 @@ const ownerRoutes = ()=>{
     router.patch("/edit-ownerprofile",authenticateOwner,controller.editOwnerProfile)
     // router.get("/venue-details",authenticateOwner,controller.venueDetails)
     router.get("/myvenue-list/:ownerId",authenticateOwner,controller.getVenues)
+    router.get("/venue-details/:venueId",authenticateOwner,controller.getVenueDetails)
 
     return router
 }

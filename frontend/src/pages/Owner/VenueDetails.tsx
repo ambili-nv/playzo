@@ -4,7 +4,7 @@ import OwnerNavbar from "../../components/owner/Header/OwnerNavbar";
 import Footer from "../../components/owner/Footer/footer";
 
 
-const Venues : React .FC = ()=>{
+const VenueDetails : React .FC = ()=>{
     return (
         <>
         <OwnerNavbar/>
@@ -14,4 +14,4 @@ const Venues : React .FC = ()=>{
     )
 }
 
-export default Venues
+export default VenueDetails

@@ -47,3 +47,14 @@ export const findVenues= async(venueDbRepository:ReturnType<venueDbInterface>,ow
         throw error;
     }
 }
+
+
+export const findVenueDetails = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string) => {
+    try {
+        const venueDetails = await venueDbRepository.getVenueById(venueId);
+        console.log(venueDetails, "venue details adminread");
+        return venueDetails;
+    } catch (error) {
+        throw error;
+    }
+};

@@ -95,6 +95,7 @@ import axios from 'axios';
 import { OWNER_API } from '../../constants'; // Assuming OWNER_API is defined for owner's API endpoints
 import showToast from '../../utils/toaster'; // Assuming showToast is a utility for displaying toast notifications
 import axiosInstance from '../../utils/axiosInstance'; // Assuming axiosInstance is configured with base URL and interceptors
+import { useNavigate } from 'react-router-dom';
 
 interface Venue {
     _id: string;
@@ -113,6 +114,8 @@ const MyVenuesList: React.FC = () => {
     const [venues, setVenues] = useState<Venue[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const fetchVenues = async () => {
@@ -169,6 +172,7 @@ const MyVenuesList: React.FC = () => {
                                 <div className="mt-4 flex justify-around">
                                     <button
                                         // onClick={() => history.push(`/edit-venue/${venue._id}`)}
+                                        onClick={() => navigate(`/owner/edit-venue/${venue._id}`)}
                                         className="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     >
                                         Edit
