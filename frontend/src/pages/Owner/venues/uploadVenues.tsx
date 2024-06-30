@@ -291,7 +291,6 @@ const VenueUpload = () => {
     initialValues: {
       name: '',
       sportsitem: '',
-      // location: '',
       place:'',
       price: '',
       description: '',
@@ -344,11 +343,25 @@ const VenueUpload = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                 <div>
                   <label className="block text-gray-700 font-medium">Venue Name</label>
-                  <input type="text" className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" id='name' {...formik.getFieldProps("name")} />
+                  <input type="text"
+                   className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" 
+                   id='name'
+                    {...formik.getFieldProps("name")} 
+                    />
+                    {formik.errors.name && formik.touched.name && (
+                  <div className="text-red-500">{formik.errors.name}</div>
+                )}
                 </div>
                 <div>
                   <label className="block text-gray-700 font-medium">Sports Item</label>
-                  <input type="text" className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" id='sportsitem' {...formik.getFieldProps("sportsitem")} />
+                  <input type="text"
+                   className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" 
+                   id='sportsitem' 
+                   {...formik.getFieldProps("sportsitem")}
+                    />
+                  {formik.errors.sportsitem && formik.touched.sportsitem && (
+                  <div className="text-red-500">{formik.errors.sportsitem}</div>
+                )}
                 </div>
 
                 <div>
@@ -356,30 +369,50 @@ const VenueUpload = () => {
                   <input
                     type="text"
                     className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200"
-                    // id='location'
                     id='place'
-                    // {...formik.getFieldProps("location")}
                     {...formik.getFieldProps("place")}
                   />
-                  {/* <input type="text" className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" id='location' {...formik.getFieldProps("location")} /> */}
+                  {formik.errors.place && formik.touched.place && (
+                  <div className="text-red-500">{formik.errors.place}</div>
+                )}
                 </div>
                 <div>
                   <label className="block text-gray-700 font-medium">Price</label>
-                  <input type="text" className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" id='price' {...formik.getFieldProps("price")} />
+                  <input type="text"
+                   className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" 
+                   id='price' 
+                   {...formik.getFieldProps("price")}
+                    />
+                    {formik.errors.price && formik.touched.price && (
+                  <div className="text-red-500">{formik.errors.price}</div>
+                )}
                 </div>
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 font-medium">Description</label>
-                <textarea className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" id='description' {...formik.getFieldProps("description")}></textarea>
+                <textarea 
+                className="w-full px-3 py-3 border rounded focus:outline-none focus:ring-2 focus:ring-blue-200" 
+                id='description'
+                 {...formik.getFieldProps("description")}>
+                 </textarea>
+                 {formik.errors.description && formik.touched.description && (
+                  <div className="text-red-500">{formik.errors.description}</div>
+                )}
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 font-medium">Primary Image</label>
                 <div className="flex items-center">
-                  <input type="file" id="primaryImage" className="hidden" accept='image/*' onChange={handleFileChange} />
+                  <input type="file" 
+                  id="primaryImage" 
+                  className="hidden" accept='image/*' 
+                  onChange={handleFileChange} />
                   <label htmlFor="primaryImage" className="w-full px-3 py-3 border rounded bg-white cursor-pointer flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-blue-200">
                     <span className="text-gray-500">Choose file...</span>
                     {/* <button type="button" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Upload</button> */}
                   </label>
+                  {formik.errors.primaryImage && formik.touched.primaryImage && (
+                  <div className="text-red-500">{formik.errors.primaryImage}</div>
+                )}
                 </div>
               </div>
               {/* {primaryImagePreview && (
@@ -404,6 +437,10 @@ const VenueUpload = () => {
                     <span className="text-gray-500">Choose files...</span>
                     {/* <button type="button" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Upload</button> */}
                   </label>
+                  {formik.errors.secondaryImage && formik.touched.secondaryImage && (
+                  <div className="text-red-500">{formik.errors.secondaryImage}</div>
+                )}
+
                 </div>
               </div>
               {/* {secondaryImagesPreview.length > 0 && (
