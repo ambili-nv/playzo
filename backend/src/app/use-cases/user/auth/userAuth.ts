@@ -169,7 +169,13 @@ export const deleteOTP = async (
     const isEmailExist = await userDbRepository.getUserbyEmail(email)
     // console.log(isEmailExist,"Email checked");
     if(isEmailExist){
-        return {isEmailExist}
+
+        const accessToken = authService.createTokens(
+            isEmailExist.id,
+            isEmailExist.name,
+            isEmailExist.role
+        )
+        return {accessToken,isEmailExist}
     } else {
         const googleSignInUser : googleSignInUserEntityType = googleSignInUserEntity(
             name,email,email_verified

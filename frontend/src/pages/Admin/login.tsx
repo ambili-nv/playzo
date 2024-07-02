@@ -90,9 +90,6 @@ const LoginPage: React.FC = () => {
                 {isSubmitting ? "Submitting..." : "Login"}
               </button>
             </form>
-            <p className="mt-4 text-center text-gray-600">
-              Don't have an account? <a href="/signup" className="text-green-500 hover:underline">Sign Up</a>
-            </p>
           </div>
         </div>
       </div>

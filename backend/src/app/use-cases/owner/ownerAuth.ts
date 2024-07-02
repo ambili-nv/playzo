@@ -152,7 +152,14 @@ export const authGoogleSigninOwner = async(
     const isEmailExist = await ownerDbRepository.getOwnerbyEmail(email)
     console.log(isEmailExist,"Owner email checked");
     if(isEmailExist){
-        return{isEmailExist}
+
+        const accessToken = authService.createTokens(
+            isEmailExist.id,
+            isEmailExist.name,
+            isEmailExist.role
+        )
+        return{accessToken,isEmailExist}
+
     } else {
         const googleSigninOwner : googleSignInOwnerEntityType = googleSignInOwnerEntity(
             name,email,email_verified

@@ -117,13 +117,19 @@ const VenueDetailsPage: React.FC = () => {
             valid = false;
         }
 
-        if (!price.trim()) {
-            newErrors.price = 'Price cannot be empty';
-            valid = false;
-        } else if (Number(price.trim()) <= 0) {
+        // if (!price.trim()) {
+        //     newErrors.price = 'Price cannot be empty';
+        //     valid = false;
+        // } else if (Number(price.trim()) <= 0) {
+        //     newErrors.price = 'Price should be a positive number';
+        //     valid = false;
+        // }
+
+        if (Number(price) <= 0) {
             newErrors.price = 'Price should be a positive number';
             valid = false;
         }
+
 
 
         if (!valid) {

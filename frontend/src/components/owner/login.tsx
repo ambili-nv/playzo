@@ -63,7 +63,7 @@ const OwnerLoginPage: React.FC = () => {
         
         console.log('Google owner', owner);
         setItemToLocalStorage("accessToken", access_token)
-        const userData = {
+        const ownerData = {
           name: owner.displayName,
           email: owner.email,
           email_verified: owner.emailVerified,
@@ -72,12 +72,21 @@ const OwnerLoginPage: React.FC = () => {
           id: owner.uid
         };
 
-        dispatch(setOwner(userData));
-        // console.log(userData, "userdata");
-        return axios.post(`${OWNER_API}/google-signIn`, userData);
+        return axios.post(`${OWNER_API}/google-signIn`, ownerData);
       })
       .then((response) => {
-        const { message } = response.data;
+        const { message,owner,accessToken } = response.data;
+        showToast(message, "success");
+
+        localStorage.setItem("access_token",accessToken)
+        dispatch(
+          setOwner({
+            name:owner.name,
+            isAuthenticated: true,
+            role: owner.role,
+            id: owner._id,
+          })
+        )
         showToast(message, "success");
         navigate("/owner/homepage");
       })
@@ -132,11 +141,6 @@ const OwnerLoginPage: React.FC = () => {
                 {isSubmitting ? "Logging in..." : "Login"}
               </button>
             </form>
-            <div className="mt-4 text-right">
-              <a href="#" className="text-sm text-black hover:underline">
-                Forgot Password?
-              </a>
-            </div>
             <div className="flex items-center mt-4">
               <div className="border-b border-gray-300 flex-1 "></div>
               <div className="mx-3 text-sm text-gray-500 ">Or</div>
@@ -155,7 +159,7 @@ const OwnerLoginPage: React.FC = () => {
               </button>
             </div>
             <p className="mt-4 text-center text-gray-600">
-              Don't have an account? <a href="#" className="text-green-500 hover:underline">Sign Up</a>
+              Don't have an account? <a href="/owner/signup" className="text-green-500 hover:underline">Sign Up</a>
             </p>
           </div>
         </div>

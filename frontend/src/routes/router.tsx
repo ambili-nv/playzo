@@ -41,7 +41,7 @@ export const MainRouter = () => {
         <Route path = "" element = {<PublicRouteUser/>}>
         <Route path = "/book" element={<UserBook/>}/>
         <Route path="/login" element={<UserLogin />} />
-        <Route path="/register" element={<UserSignUP/>}/>
+        <Route path="/signup" element={<UserSignUP/>}/>
         <Route path="/otp" element={<UserOTP/>}/>
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/reset-password/:id" element={<ResetPassword/>}/>
