@@ -14,11 +14,12 @@ import {
     updateOwner
 } from '../app/use-cases/owner/ownerAuth'
 
-import { uploadVenue,findVenues,findVenueDetails,updateVenue } from "../app/use-cases/owner/venueUpload";
+import { uploadVenue,findVenues,findVenueDetails,updateVenue,saveTimeSlots,findTimeSlotsByVenueId } from "../app/use-cases/owner/venueUpload";
 
 import { HttpStatus } from "../types/httpStatus";
 import { venueDbInterface } from "../app/Interfaces/venueDbRepository";
 import { venueRepositoryMongodbType } from "../framework/database/mongodb/repositories/venueRepositoryMongodb";
+import { time } from "console";
 
 
 
@@ -41,7 +42,7 @@ const ownerController = (
     )=>{
        try {
         const owner  = req.body
-        console.log(owner,"owner register data recieved");
+        // console.log(owner,"owner register data recieved");
         
         const {createdOwner} = await ownerRegister(owner,dbRepositoryOwner,authService)
         res.json({
@@ -73,9 +74,9 @@ const ownerController = (
 
     const resendOTP = async (req:Request,res:Response,next:NextFunction)=>{
         try {
-            console.log('Request body:', req.body);
+            // console.log('Request body:', req.body);
             const {OwnerId} = req.body
-            console.log(OwnerId,"owner - resend ");
+            // console.log(OwnerId,"owner - resend ");
             //@ts-ignore
             await deleteOTP(OwnerId,dbRepositoryOwner,authService)
             res.json({message:"New otp sent to mail"});
@@ -108,7 +109,7 @@ const ownerController = (
     const OwnerLoginWithGoogle = async(req:Request,res:Response,next:NextFunction)=>{
         try{
             const ownerData = req.body
-            console.log(ownerData,"Owner data recieved");
+            // console.log(ownerData,"Owner data recieved");
             const {accessToken, isEmailExist,createdOwner} = await authGoogleSigninOwner(
                 ownerData,
                 dbRepositoryOwner,
@@ -132,12 +133,12 @@ const ownerController = (
         try {
             const {  venueData } = req.body;
             const ownerId = venueData.ownerId
-            console.log(ownerId,"owner id - ownnercontroller");
+            // console.log(ownerId,"owner id - ownnercontroller");
             
             const place = venueData.place
-            console.log(typeof place,"location type");
+            // console.log(typeof place,"location type");
             
-            console.log(venueData, "venue data received");
+            // console.log(venueData, "venue data received");
 
             const newVenue = await uploadVenue(ownerId, venueData, dbRepositoryOwner);
             res.status(HttpStatus.CREATED).json({
@@ -151,15 +152,15 @@ const ownerController = (
 
     const getOwnerProfile= async(req:Request,res:Response,next:NextFunction)=>{
         try {
-            console.log("OWner Profile - req");
+            // console.log("OWner Profile - req");
             const ownerId = req.owner.id
-            console.log(ownerId,"ownerid get");
+            // console.log(ownerId,"ownerid get");
             
             const owner = await getOwner(
                 ownerId,
                 dbRepositoryOwner
             )
-            console.log(owner,"owner from db");
+            // console.log(owner,"owner from db");
             
             res.status(200).json({ success: true, owner});
         } catch (error) {
@@ -169,8 +170,8 @@ const ownerController = (
 
     const editOwnerProfile = async(req:Request,res:Response,next:NextFunction)=>{
         try {
-            console.log("Edit - req got");
-            console.log(req.body,"req b");
+            // console.log("Edit - req got");
+            // console.log(req.body,"req b");
             const ownerId = req.owner.id
             const updateData = req.body
             const owner = await updateOwner(ownerId,updateData,dbRepositoryOwner)
@@ -182,11 +183,11 @@ const ownerController = (
 
     const getVenues = async(req:Request,res:Response,next:NextFunction)=>{
         try {
-            console.log("get req");
+            // console.log("get req");
             const ownerId = req.params.ownerId
-            console.log(ownerId,"ownerId - contr");
+            // console.log(ownerId,"ownerId - contr");
             const venues = await findVenues(dbVenueRepository,ownerId)
-            console.log(venues,"venue - owner - get from db");
+            // console.log(venues,"venue - owner - get from db");
             
             return res.status(HttpStatus.OK).json({ success: true, venues });
         } catch (error) {
@@ -197,9 +198,9 @@ const ownerController = (
     const getVenueDetails = async(req:Request,res:Response,next:NextFunction)=>{
         try {
             const venueId = req.params.venueId
-            console.log(venueId,"parasm");
+            // console.log(venueId,"parasm");
             const venueDetails = await findVenueDetails(dbVenueRepository, venueId);
-            console.log(venueDetails, "venue details from db");
+            // console.log(venueDetails, "venue details from db");
             return res.status(HttpStatus.OK).json({ success: true, venueDetails });
         } catch (error) {
             next(error);
@@ -220,6 +221,59 @@ const ownerController = (
     };
 
 
+    const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) =>{
+        try {
+            const { venueId } = req.params; 
+            // console.log(venueId,"venueId - slot - got");   
+            const  timeSlotData  = req.body;
+            // console.log(timeSlotData,"timeslot data - got");
+            // console.log(req.body,"req.body - slot - got");
+            const newTimeSlots = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
+            res.status(HttpStatus.OK).json({
+                message: "Time slots saved successfully",
+                timeSlots: newTimeSlots,
+            });
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    const viewSlots = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { venueId } = req.params;
+            const timeSlots = await findTimeSlotsByVenueId(dbVenueRepository, venueId);
+            console.log(timeSlots,"slots-controller");
+            
+            return res.status(HttpStatus.OK).json({ success: true, timeSlots });
+        } catch (error) {
+            next(error);
+        }
+    };
+    
+
+
+    // const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) => {
+    //     try {
+    //       const { venueId } = req.params;
+    //       console.log(venueId, "venueId - slot - got");
+    //       const timeSlotData = req.body;
+    //       console.log(timeSlotData, "timeslot data - got");
+    //       console.log(req.body, "req.body - slot - got");
+      
+    //       const { savedTimeSlots, existingSlots } = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
+      
+    //       res.status(HttpStatus.OK).json({
+    //         message: "Time slots saved successfully",
+    //         savedTimeSlots,
+    //         duplicateSlots: existingSlots,
+    //       });
+    //     } catch (error) {
+    //       next(error);
+    //     }
+    //   };
+      
+
+
 
     return {
         registerOwner,
@@ -232,7 +286,9 @@ const ownerController = (
         editOwnerProfile,
         getVenues,
         getVenueDetails,
-        updateVenueDetails
+        updateVenueDetails,
+        saveTimeSlotsHandler,
+        viewSlots
     }
 }
 

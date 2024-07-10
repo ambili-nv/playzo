@@ -17,8 +17,9 @@ import {
      sendVerificationCode,
      verifyTokenAndPassword
     } from '../app/use-cases/user/auth/userAuth';
-import { getVenue } from "../app/use-cases/user/auth/userRead";
+import { getVenue,findTimeSlotsByVenueIdAndDate  } from "../app/use-cases/user/auth/userRead";
 import { getUser,updateUser } from "../app/use-cases/user/auth/profile";
+import { findVenueDetails } from "../app/use-cases/owner/venueUpload";
 
 
 const userController = (
@@ -213,6 +214,34 @@ const userController = (
         }
     }
 
+    const getSingleVenue = async(req:Request,res:Response,next:NextFunction)=>{
+        try {
+            const venueId = req.params.venueId
+            // console.log(venueId,"parasm");
+            const venueDetails = await findVenueDetails(dbRepositoryVenue, venueId);
+            console.log(venueDetails, "venue details from db");
+            return res.status(HttpStatus.OK).json({ success: true, venueDetails });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    // In your ownerController.js or similar file
+
+const viewSlotsByDate = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { venueId, date } = req.params;  // Assuming date is passed as a path parameter
+        console.log(venueId,date,"v and d get");
+        
+        const timeSlots = await findTimeSlotsByVenueIdAndDate(dbRepositoryVenue, venueId, date);
+        
+        return res.status(HttpStatus.OK).json({ success: true, timeSlots });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 
     return {
         registerUser,
@@ -224,7 +253,9 @@ const userController = (
         resetPassword,
         getAllVenues,
         getUserProfile,
-        editUserProfile
+        editUserProfile,
+        getSingleVenue,
+        viewSlotsByDate
     }
 }
 

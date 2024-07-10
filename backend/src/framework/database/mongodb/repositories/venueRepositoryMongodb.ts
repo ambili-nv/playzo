@@ -1,6 +1,7 @@
 import { VenueEntity } from "../../../../enitity/venueEntity";
 import venues from "../models/venues";
-
+import { TimeSlotEntity } from "../../../../enitity/slotsEntity";
+import slots from "../models/slots";
 export const venueRepositoryMongodb = ()=>{
 
 
@@ -31,13 +32,52 @@ export const venueRepositoryMongodb = ()=>{
         }
 
 
+        const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
+            const newTimeSlots = await slots.insertMany(timeSlots);
+            console.log(newTimeSlots,"slots db");
+            
+            return newTimeSlots;
+        };
+
+        const getTimeSlotsByVenueId = async (venueId: string) => {
+            const timeSlots = await slots.find({ venueId });
+            console.log(timeSlots,"view slots from db");
+            
+            return timeSlots;
+        };
+        
+
+        const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
+            const timeSlots = await slots.find({ venueId, date });
+            console.log(timeSlots, "view slots by date from db");
+            return timeSlots;
+        };
+        
+
+        // const findTimeSlots = async (venueId: string, startDate: string, endDate: string, timeSlots: TimeSlotEntity[]) => {
+        //     const existingSlots = await slots.find({
+        //       venueId,
+        //       startDate,
+        //       endDate,
+        //       $or: timeSlots.map(slot => ({
+        //         startTime: slot.startTime,
+        //         endTime: slot.endTime,
+        //       })),
+        //     });
+        //     return existingSlots;
+        //   };
+
     
 
         return{
             getVenuesByOwner,
             getVenueById,
             updateVenue,
-            getAllVenues
+            getAllVenues,
+            addTimeSlots,
+            getTimeSlotsByVenueId,
+            getTimeSlotsByVenueIdAndDate
+            // findTimeSlots
         }
     
 }

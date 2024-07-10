@@ -30,6 +30,9 @@ const userRoutes =()=>{
     router.get("/getvenues",controller.getAllVenues)
     router.get("/profile",authenticateUser,controller.getUserProfile)
     router.patch("/edit-profile",authenticateUser,controller.editUserProfile)
+    router.get("/single-venue/:venueId",controller.getSingleVenue)
+    router.get('/get-slots/:venueId/:date', controller.viewSlotsByDate);
+
 
     return router;
 }

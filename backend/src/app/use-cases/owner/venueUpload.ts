@@ -4,6 +4,7 @@ import { VenueEntity, createVenueEntity } from '../../../enitity/venueEntity';
 import CustomError from "../../../utils/customError";
 import { HttpStatus } from "../../../types/httpStatus";
 import { venueDbInterface} from "../../Interfaces/venueDbRepository";
+import { TimeSlotEntity,createTimeSlotEntity } from "../../../enitity/slotsEntity";
 
 export const uploadVenue = async (
     ownerId: string,
@@ -75,3 +76,88 @@ export const findVenueDetails = async (venueDbRepository: ReturnType<venueDbInte
             throw error; // Throw to be caught by controller's error handling middleware
         }
     };
+
+
+  export  const saveTimeSlots = async (
+        venueId: string,
+        timeSlotData: any,
+        venueRepository: ReturnType< venueDbInterface>
+    ) => {
+        // const { startDate, endDate, timeSlots } = timeSlotData;
+        const { date, timeSlots } = timeSlotData;
+        // console.log(startDate,endDate,timeSlots,"save time slots");
+        console.log(date,timeSlots,"save time slots");
+        
+        const timeSlotEntities: TimeSlotEntity[] = timeSlots.map((slot: any) =>
+            createTimeSlotEntity(
+                venueId, // Use venueId instead of ownerId
+                // startDate,
+                // endDate,
+                date,
+                slot.startTime,
+                slot.endTime
+            )
+        );
+    
+        const newTimeSlots = await venueRepository.addTimeSlots(timeSlotEntities);
+    
+        if (!newTimeSlots) {
+            throw new CustomError("Saving time slots failed", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    
+        return newTimeSlots;
+    };
+
+
+    export const findTimeSlotsByVenueId = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string) => {
+        try {
+            const timeSlots = await venueDbRepository.getTimeSlotsByVenueId(venueId);
+            return timeSlots;
+        } catch (error) {
+            throw error;
+        }
+    };
+    
+
+
+// export const saveTimeSlots = async (
+//     venueId: string,
+//     timeSlotData: any,
+//     venueRepository: ReturnType<venueDbInterface>
+//   ) => {
+//     const { startDate, endDate, timeSlots } = timeSlotData;
+//     console.log(startDate, endDate, timeSlots, "save time slots");
+  
+//     // Check for existing time slots
+//     const existingSlots = await venueRepository.findTimeSlots(venueId, startDate, endDate, timeSlots);
+  
+//     // Filter out existing time slots from new time slots
+//     //@ts-ignore
+//     const newTimeSlots = timeSlots.filter(slot => 
+//       !existingSlots.some(existingSlot => 
+//         existingSlot.startTime === slot.startTime && existingSlot.endTime === slot.endTime
+//       )
+//     );
+  
+//     // Create TimeSlotEntities for new time slots
+//     const timeSlotEntities: TimeSlotEntity[] = newTimeSlots.map((slot: any) =>
+//       createTimeSlotEntity(
+//         venueId,
+//         startDate,
+//         endDate,
+//         slot.startTime,
+//         slot.endTime
+//       )
+//     );
+  
+//     // Add new time slots to the database
+//     const savedTimeSlots = await venueRepository.addTimeSlots(timeSlotEntities);
+  
+//     return {
+//       savedTimeSlots,
+//       existingSlots,
+//     };
+//   };
+  
+
+    

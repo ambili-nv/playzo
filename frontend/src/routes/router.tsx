@@ -12,6 +12,7 @@ const UserBook = lazy(()=>import('../pages/User/Book'))
 const ForgotPassword = lazy(()=>import ('../pages/User/ForgotPAssword'))
 const ResetPassword = lazy(()=>import ('../pages/User/resetPassword'))
 const UserProfile = lazy(()=>import ('../pages/User/USerProfile'))
+const SingleVenuePage = lazy(()=>import ('../pages/User/singleVenuePage'))
 
             // Owner Routes
 
@@ -21,9 +22,11 @@ const OTP = lazy(()=>import('../pages/Owner/OwnerOtp'))
 const UploadVenues = lazy(()=>import('../pages/Owner/venues/uploadVenues'))   
 const HomePage = lazy(()=>import('../pages/Owner/Home'))  
 const OwnerProfile = lazy(()=>import ('../pages/Owner/OwnerProfile'))
-const Venues = lazy(()=>import('../pages/Owner/VenueDetails'))
-const OwnerVenuesList = lazy(()=>import('../pages/Owner/venuesList'))
-const VenueDetails = lazy(()=>import('../pages/Owner/VenueDetails'))
+const Venues = lazy(()=>import('../pages/Owner/venues/VenueDetails'))
+const OwnerVenuesList = lazy(()=>import('../pages/Owner/venues/venuesList'))
+const VenueDetails = lazy(()=>import('../pages/Owner/venues/VenueDetails'))
+const Slots = lazy(()=> import('../pages/Owner/venues/slotsPage'))
+const ViewSlotPage = lazy(()=> import('../pages/Owner/venues/viewSlotsPage'))
 
             // Admin Routes
 
@@ -45,6 +48,7 @@ export const MainRouter = () => {
         <Route path="/otp" element={<UserOTP/>}/>
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/reset-password/:id" element={<ResetPassword/>}/>
+        <Route path="/single-venue/:venueId" element={<SingleVenuePage/>}/>
         </Route>
 
         <Route path = "" element = {<ProtectRoute/>}>
@@ -66,6 +70,8 @@ export const MainRouter = () => {
         <Route path = "/owner/venue-details" element={<Venues/>}/>
         <Route path = "/owner/myvenue/:ownerId" element={<OwnerVenuesList/>}/>
         <Route path="/owner/edit-venue/:venueId" element={<VenueDetails />} />
+        <Route path="/owner/add-slot/:venueId" element={<Slots />} />
+        <Route path="/owner/view-slot/:venueId" element={<ViewSlotPage />} />
         </Route>
 
         {/* admin routes */}

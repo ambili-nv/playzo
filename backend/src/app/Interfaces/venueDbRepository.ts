@@ -1,5 +1,6 @@
 import { VenueEntity } from "../../enitity/venueEntity"
-import { venueRepositoryMongodbType } from "../../framework/database/mongodb/repositories/venueRepositoryMongodb"
+import { venueRepositoryMongodbType } from "../../framework/database/mongodb/repositories/venueRepositoryMongodb";
+import { TimeSlotEntity } from "../../enitity/slotsEntity";
 
 export const venueDbRepository = (
     repository : ReturnType<venueRepositoryMongodbType>
@@ -24,12 +25,33 @@ export const venueDbRepository = (
         }
     }
 
+
+// Repository Interface
+const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => await repository.addTimeSlots(timeSlots);
+// const  findTimeSlots= async (venueId: string, startDate: string, endDate: string, timeSlots: TimeSlotEntity[]) => await repository.findTimeSlots(venueId,startDate,endDate,timeSlots)
+
+const getTimeSlotsByVenueId = async (venueId: string) => await repository.getTimeSlotsByVenueId(venueId);
+
+// const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
+//     const timeSlots = await repository.getTimeSlotsByVenueIdAndDate({ venueId, date });
+//     return timeSlots;
+// };
+const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
+    const timeSlots = await repository.getTimeSlotsByVenueIdAndDate(venueId, date); // Pass arguments separately
+    return timeSlots;
+};
+
+
     
     return{
         getVenuesByOwner,
         getVenueById,
         updateVenue,
-        getAllVenues
+        getAllVenues,
+        addTimeSlots,
+        getTimeSlotsByVenueId,
+        getTimeSlotsByVenueIdAndDate
+        // findTimeSlots
     }
 }
 
