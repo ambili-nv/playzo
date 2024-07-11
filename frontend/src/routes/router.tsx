@@ -13,6 +13,8 @@ const ForgotPassword = lazy(()=>import ('../pages/User/ForgotPAssword'))
 const ResetPassword = lazy(()=>import ('../pages/User/resetPassword'))
 const UserProfile = lazy(()=>import ('../pages/User/USerProfile'))
 const SingleVenuePage = lazy(()=>import ('../pages/User/singleVenuePage'))
+// const paymentPage = lazy(()=>import ('../pages/User/paymentSuccess'))
+const PaymentPage = lazy(()=>import('../pages/User/paymentSuccess'))
 
             // Owner Routes
 
@@ -53,6 +55,8 @@ export const MainRouter = () => {
 
         <Route path = "" element = {<ProtectRoute/>}>
         <Route path="/user-profile" element={<UserProfile/>}/>
+        <Route path="/payment_status/:id" element={<PaymentPage/>}/>
+
         </Route>
 
         {/* Owner Routes */}

@@ -3,6 +3,7 @@ import { USER_API } from '../../constants';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 import axiosInstance from '../../utils/axiosInstance';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId, v
   const [availableSlots, setAvailableSlots] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (selectedDate) {
@@ -68,6 +70,13 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId, v
         if (result.error) {
           setError('Failed to initiate payment');
         }
+
+        const bookingId = response.data.booking.bookingId
+        console.log(response.data,"dataa");
+        Navigate({
+          to: `${USER_API}/payment_status/${bookingId}?success=true`,
+        });
+        
       }
     } catch (err) {
       setError('Error processing payment');
