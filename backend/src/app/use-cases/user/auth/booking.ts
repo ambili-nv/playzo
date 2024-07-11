@@ -27,7 +27,7 @@ export const createBooking = async (data: any,
 };
 
 
-const stripe = new Stripe("sk_test_51PaimnG8EaTCVCc3NGavGVvMCzXTACF41BI6zSJVd5wVQcTR1JB5E7cQn8zOD8cYfNjW4TkmuGMS61dkawv7W76r00pBRMB7u5");
+const stripe = new Stripe(configKeys.STRIPE_SECRET_KEY);
 
 export const createPayment = async (userName: string, email: string, bookingId: string, totalAmount: number) => {
     const customer = await stripe.customers.create({
