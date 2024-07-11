@@ -11,6 +11,7 @@ const configKeys = {
     ADMIN_EMAIL : process.env.ADMIN_EMAIL as string,
     ADMIN_PASSWORD : process.env.ADMIN_PASSWORD as string,
     CLIENT_ID : process.env.CLIENT_ID as string,
+    CLIENT_URL:"http://localhost:5173"
 }
 
 export default configKeys

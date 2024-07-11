@@ -260,3 +260,13 @@ export const verifyTokenAndPassword = async(
     );
     
 }
+
+
+export const getUserbyId = async (
+    id:string,
+    userRepository:ReturnType<userDbInterface>
+)=>{
+   const user =  await userRepository.getUserbyId(id)
+   console.log(user,"/////////////////");
+   return user;
+}

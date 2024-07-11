@@ -7,6 +7,9 @@ import userController from '../../../adaptors/userController'
 import { venueDbRepository } from "../../../app/Interfaces/venueDbRepository";
 import { venueRepositoryMongodb } from "../../database/mongodb/repositories/venueRepositoryMongodb";
 import { authenticateUser } from "../Middlewares/authMiddleware";
+import bookingController from "../../../adaptors/bookingController";
+import { bookingDbRepository } from "../../../app/Interfaces/bookingDbRepository";
+import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/bookingRepositoryMongodb";
 const userRoutes =()=>{
     const router = express.Router();
     const controller: any= userController(
@@ -16,6 +19,16 @@ const userRoutes =()=>{
         authService,
         venueDbRepository,
         venueRepositoryMongodb
+        );
+
+
+        const booking_Controller:any = bookingController(
+            userDbRepository,
+            userRepositoryMongodb,
+            venueDbRepository,
+            venueRepositoryMongodb,
+            bookingDbRepository,
+            bookingRepositoryMongodb
         )
 
 
@@ -32,6 +45,10 @@ const userRoutes =()=>{
     router.patch("/edit-profile",authenticateUser,controller.editUserProfile)
     router.get("/single-venue/:venueId",controller.getSingleVenue)
     router.get('/get-slots/:venueId/:date', controller.viewSlotsByDate);
+
+
+
+    router.post('/create-checkout-session',authenticateUser,booking_Controller.bookVenue)
 
 
     return router;

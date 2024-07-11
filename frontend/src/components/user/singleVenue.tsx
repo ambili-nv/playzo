@@ -1,4 +1,3 @@
-// // VenuePage.tsx
 // import React, { useState, useEffect } from 'react';
 // import axios from 'axios';
 // import { useParams } from 'react-router-dom';
@@ -119,29 +118,24 @@
 //               )}
 //             </div>
 //           </div>
-//           <div className="container mx-auto px-4 py-8 mt-12 bg-gray-100">
-//     {venue ? (
-//       <>
-//         // Existing code...
-//         <div className="flex justify-end mt-4 h-200">
-//           <button
-//             onClick={() => setIsBookingModalOpen(true)}
-//             className="px-4 py-2 rounded-full text-white font-semibold shadow-md transition-all duration-300 ease-in-out bg-green-500 hover:bg-green-600"
-//           >
-//             Book Now
-//           </button>
-//         </div>
-//         <BookingModal
-//           isOpen={isBookingModalOpen}
-//           onClose={() => setIsBookingModalOpen(false)}
-//           venueId={venue._id}
-//         />
-//       </>
-//     ) : (
-//       <div>No venue details available.</div>
-//     )}
-//   </div>
-
+//           <div className="flex justify-end mt-4 h-200">
+//             <button
+//               onClick={() => setIsBookingModalOpen(true)}
+//               className="px-4 py-2 rounded-full text-white font-semibold shadow-md transition-all duration-300 ease-in-out bg-green-500 hover:bg-green-600"
+//             >
+//               Book Now
+//             </button>
+//           </div>
+//           <BookingModal
+//             isOpen={isBookingModalOpen}
+//             onClose={() => setIsBookingModalOpen(false)}
+//             venueId={venue._id}
+//           />
+//         </>
+//       ) : (
+//         <div>No venue details available.</div>
+//       )}
+//     </div>
 //   );
 // };
 
@@ -151,7 +145,7 @@
 
 
 
-// VenuePage.tsx
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -284,6 +278,7 @@ const VenuePage: React.FC = () => {
             isOpen={isBookingModalOpen}
             onClose={() => setIsBookingModalOpen(false)}
             venueId={venue._id}
+            venuePrice={venue.price}
           />
         </>
       ) : (

@@ -1,17 +1,17 @@
-
-
-
 import React, { useState, useEffect } from 'react';
 import { USER_API } from '../../constants';
 import axios from 'axios';
+import { loadStripe } from '@stripe/stripe-js';
+import axiosInstance from '../../utils/axiosInstance';
 
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   venueId: string;
+  venuePrice: number;
 }
 
-const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId }) => {
+const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId, venuePrice }) => {
   const [selectedDate, setSelectedDate] = useState('');
   const [availableSlots, setAvailableSlots] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -23,8 +23,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId })
         setLoading(true);
         try {
           const response = await axios.get(`${USER_API}/get-slots/${venueId}/${selectedDate}`);
-          console.log(response.data.timeSlots, "slots user");
-          setAvailableSlots(response.data.timeSlots); // Set the actual timeSlots array
+          setAvailableSlots(response.data.timeSlots);
         } catch (err) {
           setError('Error fetching available slots');
         } finally {
@@ -40,10 +39,39 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId })
     setSelectedDate(e.target.value);
   };
 
-  const handleBooking = (slot: any) => {
-    // Handle booking logic
-    console.log(`Booking slot: ${slot.startTime} - ${slot.endTime} on date: ${selectedDate}`);
-    onClose();
+  const handleBooking = async (slot: any) => {
+
+    // console.log("Venue ID:", venueId);
+    // console.log("Slot ID:", slot._id);
+    // console.log("Selected Date:", selectedDate);
+    // console.log("Venue Price:", venuePrice);
+
+
+    const stripe = await loadStripe('pk_test_51PaimnG8EaTCVCc3V37VRPWK4CHnrsjvdwOmKNyu6SZYIUJGBzPSJIuROfma8eqnXpQfQTOmBonXaPtiCUZBCFkx00OxC7tApr');
+
+    try {
+      const response = await axiosInstance.post(`${USER_API}/create-checkout-session`, {
+        venueId,
+        slotId: slot._id,
+        selectedDate,
+        fees: venuePrice,
+        paymentStatus: "pending",
+        appoinmentStatus: "pending",
+      });
+
+      if (response.data.sessionId) {
+        //@ts-ignore
+        const result = await stripe.redirectToCheckout({
+          sessionId: response.data.sessionId,
+        });
+
+        if (result.error) {
+          setError('Failed to initiate payment');
+        }
+      }
+    } catch (err) {
+      setError('Error processing payment');
+    }
   };
 
   if (!isOpen) return null;
@@ -75,10 +103,9 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId })
                 <button
                   key={slot._id}
                   onClick={() => handleBooking(slot)}
-                  className="block w-full p-4 bg-green-100 rounded-lg text-left transition duration-300 ease-in-out transform hover:scale-105"
+                  className="block w-full p-4 bg-green-100 rounded-lg text-left transition duration-300 ease-in-out transform hover:bg-green-200"
                 >
-                  <div className="text-lg font-semibold">{slot.startTime} - {slot.endTime}</div>
-                  <div className="text-sm text-green-700">{slot.status}</div>
+                  {slot.startTime} - {slot.endTime}
                 </button>
               ))
             ) : (
@@ -89,7 +116,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId })
         <div className="mt-4 text-right">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-full text-white font-semibold shadow-md transition-all duration-300 ease-in-out bg-gray-500 hover:bg-gray-600"
+            className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition-all duration-300"
           >
             Close
           </button>
