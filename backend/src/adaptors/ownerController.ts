@@ -221,20 +221,19 @@ const ownerController = (
     };
 
 
+
+
     const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) =>{
         try {
             const { venueId } = req.params; 
-            // console.log(venueId,"venueId - slot - got");   
             const  timeSlotData  = req.body;
-            // console.log(timeSlotData,"timeslot data - got");
-            // console.log(req.body,"req.body - slot - got");
-            const newTimeSlots = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
+            const newTimeSlot = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
             res.status(HttpStatus.OK).json({
-                message: "Time slots saved successfully",
-                timeSlots: newTimeSlots,
+                message: "Time slot saved successfully",
+                timeSlot: newTimeSlot,
             });
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 
@@ -251,30 +250,7 @@ const ownerController = (
     };
     
 
-
-    // const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) => {
-    //     try {
-    //       const { venueId } = req.params;
-    //       console.log(venueId, "venueId - slot - got");
-    //       const timeSlotData = req.body;
-    //       console.log(timeSlotData, "timeslot data - got");
-    //       console.log(req.body, "req.body - slot - got");
-      
-    //       const { savedTimeSlots, existingSlots } = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
-      
-    //       res.status(HttpStatus.OK).json({
-    //         message: "Time slots saved successfully",
-    //         savedTimeSlots,
-    //         duplicateSlots: existingSlots,
-    //       });
-    //     } catch (error) {
-    //       next(error);
-    //     }
-    //   };
-      
-
-
-
+    
     return {
         registerOwner,
         VerifyOTP,

@@ -27,7 +27,15 @@ export const venueDbRepository = (
 
 
 // Repository Interface
-const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => await repository.addTimeSlots(timeSlots);
+// const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => await repository.addTimeSlots(timeSlots);
+const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
+    const newTimeSlot = await repository.addTimeSlots(timeSlots);
+    return newTimeSlot;
+};
+
+
+
+
 // const  findTimeSlots= async (venueId: string, startDate: string, endDate: string, timeSlots: TimeSlotEntity[]) => await repository.findTimeSlots(venueId,startDate,endDate,timeSlots)
 
 const getTimeSlotsByVenueId = async (venueId: string) => await repository.getTimeSlotsByVenueId(venueId);

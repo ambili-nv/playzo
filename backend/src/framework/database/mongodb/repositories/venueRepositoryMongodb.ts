@@ -32,12 +32,12 @@ export const venueRepositoryMongodb = ()=>{
         }
 
 
-        const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
-            const newTimeSlots = await slots.insertMany(timeSlots);
-            console.log(newTimeSlots,"slots db");
+        // const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
+        //     const newTimeSlots = await slots.insertMany(timeSlots);
+        //     console.log(newTimeSlots,"slots db");
             
-            return newTimeSlots;
-        };
+        //     return newTimeSlots;
+        // };
 
         const getTimeSlotsByVenueId = async (venueId: string) => {
             const timeSlots = await slots.find({ venueId });
@@ -45,6 +45,51 @@ export const venueRepositoryMongodb = ()=>{
             
             return timeSlots;
         };
+        
+
+        // const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
+        //     // Loop through each time slot to check for existing slots
+        //     for (const slot of timeSlots) {
+        //         const existingSlot = await slots.findOne({
+        //             venueId: slot.venueId,
+        //             date: slot.date,
+        //             startTime: slot.startTime,
+        //             endTime: slot.endTime,
+        //         });
+        
+        //         if (existingSlot) {
+        //             throw new Error(`Slot from ${slot.startTime} to ${slot.endTime} on ${slot.date} already exists.`);
+        //         }
+        //     }
+        
+        //     const newTimeSlots = await slots.insertMany(timeSlots);
+        //     console.log(newTimeSlots, "slots db");
+        
+        //     return newTimeSlots;
+        // };
+
+
+        const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
+            for (const slot of timeSlots) {
+                const existingSlots = await slots.find({
+                    venueId: slot.venueId,
+                    date: slot.date,
+                    $or: [
+                        { startTime: { $lt: slot.endTime }, endTime: { $gt: slot.startTime } }
+                    ]
+                });
+        
+                if (existingSlots.length > 0) {
+                    throw new Error("Please select another slot");
+                }
+            }
+        
+            const newTimeSlots = await slots.insertMany(timeSlots);
+            console.log(newTimeSlots, "slots db");
+        
+            return newTimeSlots;
+        };
+        
         
 
         const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
