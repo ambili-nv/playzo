@@ -25,8 +25,6 @@ const userRoutes =()=>{
         const booking_Controller:any = bookingController(
             userDbRepository,
             userRepositoryMongodb,
-            venueDbRepository,
-            venueRepositoryMongodb,
             bookingDbRepository,
             bookingRepositoryMongodb
         )

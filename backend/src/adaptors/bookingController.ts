@@ -1,5 +1,3 @@
-import { venueDbInterface } from "../app/Interfaces/venueDbRepository"
-import { venueRepositoryMongodbType } from "../framework/database/mongodb/repositories/venueRepositoryMongodb"
 import { userDbInterface } from "../app/Interfaces/userDbRepository"
 import { userRepositoryMongodbType } from "../framework/database/mongodb/repositories/userRepositoryMongodb"
 import { bookingDbRepositoryInterface } from "../app/Interfaces/bookingDbRepository"
@@ -9,99 +7,89 @@ import { HttpStatus } from "../types/httpStatus"
 import { getUserbyId } from "../app/use-cases/user/auth/userAuth"
 import { createBooking,createPayment,updateSlotStatus } from "../app/use-cases/user/auth/booking"
 
+// const bookingController = (
+//     userDbRepository: userDbInterface,
+//     userRepositoryImpl: userRepositoryMongodbType,
+//     bookingDbRepository: bookingDbRepositoryInterface,
+//     bookingDbRepositoryImpl: bookingRepositoryMongodbType,
+// )=>{
+//     const dbRepositoryUser = userDbRepository(userRepositoryImpl());
+//     const dbBookingRepository = bookingDbRepository(bookingDbRepositoryImpl());
+
+
+
+
+//     const bookVenue = async (req: Request, res: Response, next: NextFunction) => {
+//         try {
+//           const data = req.body;
+//           const userId = req.user.id;
+      
+//           const booking = await createBooking(data, userId, dbBookingRepository);
+//           const user = await getUserbyId(userId, dbRepositoryUser);
+//          //@ts-ignore
+//           const sessionId = await createPayment(user.name, user.email, booking.id, booking.fees);
+      
+//           // Update slot status
+//           await updateSlotStatus(data.slotId, 'booked', dbBookingRepository);
+      
+//           res.status(HttpStatus.OK).json({
+//             success: true,
+//             message: "Booking created successfully",
+//             sessionId,
+//           });
+//         } catch (error) {
+//           next(error);
+//         }
+//       };
+      
+
+//     return {
+//         bookVenue,
+//     }
+// }
+
+
+// export default bookingController
+
+
+
+
+
 const bookingController = (
     userDbRepository: userDbInterface,
     userRepositoryImpl: userRepositoryMongodbType,
-    venueDbRepository:venueDbInterface,
-    venueRepositoryImpl:venueRepositoryMongodbType,
     bookingDbRepository: bookingDbRepositoryInterface,
     bookingDbRepositoryImpl: bookingRepositoryMongodbType,
-)=>{
+) => {
     const dbRepositoryUser = userDbRepository(userRepositoryImpl());
-    const dbRepositoryVenue = venueDbRepository(venueRepositoryImpl());
     const dbBookingRepository = bookingDbRepository(bookingDbRepositoryImpl());
-
-    // const bookAppoinment = async (req: Request, res: Response, next: NextFunction)=>{
-    //     try {
-    //         const data = req.body;
-    //         console.log(data,"data p");
-    //         const userId = req.user.id;
-    //         console.log(userId,"user p");
-            
-
-    //         const createBooking = await createBooking(
-    //             data,
-    //             userId,
-    //             dbBookingRepository,
-    //             dbRepositoryVenue
-    //         )
-    //     } catch (error) {
-            
-    //     }
-    // }
-
-    //  const bookVenue = async (req: Request, res: Response, next: NextFunction) => {
-    //     try {
-    //         const data = req.body;
-    //         const userId = req.user.id;
-    
- 
-    
-    //         const booking = await createBooking(data, userId,dbBookingRepository);
-    //         console.log(booking,"bookingggggggggggg");
-            
-    
-    //         const user = await getUserbyId(userId,dbRepositoryUser);
-    //         console.log(user,"userrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-            
-    //         // console.log(user.name);
-            
-            
-    //         //@ts-ignore
-    //         const sessionId = await createPayment(user.name, user.email, booking.id, booking.fees);
-            
-    //            // Update slot status
-    //          await updateSlotStatus(data.slotId, 'booked');
-
-    //         res.status(HttpStatus.OK).json({
-    //             success: true,
-    //             message: "Booking created successfully",
-    //             sessionId,
-    //         });
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // };
-
 
     const bookVenue = async (req: Request, res: Response, next: NextFunction) => {
         try {
-          const data = req.body;
-          const userId = req.user.id;
-      
-          const booking = await createBooking(data, userId, dbBookingRepository);
-          const user = await getUserbyId(userId, dbRepositoryUser);
-         //@ts-ignore
-          const sessionId = await createPayment(user.name, user.email, booking.id, booking.fees);
-      
-          // Update slot status
-          await updateSlotStatus(data.slotId, 'booked', dbBookingRepository);
-      
-          res.status(HttpStatus.OK).json({
-            success: true,
-            message: "Booking created successfully",
-            sessionId,
-          });
+            const data = req.body;
+            const userId = req.user.id;
+
+            const booking = await createBooking(data, userId, dbBookingRepository);
+            const user = await getUserbyId(userId, dbRepositoryUser);
+            //@ts-ignore
+            const sessionId = await createPayment(user.name, user.email, booking.id, booking.fees);
+
+            // Update slot status
+            await updateSlotStatus(data.slotId, 'booked', dbBookingRepository);
+
+            res.status(HttpStatus.OK).json({
+                success: true,
+                message: "Booking created successfully",
+                sessionId,
+            });
         } catch (error) {
-          next(error);
+            next(error);
         }
-      };
-      
+    };
 
     return {
         bookVenue,
     }
 }
 
-
-export default bookingController
+export default bookingController;
