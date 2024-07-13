@@ -12,10 +12,16 @@ export const bookingDbRepository = (
     }
 
 
+    const updateSlotStatus = async (slotId: string, status: string) => {
+        const result = await repository.updateSlotStatus(slotId, status);
+        return result;
+      };
+
+
 
     return {
         createbooking,
-
+        updateSlotStatus
     }
 }
 

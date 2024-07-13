@@ -169,45 +169,40 @@ export const saveTimeSlots = async (
     };
     
 
+    export const findTimeSlotsByVenueIdAndDate = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string, date: string) => {
+        try {
+            const timeSlots = await venueDbRepository.getTimeSlotsByVenueIdAndDate(venueId, date);
+            return timeSlots;
+        } catch (error) {
+            throw error;
+        }
+    };
 
-// export const saveTimeSlots = async (
-//     venueId: string,
-//     timeSlotData: any,
-//     venueRepository: ReturnType<venueDbInterface>
-//   ) => {
-//     const { startDate, endDate, timeSlots } = timeSlotData;
-//     console.log(startDate, endDate, timeSlots, "save time slots");
-  
-//     // Check for existing time slots
-//     const existingSlots = await venueRepository.findTimeSlots(venueId, startDate, endDate, timeSlots);
-  
-//     // Filter out existing time slots from new time slots
-//     //@ts-ignore
-//     const newTimeSlots = timeSlots.filter(slot => 
-//       !existingSlots.some(existingSlot => 
-//         existingSlot.startTime === slot.startTime && existingSlot.endTime === slot.endTime
-//       )
-//     );
-  
-//     // Create TimeSlotEntities for new time slots
-//     const timeSlotEntities: TimeSlotEntity[] = newTimeSlots.map((slot: any) =>
-//       createTimeSlotEntity(
-//         venueId,
-//         startDate,
-//         endDate,
-//         slot.startTime,
-//         slot.endTime
-//       )
-//     );
-  
-//     // Add new time slots to the database
-//     const savedTimeSlots = await venueRepository.addTimeSlots(timeSlotEntities);
-  
-//     return {
-//       savedTimeSlots,
-//       existingSlots,
-//     };
-//   };
+    export const findAllTimeSlotsByVenueIdAndDate = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string, date: string) => {
+        try {
+            const timeSlots = await venueDbRepository.getAllTimeSlotsByVenueIdAndDate(venueId, date);
+            return timeSlots;
+        } catch (error) {
+            throw error;
+        }
+    };
+
+
+    export const deleteTimeSlotByVenueIdAndDate = async (venueDbRepository: { deleteTimeSlotByVenueIdAndDate: (arg0: any, arg1: any, arg2: any, arg3: any) => any; }, venueId: any, date: any, startTime: any, endTime: any) => {
+        try {
+            await venueDbRepository.deleteTimeSlotByVenueIdAndDate(venueId, date, startTime, endTime);
+        } catch (error) {
+            throw error;
+        }
+    };
+    
+
+
+    
+
+
+
+
   
 
     

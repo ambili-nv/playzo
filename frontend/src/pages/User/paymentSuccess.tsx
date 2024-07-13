@@ -95,7 +95,7 @@ const PaymentSuccess = () => {
               </svg>
               <h2 className="text-2xl font-bold">Payment Successful!</h2>
               <p className="mt-2">Your payment was successful. Thank you for your purchase!</p>
-              <p className="mt-2 font-medium">Your booking ID is: {id}</p>
+              {/* <p className="mt-2 font-medium">Your booking ID is: {id}</p> */}
               <button
                 className="mt-5 px-6 py-2 bg-green-500 text-white font-bold rounded-lg hover:bg-green-600"
                 onClick={() => window.location.href = "/"}

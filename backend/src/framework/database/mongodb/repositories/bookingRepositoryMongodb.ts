@@ -1,4 +1,5 @@
 import Booking from "../models/Booking";
+import slots from "../models/slots";
 import { BookingEntityType } from "../../../../enitity/bookingEntity";
 export const bookingRepositoryMongodb = ()=>{
  const createBooking = async (data: BookingEntityType) => {
@@ -14,9 +15,14 @@ export const bookingRepositoryMongodb = ()=>{
         });
     }
 
+    const updateSlotStatus = async (slotId: string, status: string) => {
+        return await slots.findByIdAndUpdate(slotId, { status });
+      };
+
 
     return {
         createBooking,
+        updateSlotStatus
     }
 }
 

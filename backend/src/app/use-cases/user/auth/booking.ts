@@ -1,6 +1,5 @@
 import bookingEntity, { BookingEntityType } from '../../../../enitity/bookingEntity';
 import { bookingDbRepositoryInterface } from '../../../Interfaces/bookingDbRepository';
-import { venueDbRepository,venueDbInterface } from '../../../Interfaces/venueDbRepository';
 import Stripe from "stripe";
 import configKeys from '../../../../config';
 
@@ -53,3 +52,13 @@ export const createPayment = async (userName: string, email: string, bookingId: 
 
     return session.id;
 };
+
+
+export const updateSlotStatus = async (
+    slotId: string,
+    status: string,
+    bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
+  ) => {
+    const result = await bookingDbRepository.updateSlotStatus(slotId, status);
+    return result;
+  };

@@ -14,7 +14,7 @@ import {
     updateOwner
 } from '../app/use-cases/owner/ownerAuth'
 
-import { uploadVenue,findVenues,findVenueDetails,updateVenue,saveTimeSlots,findTimeSlotsByVenueId } from "../app/use-cases/owner/venueUpload";
+import { uploadVenue,findVenues,findVenueDetails,updateVenue,saveTimeSlots,findAllTimeSlotsByVenueIdAndDate,deleteTimeSlotByVenueIdAndDate } from "../app/use-cases/owner/venueUpload";
 
 import { HttpStatus } from "../types/httpStatus";
 import { venueDbInterface } from "../app/Interfaces/venueDbRepository";
@@ -221,36 +221,58 @@ const ownerController = (
     };
 
 
-
-
     const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) =>{
         try {
             const { venueId } = req.params; 
+            // console.log(venueId,"venueId - slot - got");   
             const  timeSlotData  = req.body;
-            const newTimeSlot = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
+            // console.log(timeSlotData,"timeslot data - got");
+            // console.log(req.body,"req.body - slot - got");
+            const newTimeSlots = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
             res.status(HttpStatus.OK).json({
-                message: "Time slot saved successfully",
-                timeSlot: newTimeSlot,
+                message: "Time slots saved successfully",
+                timeSlots: newTimeSlots,
             });
         } catch (error) {
-            next(error);
+            next(error)
         }
     }
 
-    const viewSlots = async (req: Request, res: Response, next: NextFunction) => {
+
+    
+    const viewAllSlotsByDate = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { venueId } = req.params;
-            const timeSlots = await findTimeSlotsByVenueId(dbVenueRepository, venueId);
-            console.log(timeSlots,"slots-controller");
-            
+            const { venueId, date } = req.params; // Assuming date is passed as a path parameter
+            console.log(venueId, date, "venueId and date received");
+    
+            const timeSlots = await findAllTimeSlotsByVenueIdAndDate(dbVenueRepository, venueId, date);
+    
             return res.status(HttpStatus.OK).json({ success: true, timeSlots });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+
+     const deleteSlot = async (req: Request, res: Response, next: NextFunction)=> {
+        const { venueId } = req.params;
+        const { date, startTime, endTime } = req.body;
+    
+        try {
+            await deleteTimeSlotByVenueIdAndDate(dbVenueRepository, venueId, date, startTime, endTime);
+            return res.status(200).json({ success: true, message: 'Time slot deleted successfully' });
         } catch (error) {
             next(error);
         }
     };
     
 
-    
+
+
+      
+
+
+
     return {
         registerOwner,
         VerifyOTP,
@@ -264,7 +286,8 @@ const ownerController = (
         getVenueDetails,
         updateVenueDetails,
         saveTimeSlotsHandler,
-        viewSlots
+        viewAllSlotsByDate,
+        deleteSlot
     }
 }
 

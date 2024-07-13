@@ -19,6 +19,25 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId, v
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   if (selectedDate) {
+  //     const fetchAvailableSlots = async () => {
+  //       setLoading(true);
+  //       try {
+  //         const response = await axios.get(`${USER_API}/get-slots/${venueId}/${selectedDate}`);
+  //         setAvailableSlots(response.data.timeSlots);
+  //       } catch (err) {
+  //         setError('Error fetching available slots');
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     };
+
+  //     fetchAvailableSlots();
+  //   }
+  // }, [selectedDate, venueId]);
+
+
   useEffect(() => {
     if (selectedDate) {
       const fetchAvailableSlots = async () => {
@@ -32,25 +51,62 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId, v
           setLoading(false);
         }
       };
-
+  
       fetchAvailableSlots();
     }
   }, [selectedDate, venueId]);
+  
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(e.target.value);
   };
 
-  const handleBooking = async (slot: any) => {
+  // const handleBooking = async (slot: any) => {
 
-    // console.log("Venue ID:", venueId);
-    // console.log("Slot ID:", slot._id);
-    // console.log("Selected Date:", selectedDate);
-    // console.log("Venue Price:", venuePrice);
+  //   // console.log("Venue ID:", venueId);
+  //   // console.log("Slot ID:", slot._id);
+  //   // console.log("Selected Date:", selectedDate);
+  //   // console.log("Venue Price:", venuePrice);
 
 
+  //   const stripe = await loadStripe('pk_test_51PaimnG8EaTCVCc3V37VRPWK4CHnrsjvdwOmKNyu6SZYIUJGBzPSJIuROfma8eqnXpQfQTOmBonXaPtiCUZBCFkx00OxC7tApr');
+
+  //   try {
+  //     const response = await axiosInstance.post(`${USER_API}/create-checkout-session`, {
+  //       venueId,
+  //       slotId: slot._id,
+  //       selectedDate,
+  //       fees: venuePrice,
+  //       paymentStatus: "pending",
+  //       appoinmentStatus: "pending",
+  //     });
+
+  //     if (response.data.sessionId) {
+  //       //@ts-ignore
+  //       const result = await stripe.redirectToCheckout({
+  //         sessionId: response.data.sessionId,
+  //       });
+
+  //       if (result.error) {
+  //         setError('Failed to initiate payment');
+  //       }
+
+  //       const bookingId = response.data.booking.bookingId
+  //       console.log(response.data,"dataa");
+  //       Navigate({
+  //         to: `${USER_API}/payment_status/${bookingId}?success=true`,
+  //       });
+        
+  //     }
+  //   } catch (err) {
+  //     setError('Error processing payment');
+  //   }
+  // };
+
+
+  const handleBooking = async (slot:any) => {
     const stripe = await loadStripe('pk_test_51PaimnG8EaTCVCc3V37VRPWK4CHnrsjvdwOmKNyu6SZYIUJGBzPSJIuROfma8eqnXpQfQTOmBonXaPtiCUZBCFkx00OxC7tApr');
-
+  
     try {
       const response = await axiosInstance.post(`${USER_API}/create-checkout-session`, {
         venueId,
@@ -58,25 +114,25 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId, v
         selectedDate,
         fees: venuePrice,
         paymentStatus: "pending",
-        appoinmentStatus: "pending",
+        bookingStatus: "pending",
       });
-
+  
       if (response.data.sessionId) {
         //@ts-ignore
-        const result = await stripe.redirectToCheckout({
-          sessionId: response.data.sessionId,
-        });
-
+        const result = await stripe.redirectToCheckout({ sessionId: response.data.sessionId });
+  
         if (result.error) {
           setError('Failed to initiate payment');
+        } else {
+          // Update slot status to booked
+          await axiosInstance.post(`${USER_API}/update-slot-status`, {
+            slotId: slot._id,
+            status: 'booked'
+          });
+  
+          const bookingId = response.data.booking.bookingId;
+          navigate(`/payment_status/${bookingId}?success=true`);
         }
-
-        const bookingId = response.data.booking.bookingId
-        console.log(response.data,"dataa");
-        Navigate({
-          to: `${USER_API}/payment_status/${bookingId}?success=true`,
-        });
-        
       }
     } catch (err) {
       setError('Error processing payment');

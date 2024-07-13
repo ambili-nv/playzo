@@ -7,7 +7,6 @@ export const venueDbRepository = (
 )=>{
     const getVenuesByOwner = async (ownerId: string) => {
         const venues = await repository.getVenuesByOwner(ownerId);
-        // console.log(venues, "venues db repo");
         return venues;
     };
 
@@ -26,8 +25,6 @@ export const venueDbRepository = (
     }
 
 
-// Repository Interface
-// const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => await repository.addTimeSlots(timeSlots);
 const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
     const newTimeSlot = await repository.addTimeSlots(timeSlots);
     return newTimeSlot;
@@ -36,18 +33,27 @@ const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
 
 
 
-// const  findTimeSlots= async (venueId: string, startDate: string, endDate: string, timeSlots: TimeSlotEntity[]) => await repository.findTimeSlots(venueId,startDate,endDate,timeSlots)
 
 const getTimeSlotsByVenueId = async (venueId: string) => await repository.getTimeSlotsByVenueId(venueId);
 
-// const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
-//     const timeSlots = await repository.getTimeSlotsByVenueIdAndDate({ venueId, date });
-//     return timeSlots;
-// };
+
 const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
     const timeSlots = await repository.getTimeSlotsByVenueIdAndDate(venueId, date); // Pass arguments separately
     return timeSlots;
 };
+
+
+const getAllTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
+    const timeSlots = await repository.getAllTimeSlotsByVenueIdAndDate(venueId, date); // Pass arguments separately
+    return timeSlots;
+};
+
+//@ts-ignore
+const deleteTimeSlotByVenueIdAndDate = async (venueId, date, startTime, endTime) => {
+    const result = await repository.deleteTimeSlotByVenueIdAndDate(venueId, date, startTime, endTime);
+    return result;
+};
+
 
 
     
@@ -58,8 +64,9 @@ const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
         getAllVenues,
         addTimeSlots,
         getTimeSlotsByVenueId,
-        getTimeSlotsByVenueIdAndDate
-        // findTimeSlots
+        getTimeSlotsByVenueIdAndDate,
+        getAllTimeSlotsByVenueIdAndDate,
+        deleteTimeSlotByVenueIdAndDate
     }
 }
 
