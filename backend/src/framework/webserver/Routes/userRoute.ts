@@ -47,7 +47,8 @@ const userRoutes =()=>{
 
 
     router.post('/create-checkout-session',authenticateUser,booking_Controller.bookVenue)
-
+    router.patch('/payment/status/:id',authenticateUser,booking_Controller.updateStatus)
+    
 
     return router;
 }

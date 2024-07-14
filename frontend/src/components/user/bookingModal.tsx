@@ -45,40 +45,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId, v
 
 
 
-  // const handleBooking = async (slot:any) => {
-  //   const stripe = await loadStripe('pk_test_51PaimnG8EaTCVCc3V37VRPWK4CHnrsjvdwOmKNyu6SZYIUJGBzPSJIuROfma8eqnXpQfQTOmBonXaPtiCUZBCFkx00OxC7tApr');
-  
-  //   try {
-  //     const response = await axiosInstance.post(`${USER_API}/create-checkout-session`, {
-  //       venueId,
-  //       slotId: slot._id,
-  //       selectedDate,
-  //       fees: venuePrice,
-  //       paymentStatus: "pending",
-  //       bookingStatus: "pending",
-  //     });
-  
-  //     if (response.data.sessionId) {
-  //       //@ts-ignore
-  //       const result = await stripe.redirectToCheckout({ sessionId: response.data.sessionId });
-  
-  //       if (result.error) {
-  //         setError('Failed to initiate payment');
-  //       } else {
-  //         // Update slot status to booked
-  //         await axiosInstance.post(`${USER_API}/update-slot-status`, {
-  //           slotId: slot._id,
-  //           status: 'booked'
-  //         });
-  
-  //         const bookingId = response.data.booking.bookingId;
-  //         navigate(`/payment_status/${bookingId}?success=true`);
-  //       }
-  //     }
-  //   } catch (err) {
-  //     setError('Error processing payment');
-  //   }
-  // };
+
 
   const handleBooking = async (slot: any) => {
     const stripe = await loadStripe('pk_test_51PaimnG8EaTCVCc3V37VRPWK4CHnrsjvdwOmKNyu6SZYIUJGBzPSJIuROfma8eqnXpQfQTOmBonXaPtiCUZBCFkx00OxC7tApr');
@@ -171,3 +138,5 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId, v
 };
 
 export default BookingModal;
+
+
