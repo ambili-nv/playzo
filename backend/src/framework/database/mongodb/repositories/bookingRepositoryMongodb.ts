@@ -30,11 +30,28 @@ export const bookingRepositoryMongodb = () => {
         return await Booking.findByIdAndUpdate(id,{bookingStatus:"Confirmed"})
     }
 
+    // const bookingHistory = async (userId: string) => {
+    //     const bookings = await Booking.find({ userId }).exec();
+    //     console.log(bookings,"bookings db");
+        
+    //     return bookings;
+    // };
+
+
+    const bookingHistory = async (userId: string) => {
+        const bookings = await Booking.find({ userId })
+            .populate('venueId', 'name') // Populate the venueId with the name field
+            .exec();
+        console.log(bookings, "bookings db");
+        return bookings;
+    };
+
     return {
         createBooking,
         updateSlotStatus,
         changePaymentStatus,
-        changeBookingStatus
+        changeBookingStatus,
+        bookingHistory
     }
 }
 

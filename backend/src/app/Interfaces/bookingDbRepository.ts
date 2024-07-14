@@ -24,11 +24,17 @@ export const bookingDbRepository = (
         await repository.changeBookingStatus(id,updatingData)
      }
 
+     const bookingHistory = async (userId: string) => {
+        const bookings = await repository.bookingHistory(userId);
+        return bookings;
+    };
+
     return {
         createbooking,
         updateSlotStatus,
         changePaymentStatus,
-        changeBookingStatus
+        changeBookingStatus,
+        bookingHistory
     }
 }
 

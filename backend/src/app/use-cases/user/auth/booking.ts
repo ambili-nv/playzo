@@ -94,4 +94,9 @@ export const updateBookingStatus = async (
 }
 
 
+export const fetchBookingHistory = async (userId: string, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
+    const bookings = await bookingDbRepository.bookingHistory(userId);
+    return bookings;
+};
+
 

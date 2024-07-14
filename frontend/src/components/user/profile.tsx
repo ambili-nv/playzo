@@ -7,21 +7,36 @@ import { UserInterface } from '../../types/UserInterface';
 import showToast from '../../utils/toaster';
 import uploadImagesToCloudinary from '../../API/uploadImages'; // Adjust the path as needed
 
+interface Booking {
+    id: string;
+    venueId: {
+        name: string;
+        _id: string;
+    };
+    date: string;
+    startTime: string;
+    endTime: string;
+    bookingStatus: string;
+    paymentStatus: string;
+    fees: number;
+    createdAt: string;
+    slotId: string;
+    userId: string;
+}
+
 const ProfilePage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'editProfile' | 'bookingHistory'>('editProfile');
     const [profile, setProfile] = useState<UserInterface | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [profilePic, setProfilePic] = useState<File | null>(null);
-
     const [previewUrl, setPreviewUrl] = useState<string>(''); // State for storing the preview URL
+    const [bookings, setBookings] = useState<Booking[]>([]); // State for storing booking data
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
                 const token = localStorage.getItem('access_token');
-                console.log(token,"token-g");
-                
                 if (!token) {
                     console.log('No auth token found');
                     throw new Error('No auth token found');
@@ -44,6 +59,36 @@ const ProfilePage: React.FC = () => {
         fetchProfile();
     }, []);
 
+    useEffect(() => {
+        const fetchBookings = async () => {
+            try {
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    console.log('No auth token found');
+                    throw new Error('No auth token found');
+                }
+
+                const response = await axios.get(`${USER_API}/booking-history`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                // Check if the response contains 'bookings' array
+                if (response.data && response.data.bookings) {
+                    console.log(response.data.bookings, "booking res");
+                    setBookings(response.data.bookings); // Set bookings state
+                } else {
+                    console.log('No bookings found in response');
+                }
+            } catch (error) {
+                console.error('Failed to fetch bookings', error);
+            }
+        };
+
+        fetchBookings();
+    }, []);
+
     const formik = useFormik({
         initialValues: {
             name: profile?.name || '',
@@ -56,21 +101,19 @@ const ProfilePage: React.FC = () => {
 
             try {
                 //@ts-ignore
-                    const profilePicUrl = await uploadImagesToCloudinary([profilePic]);
-                    console.log(profilePicUrl,"url");
-                    
+                const profilePicUrl = await uploadImagesToCloudinary([profilePic]);
 
-                    // Update profile with the new profile picture URL
-                    const updatedProfileResponse = await axios.patch(`${USER_API}/edit-profile/`, {
-                        ...values,
-                        profilePic: profilePicUrl
-                    }, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
+                // Update profile with the new profile picture URL
+                const updatedProfileResponse = await axios.patch(`${USER_API}/edit-profile/`, {
+                    ...values,
+                    profilePic: profilePicUrl
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-                    setProfile(updatedProfileResponse.data.user);
+                setProfile(updatedProfileResponse.data.user);
 
                 showToast('Profile updated successfully', 'success');
             } catch (error) {
@@ -114,7 +157,7 @@ const ProfilePage: React.FC = () => {
                             className={`w-full flex items-center px-4 py-2 rounded-lg ${activeTab === 'bookingHistory' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}
                             onClick={() => setActiveTab('bookingHistory')}>
                             <svg className="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M13 12h7v8h-7v-8zm-2 0h-7v8h7v-8zm1-8c-1.1 0-2.9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4h-2c0-1.1-.9-2-2-2zm-1 8h2v-3h3v3h-2v2h-2v-2zm-6 3v-2h2v2h2v-2h2v2h2v-2h-2v2h-2v-2h-2zm3-10v3h-3v-3h3zm5-5c-3.31 0-6 2.69-6 6v3h12v-3c0-3.31-2.69-6-6-6z"/>
+                                <path d="M13 12h7v8h-7v-8zm-2 0h-7v8h7v-8zm1-8c-1.1 0-2.9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4h-2c0-1.1-.9-2-2-2zm-1 8h2v-3h3v3h-2v2h-2v-2zm-6 3v-2h2v2h2v-2h2v2h2v-2h-2v2h-2v-2h-2zm3-10v3h-3v-3h3zm5-5c-3.31 0-6 2.69-6 6v3h12v-3c0-3.31-2.69-6-6-6z" />
                             </svg>
                             Booking History
                         </button>
@@ -153,33 +196,61 @@ const ProfilePage: React.FC = () => {
                             </div>
 
                             <div className="mb-4">
-                                <label className="block text-gray-700">Name</label>
+                                <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">Name</label>
                                 <input
+                                    id="name"
+                                    name="name"
                                     type="text"
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    {...formik.getFieldProps('name')}
+                                    onChange={formik.handleChange}
+                                    value={formik.values.name}
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
                             </div>
 
-                            <div className="mb-4">
-                                <label className="block text-gray-700">Email</label>
+                            <div className="mb-6">
+                                <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">Email</label>
                                 <input
+                                    id="email"
+                                    name="email"
                                     type="email"
-                                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                                    {...formik.getFieldProps('email')}
+                                    value={formik.values.email}
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     disabled
                                 />
                             </div>
 
-                            <button type="submit" className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400">
-                                Update Profile
-                            </button>
+                            <div className="flex items-center justify-between">
+                                <button
+                                    type="submit"
+                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                >
+                                    Update Profile
+                                </button>
+                            </div>
                         </form>
                     )}
 
                     {activeTab === 'bookingHistory' && (
-                        <div>
-                            {/* Render Booking History */}
+                        <div className="mt-6">
+                            <h2 className="text-2xl font-bold mb-4">Booking History</h2>
+                            <div className="space-y-4">
+                                {bookings.map((booking) => (
+                                    <div key={booking.id} className="border rounded-lg p-4 bg-slate-100 shadow-md">
+                                        <h3 className="text-2xl font-semibold text-green-800 mb-2">{booking.venueId.name}</h3>
+                                        <p className="text-black"><span className="font-semibold">Date:</span> {booking.date}</p>
+                                        <p className="text-black"><span className="font-semibold">Slot:</span> {`${booking.startTime} to ${booking.endTime}`}</p>
+                                        <p className="text-black"><span className="font-semibold">Status:</span> {booking.bookingStatus}</p>
+                                        <p className="text-black"><span className="font-semibold">Payment Status:</span> {booking.paymentStatus}</p>
+                                        <p className="text-black"><span className="font-semibold">Fees:</span> {booking.fees}/-</p>
+                                        <button
+                                            className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700"
+                                            onClick={() => handleCancelBooking(booking.id)}
+                                        >
+                                            Cancel Booking
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>

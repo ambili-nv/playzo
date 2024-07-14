@@ -8,7 +8,7 @@ const bookingSchema = new mongoose.Schema({
   },
   venueId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Venue',
+    ref: 'Venues',
     required: true
   },
   slotId: {

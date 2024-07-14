@@ -108,7 +108,7 @@ const userController = (
     const loginWithGoogle = async(req:Request,res:Response,next:NextFunction)=>{
         try {
         const userData = req.body
-        console.log(userData,"got useData");
+        // console.log(userData,"got useData");
         const {
             accessToken,
             isEmailExist,createdUser} = await authGoogleSinginUser(
@@ -117,12 +117,12 @@ const userController = (
             dbRepositoryUser,
             authService
         )
-        console.log(isEmailExist,"email -g");
+        // console.log(isEmailExist,"email -g");
         // console.log(accessToken,"accessToken - g");
         
         
         const user = isEmailExist ? isEmailExist : createdUser;
-        console.log(user,"user-g autj");
+        // console.log(user,"user-g autj");
         
         res.status(HttpStatus.OK).json({ message: "login success", user,
             accessToken: accessToken
@@ -182,15 +182,15 @@ const userController = (
 
     const getUserProfile = async(req:Request,res:Response,next:NextFunction)=>{
         try {
-            console.log("userProfile req got");
+            // console.log("userProfile req got");
             const userId = req.user.id
-            console.log(userId,"got user id controller-p");
-            console.log(req.user,"requser");
+            // console.log(userId,"got user id controller-p");
+            // console.log(req.user,"requser");
             const user = await getUser(
                 userId,
                 dbRepositoryUser,
             )
-            console.log(user,"user - controller P");
+            // console.log(user,"user - controller P");
             
             res.status(200).json({ success: true, user});
         } catch (error) {
@@ -203,7 +203,7 @@ const userController = (
             // console.log("edit - req");
             // console.log(req.body,"reqb");
             const userId = req.user.id
-            console.log(userId,"userId - edit");
+            // console.log(userId,"userId - edit");
             const updateData = req.body
             const user = await updateUser (userId,updateData,dbRepositoryUser)
             res.json({success:true,user,message:"profile Updated"})
@@ -219,7 +219,7 @@ const userController = (
             const venueId = req.params.venueId
             // console.log(venueId,"parasm");
             const venueDetails = await findVenueDetails(dbRepositoryVenue, venueId);
-            console.log(venueDetails, "venue details from db");
+            // console.log(venueDetails, "venue details from db");
             return res.status(HttpStatus.OK).json({ success: true, venueDetails });
         } catch (error) {
             next(error);
@@ -231,7 +231,7 @@ const userController = (
 const viewSlotsByDate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { venueId, date } = req.params;  // Assuming date is passed as a path parameter
-        console.log(venueId,date,"v and d get");
+        // console.log(venueId,date,"v and d get");
         
         const timeSlots = await findTimeSlotsByVenueIdAndDate(dbRepositoryVenue, venueId, date);
         
