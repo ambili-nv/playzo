@@ -20,9 +20,12 @@
         }
 
 
-        const changeBookingStatus = async(id:string,updatingData: Record<any, any>)=>{
-            await repository.changeBookingStatus(id,updatingData)
-        }
+
+        const changeBookingStatus = async (id: string, updatingData: Record<any, any>) => {
+            console.log(id,updatingData,"up data db repo");
+            
+            await repository.changeBookingStatus(id, updatingData);
+        };
 
         const bookingHistory = async (userId: string) => {
             const bookings = await repository.bookingHistory(userId);
@@ -36,6 +39,10 @@
         };
 
 
+        //  const cancelBooking = async (id: string) => {
+        //     await repository.findByIdAndUpdate(id, { bookingStatus: 'cancelled' });
+        // };
+        
 
         
 
@@ -45,7 +52,8 @@
             changePaymentStatus,
             changeBookingStatus,
             bookingHistory,
-            getAllBookings
+            getAllBookings,
+            // cancelBooking
         }
     }
 

@@ -26,9 +26,16 @@ export const bookingRepositoryMongodb = () => {
         return await Booking.findByIdAndUpdate(id, { paymentStatus: "Success" });
     }
 
-    const changeBookingStatus = async(id:string,updatingData: Record<any, any>)=>{
-        return await Booking.findByIdAndUpdate(id,{bookingStatus:"Confirmed"})
-    }
+
+    const changeBookingStatus = async (id: string, updatingData: Record<any, any>) => {
+        console.log(updatingData, "updating data");
+        console.log(id,"id db");
+        
+       const result = await Booking.findByIdAndUpdate(id, updatingData);
+       console.log(result,"db res");
+       
+       return result
+    };
 
 
 

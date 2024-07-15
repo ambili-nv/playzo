@@ -5,7 +5,7 @@
     import { Request,Response,NextFunction } from "express"
     import { HttpStatus } from "../types/httpStatus"
     import { getUserbyId } from "../app/use-cases/user/auth/userAuth"
-    import { createBooking,createPayment,updateSlotStatus,updatePaymentStatus,updateBookingStatus,fetchBookingHistory,fetchAllBookings } from "../app/use-cases/user/auth/booking"
+    import { createBooking,createPayment,updateSlotStatus,updatePaymentStatus,updateBookingStatus,fetchBookingHistory,fetchAllBookings,cancelbooking } from "../app/use-cases/user/auth/booking"
 
 
     const bookingController = (
@@ -91,13 +91,35 @@
                 next(error);
             }
         }
+
+
+        const cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const id  = req.params.bookingId;
+                console.log(id,"id cntrlr");
+                console.log(req.params,"rer params");
+                
+                console.log("cancel workssss");
+                
+                // Update booking status
+                //@ts-ignore
+                await cancelbooking(id, dbBookingRepository);
+    
+                res.status(HttpStatus.OK).json({
+                    success: true,
+                    message: "Booking cancelled successfully",
+                });
+            } catch (error) {
+                next(error);
+            }
+        };
        
 
         return {
             bookVenue,
             updateStatus,
             getBookingHistory,
-            // cancelBooking,
+            cancelBooking,
             bookingController
         }
     }

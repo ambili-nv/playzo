@@ -75,7 +75,7 @@ export const updatePaymentStatus = async (
 
 export const updateBookingStatus = async (
     id:string,
-    paymentStatus : "paid" | "failed",
+    paymentStatus : "paid" | "failed" | "cancelled",
     bookingDbRepository:ReturnType<bookingDbRepositoryInterface>
 )=>{
     const bookingStatus = paymentStatus === "paid" ? "confirmed" : "pending"
@@ -92,6 +92,26 @@ export const updateBookingStatus = async (
 
       return bookingData;
 }
+
+
+export const cancelbooking = async (id: string, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
+    console.log("booking.ts");
+    console.log(id,"di ");
+    
+    const updatedData: Record<string, any> = {
+        bookingStatus: 'cancelled',
+    
+        
+    };
+
+    const bookingData = await bookingDbRepository.changeBookingStatus(id, updatedData);
+    console.log(bookingData,id,"data bookig.ts");
+    
+    return bookingData;
+};
+
+
+
 
 
 export const fetchBookingHistory = async (userId: string, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
