@@ -90,6 +90,8 @@
 //         fetchBookings();
 //     }, []);
 
+
+
 //     const handleCancelBooking = async (bookingId: string) => {
 //         try {
 //             const token = localStorage.getItem('access_token');
@@ -97,25 +99,32 @@
 //                 console.log('No auth token found');
 //                 throw new Error('No auth token found');
 //             }
-//             console.log(bookingId,"booking is - cancel booking");
-            
-//             const response = await axios.patch(`${USER_API}/cancel-booking/${bookingId}`, {}, {
+//             console.log(bookingId, "booking is - cancel booking");
+    
+//             const response = await axios.patch(`${USER_API}/cancel-booking/${bookingId}`, {
+//                 bookingStatus: 'cancelled'
+//             }, {
 //                 headers: {
 //                     Authorization: `Bearer ${token}`
 //                 }
 //             });
-
+    
 //             if (response.data.success) {
-//                 setBookings(bookings.filter(booking => booking.id !== bookingId));
+//                 setBookings(bookings.map(booking =>
+//                     booking._id === bookingId ? { ...booking, bookingStatus: 'cancelled' } : booking
+//                 ));
 //                 showToast('Booking cancelled successfully', 'success');
 //             } else {
 //                 showToast('Failed to cancel booking', 'error');
 //             }
 //         } catch (error) {
 //             console.error('Failed to cancel booking', error);
-//             showToast('Failed to cancel booking', 'error');
+//             //@ts-ignore
+//             const errorMessage = error.response?.data?.message || 'Failed to cancel booking';
+//             showToast(errorMessage, 'error');
 //         }
 //     };
+    
 
 //     const formik = useFormik({
 //         initialValues: {
@@ -210,88 +219,89 @@
 //                                         className="absolute bottom-0 right-0 bg-green-500 text-white rounded-full p-2 cursor-pointer"
 //                                     >
 //                                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+//                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v16c0 1.104.896 2 2 2h12c1.104 0 2-.896 2-2V4c0-1.104-.896-2-2-2H6c-1.104 0-2 .896-2 2z" />
 //                                         </svg>
 //                                     </label>
 //                                     <input
-//                                         type="file"
 //                                         id="profilePic"
+//                                         name="profilePic"
+//                                         type="file"
 //                                         accept="image/*"
-//                                         onChange={handleProfilePicChange}
 //                                         className="hidden"
+//                                         onChange={handleProfilePicChange}
 //                                     />
 //                                 </div>
 //                             </div>
 //                             <div className="mb-4">
-//                                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-//                                     Name
+//                                 <label htmlFor="name" className="block text-gray-700 font-bold mb-2">
+//                                     Name:
 //                                 </label>
 //                                 <input
 //                                     id="name"
 //                                     name="name"
 //                                     type="text"
+//                                     className="w-full border border-gray-300 p-2 rounded-lg"
 //                                     onChange={formik.handleChange}
 //                                     onBlur={formik.handleBlur}
 //                                     value={formik.values.name}
-//                                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
 //                                 />
 //                             </div>
 //                             <div className="mb-4">
-//                                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-//                                     Email
+//                                 <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
+//                                     Email:
 //                                 </label>
 //                                 <input
 //                                     id="email"
 //                                     name="email"
 //                                     type="email"
-//                                     disabled // Keep email field disabled
+//                                     className="w-full border border-gray-300 p-2 rounded-lg"
 //                                     onChange={formik.handleChange}
 //                                     onBlur={formik.handleBlur}
 //                                     value={formik.values.email}
-//                                     className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
+//                                     disabled
 //                                 />
 //                             </div>
 //                             <button
 //                                 type="submit"
-//                                 className="w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition duration-300"
+//                                 className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600"
 //                             >
-//                                 Save
+//                                 Update Profile
 //                             </button>
 //                         </form>
 //                     )}
-//                     {activeTab === 'bookingHistory' && (
-//     <div>
-//         <h2 className="text-xl font-semibold mb-4">Booking History</h2>
-//         {bookings.length > 0 ? (
-//             <ul>
-//                 {bookings.map((booking) => (
-//                     <li key={booking._id} className="mb-4 p-4 border rounded-lg shadow-sm flex justify-between items-center">
-//                         <div>
-//                             <h3 className="text-lg font-semibold">{booking.venueId.name}</h3>
-//                             <p>{new Date(booking.date).toLocaleDateString()}</p>
-//                             <p>{booking.startTime} - {booking.endTime}</p>
-//                             <p>Status: {booking.bookingStatus}</p>
-//                             <p>Payment: {booking.paymentStatus}</p>
-//                             <p>Id: {booking._id}</p>
-//                         </div>
-//                         <button
-//                             className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition duration-300"
-//                             onClick={() => handleCancelBooking(booking._id)}
-//                             disabled={booking.bookingStatus === 'cancelled'}
-//                         >
-//                             {booking.bookingStatus === 'cancelled' ? 'Cancelled' : 'Cancel Booking'}
-//                         </button>
-//                     </li>
-//                 ))}
-//             </ul>
-//         ) : (
-//             <p>No booking history found.</p>
-//         )}
-//     </div>
-// )}
 
-//                         {/* </div>
-//                     )} */}
+//                     {activeTab === 'bookingHistory' && (
+//                         <div className="mt-6">
+//                             <h2 className="text-xl font-semibold mb-4">Booking History</h2>
+//                             {bookings.length === 0 ? (
+//                                 <p className="text-gray-600">No bookings found.</p>
+//                             ) : (
+//                                 <ul className="space-y-4">
+//                                     {bookings.map(booking => (
+//                                         <li key={booking._id} className="border border-gray-300 p-4 rounded-lg">
+//                                             <div className="flex justify-between items-center">
+//                                                 <div>
+//                                                     <p className="font-semibold">Venue: {booking.venueId.name}</p>
+//                                                     <p>Date: {new Date(booking.date).toLocaleDateString()}</p>
+//                                                     <p>Time: {booking.startTime} - {booking.endTime}</p>
+//                                                     <p>Status: {booking.bookingStatus}</p>
+//                                                     <p>Payment Status: {booking.paymentStatus}</p>
+//                                                 </div>
+//                                                 {booking.bookingStatus === 'confirmed' && (
+//                                                     <button
+//                                                         onClick={() => handleCancelBooking(booking._id)}
+//                                                         className="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600"
+//                                                     >
+//                                                         Cancel Booking
+//                                                     </button>
+//                                                 )}
+//                                             </div>
+//                                         </li>
+//                                     ))}
+//                                 </ul>
+//                             )}
+//                         </div>
+//                     )}
 //                 </div>
 //             </div>
 //         </div>
@@ -309,7 +319,7 @@ import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { USER_API } from '../../constants';
 import { UserInterface } from '../../types/UserInterface';
-import showToast from '../../utils/toaster';
+import showToast from '../../utils/toaster'; // Import your toaster utility
 import uploadImagesToCloudinary from '../../API/uploadImages'; // Adjust the path as needed
 
 interface Booking {
@@ -317,6 +327,7 @@ interface Booking {
     id: string;
     venueId: {
         name: string;
+        sportsitem: string;
         _id: string;
     };
     date: string;
@@ -382,7 +393,6 @@ const ProfilePage: React.FC = () => {
 
                 // Check if the response contains 'bookings' array
                 if (response.data && response.data.bookings) {
-                    console.log(response.data.bookings, "booking res");
                     setBookings(response.data.bookings); // Set bookings state
                 } else {
                     console.log('No bookings found in response');
@@ -395,38 +405,6 @@ const ProfilePage: React.FC = () => {
         fetchBookings();
     }, []);
 
-    // const handleCancelBooking = async (bookingId: string) => {
-    //     try {
-    //         const token = localStorage.getItem('access_token');
-    //         if (!token) {
-    //             console.log('No auth token found');
-    //             throw new Error('No auth token found');
-    //         }
-    //         console.log(bookingId, "booking is - cancel booking");
-
-    //         const response = await axios.patch(`${USER_API}/cancel-booking/${bookingId}`, {
-    //             bookingStatus: 'cancelled'
-    //         }, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         });
-
-    //         if (response.data.success) {
-    //             setBookings(bookings.map(booking =>
-    //                 booking._id === bookingId ? { ...booking, bookingStatus: 'cancelled' } : booking
-    //             ));
-    //             showToast('Booking cancelled successfully', 'success');
-    //         } else {
-    //             showToast('Failed to cancel booking', 'error');
-    //         }
-    //     } catch (error) {
-    //         console.error('Failed to cancel booking', error);
-    //         showToast('Failed to cancel booking', 'error');
-    //     }
-    // };
-
-
     const handleCancelBooking = async (bookingId: string) => {
         try {
             const token = localStorage.getItem('access_token');
@@ -434,8 +412,7 @@ const ProfilePage: React.FC = () => {
                 console.log('No auth token found');
                 throw new Error('No auth token found');
             }
-            console.log(bookingId, "booking is - cancel booking");
-    
+
             const response = await axios.patch(`${USER_API}/cancel-booking/${bookingId}`, {
                 bookingStatus: 'cancelled'
             }, {
@@ -443,7 +420,7 @@ const ProfilePage: React.FC = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-    
+
             if (response.data.success) {
                 setBookings(bookings.map(booking =>
                     booking._id === bookingId ? { ...booking, bookingStatus: 'cancelled' } : booking
@@ -459,7 +436,6 @@ const ProfilePage: React.FC = () => {
             showToast(errorMessage, 'error');
         }
     };
-    
 
     const formik = useFormik({
         initialValues: {
@@ -568,73 +544,72 @@ const ProfilePage: React.FC = () => {
                                 </div>
                             </div>
                             <div className="mb-4">
-                                <label htmlFor="name" className="block text-gray-700 font-bold mb-2">
-                                    Name:
-                                </label>
+                                <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">Name</label>
                                 <input
                                     id="name"
                                     name="name"
                                     type="text"
-                                    className="w-full border border-gray-300 p-2 rounded-lg"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.name}
+                                    className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
                             </div>
                             <div className="mb-4">
-                                <label htmlFor="email" className="block text-gray-700 font-bold mb-2">
-                                    Email:
-                                </label>
+                                <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">Email</label>
                                 <input
                                     id="email"
                                     name="email"
                                     type="email"
-                                    className="w-full border border-gray-300 p-2 rounded-lg"
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     value={formik.values.email}
-                                    disabled
+                                    className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    disabled // Email field is disabled for editing
                                 />
                             </div>
-                            <button
-                                type="submit"
-                                className="bg-green-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-green-600"
-                            >
-                                Update Profile
-                            </button>
+                            <div className="mb-4">
+                                <button
+                                    type="submit"
+                                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                >
+                                    Save
+                                </button>
+                            </div>
                         </form>
                     )}
-
                     {activeTab === 'bookingHistory' && (
                         <div className="mt-6">
                             <h2 className="text-xl font-semibold mb-4">Booking History</h2>
-                            {bookings.length === 0 ? (
-                                <p className="text-gray-600">No bookings found.</p>
-                            ) : (
-                                <ul className="space-y-4">
-                                    {bookings.map(booking => (
-                                        <li key={booking._id} className="border border-gray-300 p-4 rounded-lg">
-                                            <div className="flex justify-between items-center">
-                                                <div>
-                                                    <p className="font-semibold">Venue: {booking.venueId.name}</p>
-                                                    <p>Date: {new Date(booking.date).toLocaleDateString()}</p>
-                                                    <p>Time: {booking.startTime} - {booking.endTime}</p>
-                                                    <p>Status: {booking.bookingStatus}</p>
-                                                    <p>Payment Status: {booking.paymentStatus}</p>
-                                                </div>
-                                                {booking.bookingStatus === 'confirmed' && (
-                                                    <button
-                                                        onClick={() => handleCancelBooking(booking._id)}
-                                                        className="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600"
-                                                    >
-                                                        Cancel Booking
-                                                    </button>
-                                                )}
+                            <div className="space-y-4">
+                                {bookings.map(booking => (
+                                    <div key={booking._id} className="border p-4 rounded-lg shadow-md">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <h3 className="text-lg font-semibold">{booking.venueId.name}</h3>
+                                                <p className="text-sm text-gray-600">{booking.venueId.sportsitem}</p>
                                             </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
+                                            <div>
+                                                <p className="text-sm text-gray-600">Date: {booking.date}</p>
+                                                <p className="text-sm text-gray-600">Time: {booking.startTime} - {booking.endTime}</p>
+                                                <p className="text-sm text-gray-600">Booking Status: {booking.bookingStatus}</p>
+                                                <p className="text-sm text-gray-600">Payment Status: {booking.paymentStatus}</p>
+                                                <p className="text-sm text-gray-600">Booking ID: {booking.id}</p>
+                                                <p className="text-sm text-gray-600">Created At: {new Date(booking.createdAt).toLocaleString()}</p>
+                                                <p className="text-sm text-gray-600">Fees: ${booking.fees}</p>
+                                            </div>
+                                            {booking.bookingStatus === 'confirmed' && (
+                                                <button
+                                                    onClick={() => handleCancelBooking(booking._id)}
+                                                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                                >
+                                                    Cancel Booking
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </div>

@@ -74,6 +74,21 @@
             }
         };
 
+        const adminBookingHistory = async (req: Request, res: Response, next: NextFunction) =>{
+            try {
+                console.log(req.params,"req params admin");
+                const {userId} = req.params
+                //@ts-ignore
+                const bookings =  await fetchBookingHistory(userId, dbBookingRepository);
+                res.status(HttpStatus.OK).json({
+                    success: true,
+                    bookings,
+                });
+            } catch (error) {
+                next(error);
+            }
+        }
+
 
 
 
@@ -244,7 +259,8 @@
             updateStatus,
             getBookingHistory,
             cancelBooking,
-            bookingController
+            bookingController,
+            adminBookingHistory
         }
     }
 

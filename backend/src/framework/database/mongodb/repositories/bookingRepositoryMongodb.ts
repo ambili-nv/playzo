@@ -39,14 +39,26 @@ export const bookingRepositoryMongodb = () => {
 
 
 
+    // const bookingHistory = async (userId: string) => {
+    //     const bookings = await Booking.find({ userId })
+    //         .populate('venueId', 'name') // Populate the venueId with the name field
+    //         .exec();
+    //     console.log(bookings, "bookings db");
+    //     return bookings;
+    // };
+
     const bookingHistory = async (userId: string) => {
         const bookings = await Booking.find({ userId })
-            .populate('venueId', 'name') // Populate the venueId with the name field
+            .populate({
+                path: 'venueId', // This is the field in the Booking model referencing the Venue model
+                select: 'name sportsitem' // Specify the fields you want to populate from the Venue model
+            })
             .exec();
-        console.log(bookings, "bookings db");
-        return bookings;
+        console.log(bookings, "bookings db"); // Logging the fetched bookings
+        return bookings; // Returning the populated bookings array
     };
 
+    
     const getAllBookings = async () => {
         const bookings = await Booking.find()
             .populate('userId', 'name') // Populate the userId with the name field

@@ -38,6 +38,7 @@ const AdminDashboard = lazy(()=>import('../pages/Admin/adminDashboard'))
 const UsersList = lazy(()=>import('../pages/Admin/usersList')) 
 const OwnerList  = lazy(()=>import('../pages/Admin/ownerList'))
 const VenuesList = lazy(()=>import('../pages/Admin/venuesList'))
+const AdminBookingHistory = lazy(()=>import('../pages/Admin/userBookings'))
 
 export const MainRouter = () => {
   return (
@@ -91,6 +92,7 @@ export const MainRouter = () => {
           <Route path="users" element={<UsersList />} />
           <Route path="owners" element={<OwnerList/>} />
           <Route path="venue-list/:ownerId" element={<VenuesList/>} />
+          <Route path="booking-history/:userId" element={<AdminBookingHistory/>} />
         </Route>
         </Route>
       </Routes>
