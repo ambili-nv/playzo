@@ -34,7 +34,7 @@ const OwnerNavbar = () => {
                 <Link to="/owner/homepage" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
                   Home
                 </Link>
-                <Link to="/owner/homepage" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
+                <Link to="/owner/bookings" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
                   Bookings
                 </Link>
                 <Link to="/owner/slots" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">

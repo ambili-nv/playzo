@@ -1,5 +1,5 @@
 import bookingEntity, { BookingEntityType } from '../../../../enitity/bookingEntity';
-import { bookingDbRepository, bookingDbRepositoryInterface } from '../../../Interfaces/bookingDbRepository';
+import {bookingDbRepositoryInterface } from '../../../Interfaces/bookingDbRepository';
 import Stripe from "stripe";
 import configKeys from '../../../../config';
 
@@ -99,4 +99,9 @@ export const fetchBookingHistory = async (userId: string, bookingDbRepository: R
     return bookings;
 };
 
+
+export const fetchAllBookings = async (bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
+    const bookings = await bookingDbRepository.getAllBookings();
+    return bookings;
+};
 

@@ -7,6 +7,11 @@ import { authServiceInterface } from '../../../app/service-interface/authService
 import { authenticateOwner } from '../Middlewares/authMiddleware';
 import { venueDbRepository } from "../../../app/Interfaces/venueDbRepository";
 import { venueRepositoryMongodb } from "../../database/mongodb/repositories/venueRepositoryMongodb";
+import { bookingDbRepository } from "../../../app/Interfaces/bookingDbRepository";
+import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/bookingRepositoryMongodb";
+import bookingController from "../../../adaptors/bookingController";
+import { userDbRepository } from "../../../app/Interfaces/userDbRepository";
+import {userRepositoryMongodb} from "../../database/mongodb/repositories/userRepositoryMongodb";
 const ownerRoutes = ()=>{
     const router = express.Router();
     const controller = ownerController(
@@ -16,6 +21,13 @@ const ownerRoutes = ()=>{
         authService,
         venueDbRepository,
         venueRepositoryMongodb,
+    )
+
+    const booking_Controller:any = bookingController(
+        userDbRepository,
+        userRepositoryMongodb,
+        bookingDbRepository,
+        bookingRepositoryMongodb
     )
 
     router.post('/register',controller.registerOwner);
@@ -33,7 +45,17 @@ const ownerRoutes = ()=>{
     router.post("/add-slots/:venueId",authenticateOwner,controller.saveTimeSlotsHandler )
     // router.get("/view-slots/:venueId",authenticateOwner,controller.viewSlots )
     router.get('/view-slots/:venueId/:date', authenticateOwner,controller.viewAllSlotsByDate);
-        router.delete('/delete-slot/:venueId', authenticateOwner,controller.deleteSlot   );
+    router.delete('/delete-slot/:venueId', authenticateOwner,controller.deleteSlot   );
+
+
+
+
+
+
+
+    
+    router.get('/bookings',authenticateOwner,booking_Controller.bookingController)
+
 
 
     return router

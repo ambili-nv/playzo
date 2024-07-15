@@ -30,12 +30,6 @@ export const bookingRepositoryMongodb = () => {
         return await Booking.findByIdAndUpdate(id,{bookingStatus:"Confirmed"})
     }
 
-    // const bookingHistory = async (userId: string) => {
-    //     const bookings = await Booking.find({ userId }).exec();
-    //     console.log(bookings,"bookings db");
-        
-    //     return bookings;
-    // };
 
 
     const bookingHistory = async (userId: string) => {
@@ -46,12 +40,23 @@ export const bookingRepositoryMongodb = () => {
         return bookings;
     };
 
+    const getAllBookings = async () => {
+        const bookings = await Booking.find()
+            .populate('userId', 'name') // Populate the userId with the name field
+            .populate('venueId', 'name') // Populate the venueId with the name field
+            .exec();
+        return bookings;
+    };
+
+
+    
     return {
         createBooking,
         updateSlotStatus,
         changePaymentStatus,
         changeBookingStatus,
-        bookingHistory
+        bookingHistory,
+        getAllBookings
     }
 }
 

@@ -5,7 +5,7 @@
     import { Request,Response,NextFunction } from "express"
     import { HttpStatus } from "../types/httpStatus"
     import { getUserbyId } from "../app/use-cases/user/auth/userAuth"
-    import { createBooking,createPayment,updateSlotStatus,updatePaymentStatus,updateBookingStatus,fetchBookingHistory } from "../app/use-cases/user/auth/booking"
+    import { createBooking,createPayment,updateSlotStatus,updatePaymentStatus,updateBookingStatus,fetchBookingHistory,fetchAllBookings } from "../app/use-cases/user/auth/booking"
 
 
     const bookingController = (
@@ -43,10 +43,10 @@
 
         const updateStatus = async (req: Request, res: Response, next: NextFunction) =>{
             try {
-                console.log("updating");
+                // console.log("updating");
                 const { id } = req.params;
                 const { paymentStatus } = req.body;
-                console.log(id,paymentStatus,"id payment sts");
+                // console.log(id,paymentStatus,"id payment sts");
                 const updateStatus = await updatePaymentStatus(id,dbBookingRepository)
 
                 await updateBookingStatus(id,paymentStatus,dbBookingRepository)
@@ -57,17 +57,11 @@
             }
         }
 
-        // const getBookingHistory = async (req: Request, res: Response, next: NextFunction)=>{
-        //     console.log("History");
-        //     const userId = req.user.id
-        //     console.log(userId,"id history");                        
-        // }
 
 
         const getBookingHistory = async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const userId = req.user.id;
-    
                 const bookings = await fetchBookingHistory(userId, dbBookingRepository);
                 console.log(bookings,"bookings cntlt");
                 
@@ -81,10 +75,30 @@
         };
 
 
+
+
+
+        const bookingController =  async (req: Request, res: Response, next: NextFunction)=>{
+            try {
+                const bookings = await fetchAllBookings(dbBookingRepository);
+                console.log(bookings,"booking his owner");
+                
+                res.status(HttpStatus.OK).json({
+                    success: true,
+                    bookings,
+                });
+            } catch (error) {
+                next(error);
+            }
+        }
+       
+
         return {
             bookVenue,
             updateStatus,
-            getBookingHistory
+            getBookingHistory,
+            // cancelBooking,
+            bookingController
         }
     }
 

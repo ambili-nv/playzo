@@ -29,6 +29,7 @@ const OwnerVenuesList = lazy(()=>import('../pages/Owner/venues/venuesList'))
 const VenueDetails = lazy(()=>import('../pages/Owner/venues/VenueDetails'))
 const Slots = lazy(()=> import('../pages/Owner/venues/slotsPage'))
 const ViewSlotPage = lazy(()=> import('../pages/Owner/venues/viewSlotsPage'))
+const BookingPage = lazy(()=> import('../pages/Owner/bookingsPage'))
 
             // Admin Routes
 
@@ -76,6 +77,7 @@ export const MainRouter = () => {
         <Route path="/owner/edit-venue/:venueId" element={<VenueDetails />} />
         <Route path="/owner/add-slot/:venueId" element={<Slots />} />
         <Route path="/owner/view-slot/:venueId" element={<ViewSlotPage />} />
+        <Route path="/owner/bookings/" element={<BookingPage />} />
         </Route>
 
         {/* admin routes */}
