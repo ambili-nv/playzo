@@ -5,7 +5,7 @@
     import { Request,Response,NextFunction } from "express"
     import { HttpStatus } from "../types/httpStatus"
     import { getUserbyId } from "../app/use-cases/user/auth/userAuth"
-    import { createBooking,createPayment,updateSlotStatus,updatePaymentStatus,updateBookingStatus,fetchBookingHistory,fetchAllBookings,cancelbooking } from "../app/use-cases/user/auth/booking"
+    import { createBooking,createPayment,updateSlotStatus,updatePaymentStatus,updateBookingStatus,fetchBookingHistory,fetchAllBookings,cancelbooking ,getBookingById} from "../app/use-cases/user/auth/booking"
 
 
     const bookingController = (
@@ -93,18 +93,143 @@
         }
 
 
+        // const cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
+        //     try {
+        //         const id  = req.params.bookingId;
+        //         console.log(id,"id cntrlr");
+        //         console.log(req.params,"rer params");
+                
+        //         console.log("cancel workssss");
+                
+        //         // Update booking status
+               
+        //         await cancelbooking(id, dbBookingRepository);
+    
+        //         res.status(HttpStatus.OK).json({
+        //             success: true,
+        //             message: "Booking cancelled successfully",
+        //         });
+        //     } catch (error) {
+        //         next(error);
+        //     }
+        // };
+
+
+
+        // const cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
+        //     try {
+        //         const id = req.params.bookingId;
+        
+        //         // Retrieve booking details
+        //         const booking = await getBookingById(id, dbBookingRepository);
+        //         if (!booking) {
+        //             return res.status(HttpStatus.NOT_FOUND).json({
+        //                 success: false,
+        //                 message: "Booking not found",
+        //             });
+        //         }
+
+        //         console.log(booking.startTime,"djahjkhkjah");
+        
+        //         // Parse startTime to milliseconds
+        //         let slotStartTime;
+        //         try {
+        //             console.log(booking.startTime,"djahjkhkjah");
+                    
+        //             slotStartTime = new Date(booking.startTime).getTime(); // Get the start time as timestamp
+        //             console.log(slotStartTime,"stast time");
+                    
+        //         } catch (error) {
+        //             console.error("Error parsing startTime:", error);
+        //             return res.status(HttpStatus.BAD_REQUEST).json({
+        //                 success: false,
+        //                 message: "Invalid start time format",
+        //             });
+        //         }
+        
+        //         // const currentTime = new Date().getTime(); // Current time as timestamp
+        //         const currentTime = Date.now();; // Current time as timestamp
+               
+        //         console.log(currentTime,"curr time");
+                
+        //         const twentyFourHoursInMs = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        
+        //         // Calculate the earliest time at which cancellation is still allowed
+        //         const cancellationDeadline = slotStartTime - twentyFourHoursInMs;
+        
+        //         if (currentTime >= cancellationDeadline) {
+        //             return res.status(HttpStatus.BAD_REQUEST).json({
+        //                 success: false,
+        //                 message: "Cannot cancel booking less than 24 hours before the slot start time",
+        //             });
+        //         }
+        
+        //         // Update booking status
+        //         await cancelbooking(id, dbBookingRepository);
+        
+        //         res.status(HttpStatus.OK).json({
+        //             success: true,
+        //             message: "Booking cancelled successfully",
+        //         });
+        //     } catch (error) {
+        //         next(error);
+        //     }
+        // };
+       
         const cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const id  = req.params.bookingId;
-                console.log(id,"id cntrlr");
-                console.log(req.params,"rer params");
-                
-                console.log("cancel workssss");
-                
+                const id = req.params.bookingId;
+        
+                // Retrieve booking details
+                const booking = await getBookingById(id, dbBookingRepository);
+                if (!booking) {
+                    return res.status(HttpStatus.NOT_FOUND).json({
+                        success: false,
+                        message: "Booking not found",
+                    });
+                }
+        
+                console.log(booking.startTime, "start time from booking");
+        
+                // Assuming booking.startTime is just the time part (e.g., "07:00")
+                // Construct a valid date string by combining the booking date and time
+                const bookingDate = booking.date; // assuming booking.date contains the date part (e.g., "2024-07-16")
+                const dateTimeString = `${bookingDate}T${booking.startTime}:00.000Z`; // create a full ISO 8601 string
+        
+                // Parse startTime to milliseconds
+                let slotStartTime;
+                try {
+                    slotStartTime = Date.parse(dateTimeString); // Get the start time as timestamp
+                    console.log(slotStartTime, "start time in ms");
+                    if (isNaN(slotStartTime)) {
+                        throw new Error("Invalid start time");
+                    }
+                } catch (error) {
+                    console.error("Error parsing startTime:", error);
+                    return res.status(HttpStatus.BAD_REQUEST).json({
+                        success: false,
+                        message: "Invalid start time format",
+                    });
+                }
+        
+                const currentTime = Date.now(); // Current time as timestamp
+                console.log(currentTime, "current time in ms");
+        
+                const twentyFourHoursInMs = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        
+                // Calculate the earliest time at which cancellation is still allowed
+                const cancellationDeadline = slotStartTime - twentyFourHoursInMs;
+        
+                if (currentTime >= cancellationDeadline) {
+                    return res.status(HttpStatus.BAD_REQUEST).json({
+                        success: false,
+                        message: "Cannot cancel booking less than 24 hours before the slot start time",
+                    });
+                }
+        
                 // Update booking status
-                //@ts-ignore
                 await cancelbooking(id, dbBookingRepository);
-    
+        
                 res.status(HttpStatus.OK).json({
                     success: true,
                     message: "Booking cancelled successfully",
@@ -113,8 +238,7 @@
                 next(error);
             }
         };
-       
-
+        
         return {
             bookVenue,
             updateStatus,

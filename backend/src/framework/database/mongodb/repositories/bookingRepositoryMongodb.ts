@@ -56,6 +56,9 @@ export const bookingRepositoryMongodb = () => {
     };
 
 
+    const getBookingById = async (id: string) => {
+        return await Booking.findById(id);
+    };
     
     return {
         createBooking,
@@ -63,7 +66,8 @@ export const bookingRepositoryMongodb = () => {
         changePaymentStatus,
         changeBookingStatus,
         bookingHistory,
-        getAllBookings
+        getAllBookings,
+        getBookingById
     }
 }
 

@@ -395,6 +395,38 @@ const ProfilePage: React.FC = () => {
         fetchBookings();
     }, []);
 
+    // const handleCancelBooking = async (bookingId: string) => {
+    //     try {
+    //         const token = localStorage.getItem('access_token');
+    //         if (!token) {
+    //             console.log('No auth token found');
+    //             throw new Error('No auth token found');
+    //         }
+    //         console.log(bookingId, "booking is - cancel booking");
+
+    //         const response = await axios.patch(`${USER_API}/cancel-booking/${bookingId}`, {
+    //             bookingStatus: 'cancelled'
+    //         }, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`
+    //             }
+    //         });
+
+    //         if (response.data.success) {
+    //             setBookings(bookings.map(booking =>
+    //                 booking._id === bookingId ? { ...booking, bookingStatus: 'cancelled' } : booking
+    //             ));
+    //             showToast('Booking cancelled successfully', 'success');
+    //         } else {
+    //             showToast('Failed to cancel booking', 'error');
+    //         }
+    //     } catch (error) {
+    //         console.error('Failed to cancel booking', error);
+    //         showToast('Failed to cancel booking', 'error');
+    //     }
+    // };
+
+
     const handleCancelBooking = async (bookingId: string) => {
         try {
             const token = localStorage.getItem('access_token');
@@ -403,7 +435,7 @@ const ProfilePage: React.FC = () => {
                 throw new Error('No auth token found');
             }
             console.log(bookingId, "booking is - cancel booking");
-
+    
             const response = await axios.patch(`${USER_API}/cancel-booking/${bookingId}`, {
                 bookingStatus: 'cancelled'
             }, {
@@ -411,7 +443,7 @@ const ProfilePage: React.FC = () => {
                     Authorization: `Bearer ${token}`
                 }
             });
-
+    
             if (response.data.success) {
                 setBookings(bookings.map(booking =>
                     booking._id === bookingId ? { ...booking, bookingStatus: 'cancelled' } : booking
@@ -422,9 +454,12 @@ const ProfilePage: React.FC = () => {
             }
         } catch (error) {
             console.error('Failed to cancel booking', error);
-            showToast('Failed to cancel booking', 'error');
+            //@ts-ignore
+            const errorMessage = error.response?.data?.message || 'Failed to cancel booking';
+            showToast(errorMessage, 'error');
         }
     };
+    
 
     const formik = useFormik({
         initialValues: {
@@ -587,7 +622,7 @@ const ProfilePage: React.FC = () => {
                                                     <p>Status: {booking.bookingStatus}</p>
                                                     <p>Payment Status: {booking.paymentStatus}</p>
                                                 </div>
-                                                {booking.bookingStatus === 'Confirmed' && (
+                                                {booking.bookingStatus === 'confirmed' && (
                                                     <button
                                                         onClick={() => handleCancelBooking(booking._id)}
                                                         className="bg-red-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-red-600"

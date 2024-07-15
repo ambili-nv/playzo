@@ -44,6 +44,10 @@
         // };
         
 
+        const getBookingById = async (id: string) => {
+            const booking = await repository.getBookingById(id);
+            return booking;
+        };
         
 
         return {
@@ -53,7 +57,7 @@
             changeBookingStatus,
             bookingHistory,
             getAllBookings,
-            // cancelBooking
+            getBookingById
         }
     }
 

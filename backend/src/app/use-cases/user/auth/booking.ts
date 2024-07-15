@@ -111,6 +111,12 @@ export const cancelbooking = async (id: string, bookingDbRepository: ReturnType<
 };
 
 
+export const getBookingById = async (id: string,bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
+    const booking = await bookingDbRepository.getBookingById(id);
+    return booking;
+};
+
+
 
 
 
