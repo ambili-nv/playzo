@@ -1,3 +1,6 @@
+
+
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +15,11 @@ interface Venue {
   place: string;
 }
 
-const Card: React.FC = () => {
+interface CardProps {
+  searchQuery: string;
+}
+
+const Card: React.FC<CardProps> = ({ searchQuery }) => {
   const [venues, setVenues] = useState<Venue[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -42,6 +49,10 @@ const Card: React.FC = () => {
     return <div>{error}</div>;
   }
 
+  const filteredVenues = venues.filter((venue) =>
+    venue.place.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const handleViewDetails = (venueId: string) => {
     navigate(`/single-venue/${venueId}`);
   };
@@ -49,28 +60,31 @@ const Card: React.FC = () => {
   return (
     <>
       <div className="flex flex-wrap justify-around items-center p-5">
-        {venues.map((venue) => (
-          <div key={venue._id} className="bg-white rounded-lg shadow-md overflow-hidden duration-300 hover:-translate-y-1 w-[350px] mt-5">
-            <img src={venue.primaryImage} alt={venue.name} className="w-full h-52 object-cover" />
-            <div className="p-4">
-              <h3 className="text-xl font-semibold">{venue.name}</h3>
-              <p className="font-semibold">{venue.sportsitem}</p>
-              <p className="text-gray-500">{venue.place}</p>
-              <div className="flex items-center justify-between mt-2">
-                <div className="flex items-center">
-                  {/* <span className="text-yellow-500">★</span> */}
-                  {/* <span className="ml-1">4.5</span> Replace with actual rating */}
+        {filteredVenues.length > 0 ? (
+          filteredVenues.map((venue) => (
+            <div key={venue._id} className="bg-white rounded-lg shadow-md overflow-hidden duration-300 hover:-translate-y-1 w-[350px] mt-5">
+              <img src={venue.primaryImage} alt={venue.name} className="w-full h-52 object-cover" />
+              <div className="p-4">
+                <h3 className="text-xl font-semibold">{venue.name}</h3>
+                <p className="font-semibold">{venue.sportsitem}</p>
+                <p className="text-gray-500">{venue.place}</p>
+                <div className="flex items-center justify-between mt-2">
+                  <button
+                    className="px-4 py-2 rounded-full text-white font-semibold shadow-md transition-all duration-300 ease-in-out bg-green-500 hover:bg-green-600"
+                    onClick={() => handleViewDetails(venue._id)}
+                  >
+                    View Details
+                  </button>
                 </div>
-                <button
-                  className="px-4 py-2 rounded-full text-white font-semibold shadow-md transition-all duration-300 ease-in-out bg-green-500 hover:bg-green-600"
-                  onClick={() => handleViewDetails(venue._id)}
-                >
-                  View Details
-                </button>
               </div>
             </div>
+          ))
+        ) : (
+          <div className="text-center mt-10">
+            <h3 className="text-xl font-semibold">No venues found for "{searchQuery}"</h3>
+            <p className="text-gray-500">Try searching for a different location.</p>
           </div>
-        ))}
+        )}
       </div>
     </>
   );

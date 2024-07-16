@@ -86,7 +86,7 @@ const VenueUpload = () => {
 
         const response = await axiosInstance.post(`${OWNER_API}/upload-venues`, { venueData });
           showToast('Venue uploaded successfully', 'success');
-          navigate('/owner/venues');
+          navigate('/owner/upload-venues');
       } catch (error) {
         showToast('Error uploading venue', 'error');
       } finally {

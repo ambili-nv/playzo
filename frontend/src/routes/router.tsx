@@ -4,6 +4,8 @@ import AdminLayout from "../components/Admin/AdminLayout";
 import { ProtectRoute,OwnerProtectRoute,AdminProtectRoute} from "./protectRoutes";
 import { PublicRouteUser,PublicRouteOwner,PublicRouteAdmin } from "./publicRoutes";
 
+const ErrorPAge =  lazy(()=> import ('../pages/Page404'))
+
 const Home = lazy(()=> import ('../pages/User/Home'))
 const UserLogin = lazy(() => import('../pages/User/Login'));
 const UserSignUP = lazy(()=>import ('../pages/User/signup'))
@@ -28,7 +30,6 @@ const Venues = lazy(()=>import('../pages/Owner/venues/VenueDetails'))
 const OwnerVenuesList = lazy(()=>import('../pages/Owner/venues/venuesList'))
 const VenueDetails = lazy(()=>import('../pages/Owner/venues/VenueDetails'))
 const Slots = lazy(()=> import('../pages/Owner/venues/slotsPage'))
-const ViewSlotPage = lazy(()=> import('../pages/Owner/venues/viewSlotsPage'))
 const BookingPage = lazy(()=> import('../pages/Owner/bookingsPage'))
 
             // Admin Routes
@@ -77,7 +78,6 @@ export const MainRouter = () => {
         <Route path = "/owner/myvenue/:ownerId" element={<OwnerVenuesList/>}/>
         <Route path="/owner/edit-venue/:venueId" element={<VenueDetails />} />
         <Route path="/owner/add-slot/:venueId" element={<Slots />} />
-        <Route path="/owner/view-slot/:venueId" element={<ViewSlotPage />} />
         <Route path="/owner/bookings/" element={<BookingPage />} />
         </Route>
 
@@ -95,6 +95,7 @@ export const MainRouter = () => {
           <Route path="booking-history/:userId" element={<AdminBookingHistory/>} />
         </Route>
         </Route>
+      {/* <Route path="*" element={<ErrorPAge />} /> */}
       </Routes>
     </Suspense>
   );
