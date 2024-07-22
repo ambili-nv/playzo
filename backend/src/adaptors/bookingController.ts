@@ -5,7 +5,20 @@
     import { Request,Response,NextFunction } from "express"
     import { HttpStatus } from "../types/httpStatus"
     import { getUserbyId } from "../app/use-cases/user/auth/userAuth"
-    import { createBooking,createPayment,updateSlotStatus,updatePaymentStatus,updateBookingStatus,fetchBookingHistory,fetchAllBookings,cancelbooking ,getBookingById} from "../app/use-cases/user/auth/booking"
+    import { createBooking,
+        createPayment,
+        updateSlotStatus,
+        updatePaymentStatus,
+        updateBookingStatus,
+        fetchBookingHistory,
+        fetchAllBookings,
+        cancelbooking,
+        getBookingById,
+        updateWallet,
+        getTransactions,
+        createWalletBooking,
+        getWalletbyUserId
+    } from "../app/use-cases/user/auth/booking"
     
 
     const bookingController = (
@@ -41,6 +54,7 @@
         };
 
 
+
         const updateStatus = async (req: Request, res: Response, next: NextFunction) =>{
             try {
                 // console.log("updating");
@@ -63,7 +77,7 @@
             try {
                 const userId = req.user.id;
                 const bookings = await fetchBookingHistory(userId, dbBookingRepository);
-                console.log(bookings,"bookings cntlt");
+                // console.log(bookings,"bookings cntlt");
                 
                 res.status(HttpStatus.OK).json({
                     success: true,
@@ -76,7 +90,7 @@
 
         const adminBookingHistory = async (req: Request, res: Response, next: NextFunction) =>{
             try {
-                console.log(req.params,"req params admin");
+                // console.log(req.params,"req params admin");
                 const {userId} = req.params
                 //@ts-ignore
                 const bookings =  await fetchBookingHistory(userId, dbBookingRepository);
@@ -96,7 +110,7 @@
         const bookingController =  async (req: Request, res: Response, next: NextFunction)=>{
             try {
                 const bookings = await fetchAllBookings(dbBookingRepository);
-                console.log(bookings,"booking his owner");
+                // console.log(bookings,"booking his owner");
                 
                 res.status(HttpStatus.OK).json({
                     success: true,
@@ -108,76 +122,154 @@
         }
 
        
-        const cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                const id = req.params.bookingId;
 
 
-                const booking = await getBookingById(id, dbBookingRepository);
-                if (!booking) {
-                    return res.status(HttpStatus.NOT_FOUND).json({
-                        success: false,
-                        message: "Booking not found",
-                    });
-                }
-        
-                console.log(booking.startTime, "start time from booking");
-        
-                const bookingDate = booking.date; 
-                const dateTimeString = `${bookingDate}T${booking.startTime}:00.000Z`; 
-        
-                
-                let slotStartTime;
-                try {
-                    slotStartTime = Date.parse(dateTimeString);
-                    console.log(slotStartTime, "start time in ms");
-                    if (isNaN(slotStartTime)) {
-                        throw new Error("Invalid start time");
-                    }
-                } catch (error) {
-                    console.error("Error parsing startTime:", error);
-                    return res.status(HttpStatus.BAD_REQUEST).json({
-                        success: false,
-                        message: "Invalid start time format",
-                    });
-                }
-        
-                const currentTime = Date.now(); 
-                console.log(currentTime, "current time in ms");
-        
-                const twentyFourHoursInMs = 24 * 60 * 60 * 1000; 
-        
-            
-                const cancellationDeadline = slotStartTime - twentyFourHoursInMs;
-        
-                if (currentTime >= cancellationDeadline) {
-                    return res.status(HttpStatus.BAD_REQUEST).json({
-                        success: false,
-                        message: "Cannot cancel booking less than 24 hours before the slot start time",
-                    });
-                }
-        
-              
-                await cancelbooking(id, dbBookingRepository);
-                //@ts-ignore
-                await updateSlotStatus(booking.slotId, 'available', dbBookingRepository);
+const cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const id = req.params.bookingId;
 
-                res.status(HttpStatus.OK).json({
-                    success: true,
-                    message: "Booking cancelled successfully",
-                });
-            } catch (error) {
-                next(error);
+        const booking = await getBookingById(id, dbBookingRepository);
+        if (!booking) {
+            return res.status(HttpStatus.NOT_FOUND).json({
+                success: false,
+                message: "Booking not found",
+            });
+        }
+
+        const bookingDate = booking.date;
+        const dateTimeString = `${bookingDate}T${booking.startTime}:00.000Z`;
+
+        let slotStartTime;
+        try {
+            slotStartTime = Date.parse(dateTimeString);
+            if (isNaN(slotStartTime)) {
+                throw new Error("Invalid start time");
             }
-        };
+        } catch (error) {
+            console.error("Error parsing startTime:", error);
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                success: false,
+                message: "Invalid start time format",
+            });
+        }
+
+        const currentTime = Date.now();
+        const twentyFourHoursInMs = 24 * 60 * 60 * 1000;
+        const cancellationDeadline = slotStartTime - twentyFourHoursInMs;
+
+        if (currentTime >= cancellationDeadline) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                success: false,
+                message: "Cannot cancel booking less than 24 hours before the slot start time",
+            });
+        }
+
+        await cancelbooking(id, dbBookingRepository);
+         //@ts-ignore
+        await updateSlotStatus(booking.slotId, 'available', dbBookingRepository);
+
+        // Update wallet balance and add transaction
+        const userId = booking.userId;
+        const amount = booking.fees;
+        //@ts-ignore
+        await updateWallet(userId, amount, 'credit', 'Booking cancelled refund',dbBookingRepository);
+
+        res.status(HttpStatus.OK).json({
+            success: true,
+            message: "Booking cancelled successfully",
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getWalletTransactions = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.user.id;
+        const walletData = await getTransactions(userId,dbBookingRepository);
+        // console.log(walletData,"wallet data");
         
+        res.status(HttpStatus.OK).json(walletData);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// const handleWalletPayment = async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//         // console.log("wallet p");
+        
+//         const { venueId, slotId, date, startTime, endTime, fees } = req.body;
+//         console.log(req.body,"req.body hehe");
+        
+//         const data = req.body
+//         const userId = req.user.id; 
+//         console.log(userId,"userIddd");
+        
+
+//         const result = await createWalletBooking(data, userId, dbBookingRepository);
+//         await updateWallet(userId, fees, 'debit', 'wallet payment',dbBookingRepository)
+//         res.status(HttpStatus.OK).json({
+//             success: true,
+//             message: "Booking created successfully",
+//             result
+//         });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+const handleWalletPayment = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { venueId, slotId, date, startTime, endTime, fees } = req.body;
+        const userId = req.user.id;
+        console.log(userId,"userID for wallet");
+        
+        // Check user wallet balance before proceeding
+        const user = await getWalletbyUserId(userId, dbBookingRepository);
+        console.log(user,"wallet user");
+        
+        //@ts-ignore
+        if (user.balance < fees) {
+            return res.status(HttpStatus.BAD_REQUEST).json({
+                success: false,
+                message: "Insufficient wallet balance",
+            });
+        }
+
+        // Create booking
+        const bookingData = { venueId, slotId, fees, paymentStatus: "paid", bookingStatus: "confirmed", date, startTime, endTime };
+        const booking = await createBooking(bookingData, userId, dbBookingRepository);
+
+        // Update wallet balance
+        await updateWallet(userId, fees, 'debit', 'Wallet payment for booking', dbBookingRepository);
+
+        // Update slot status
+        await updateSlotStatus(slotId, 'booked', dbBookingRepository);
+
+        res.status(HttpStatus.OK).json({
+            success: true,
+            message: "Booking created successfully",
+            booking,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
+   
         return {
             bookVenue,
             updateStatus,
             getBookingHistory,
             cancelBooking,
             bookingController,
-            adminBookingHistory
+            adminBookingHistory,
+            getWalletTransactions,
+            handleWalletPayment
         }
     }
 

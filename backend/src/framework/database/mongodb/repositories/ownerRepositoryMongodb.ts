@@ -8,7 +8,7 @@ export const ownerRepositoryMongodb = () =>{
 
     const getOwnerbyEmail = async (email:any)=>{
         const owner : OwnerInterface | null = await Owner.findOne({email})
-        console.log(owner,"owner db");
+        // console.log(owner,"owner db");
         
         return owner
     }
@@ -31,7 +31,7 @@ const AddOTP = async (OTP: string, ownerId: string)=>{
 const findOtpOwner = async (ownerId:string)=>{
     try {
         const owner = await OTPmodel.findOne({ownerId})
-        console.log(owner,"dbbbb");
+        // console.log(owner,"dbbbb");
         
         return owner
     } catch (error) {
@@ -63,7 +63,7 @@ const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>{
 const getAllOwners = async()=>{
     try{
         const allOwners = await Owner.find({isVerified:true})
-        console.log(allOwners,"owners-mongodb-repo");
+        // console.log(allOwners,"owners-mongodb-repo");
         return allOwners
     } catch(error){
         throw error
@@ -74,23 +74,40 @@ const updateOWnerBlock = async(id:string,status:boolean)=>{
     await Owner.findByIdAndUpdate(id,{isBlocked:status})
 }
 
+// const addVenue = async (venue: VenueEntity) => {
+//     const newVenue = new venues({
+//         ownerId: venue.ownerId,
+//         name: venue.name,
+//         sportsitem:venue.sportsitem,
+//         // location: venue.location,
+//         place: venue.place,
+//         price: venue.price,
+//         description: venue.description,
+//         primaryImage: venue.primaryImage,
+//         secondaryImages: venue.secondaryImages,
+//     });
+//     // console.log(newVenue.ownerId,"owner id - db");
+    
+//     await newVenue.save();
+//     return newVenue;
+// };
+
+
 const addVenue = async (venue: VenueEntity) => {
     const newVenue = new venues({
         ownerId: venue.ownerId,
         name: venue.name,
-        sportsitem:venue.sportsitem,
-        // location: venue.location,
+        sportsitem: venue.sportsitem,
         place: venue.place,
-        price: venue.price,
         description: venue.description,
         primaryImage: venue.primaryImage,
         secondaryImages: venue.secondaryImages,
     });
-    console.log(newVenue.ownerId,"owner id - db");
     
     await newVenue.save();
     return newVenue;
 };
+
 
 const editOwnerInfo = async (id:string,updateData:Record<string,any>)=>{
     try {

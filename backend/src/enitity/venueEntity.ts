@@ -9,7 +9,7 @@ export interface VenueEntity {
     // };
     // location:string;
     place:string;
-    price: number;
+    // price: number;
     description?: string;
     primaryImage?: string;
     secondaryImages?: string[];
@@ -27,7 +27,7 @@ export const createVenueEntity = (
     // },
     // location:string,
     place:string,
-    price: number,
+    // price: number,
     description?: string,
     primaryImage?: string,
     secondaryImages?: string[],
@@ -39,7 +39,7 @@ export const createVenueEntity = (
     sportsitem,
     // location,
     place,
-    price,
+    // price,
     description,
     primaryImage,
     secondaryImages,

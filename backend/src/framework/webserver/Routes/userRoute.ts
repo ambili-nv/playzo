@@ -49,7 +49,9 @@ const userRoutes =()=>{
     router.post('/create-checkout-session',authenticateUser,booking_Controller.bookVenue)
     router.patch('/payment/status/:id',authenticateUser,booking_Controller.updateStatus)
     router.get('/booking-history',authenticateUser,booking_Controller.getBookingHistory)
+    router.get('/wallet',authenticateUser,booking_Controller.getWalletTransactions)
     router.patch('/cancel-booking/:bookingId',authenticateUser,booking_Controller.cancelBooking)
+    router.post('/wallet-payment',authenticateUser,booking_Controller.handleWalletPayment)
     
 
     return router;

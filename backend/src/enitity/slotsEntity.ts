@@ -37,6 +37,7 @@ export interface TimeSlotEntity {
     date:Date;
     startTime: string;
     endTime: string;
+    price:number;
 }
 
 // Function to create TimeSlotEntity
@@ -46,7 +47,8 @@ export const createTimeSlotEntity = (
     // endDate: string,
     date:string,
     startTime: string,
-    endTime: string
+    endTime: string,
+    price:number
 ): TimeSlotEntity => {
     return {
         venueId,
@@ -55,5 +57,6 @@ export const createTimeSlotEntity = (
         date:new Date(date),
         startTime,
         endTime,
+        price
     };
 };

@@ -9,7 +9,7 @@ export const venueRepositoryMongodb = ()=>{
         const getVenuesByOwner = async (ownerId:string) => {
             try {
                 const venue =  await venues.find({ ownerId });
-                console.log(venue,"venue from db");
+                // console.log(venue,"venue from db");
                 return venue
             } catch (error) {
                 throw error;
@@ -34,12 +34,35 @@ export const venueRepositoryMongodb = ()=>{
 
         const getTimeSlotsByVenueId = async (venueId: string) => {
             const timeSlots = await slots.find({ venueId });
-            console.log(timeSlots,"view slots from db");
+            // console.log(timeSlots,"view slots from db");
             
             return timeSlots;
         };
         
 
+
+        // const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
+        //     for (const slot of timeSlots) {
+        //         const existingSlots = await slots.find({
+        //             venueId: slot.venueId,
+        //             date: slot.date,
+        //             $or: [
+        //                 { startTime: { $lt: slot.endTime }, endTime: { $gt: slot.startTime } }
+        //             ]
+        //         });
+        
+        //         if (existingSlots.length > 0) {
+        //             throw new Error("Please select another slot");
+        //         }
+        //     }
+        
+        //     const newTimeSlots = await slots.insertMany(timeSlots);
+        //     console.log(newTimeSlots, "slots db");
+        
+        //     return newTimeSlots;
+        // };
+        
+         
 
         const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
             for (const slot of timeSlots) {
@@ -62,19 +85,17 @@ export const venueRepositoryMongodb = ()=>{
             return newTimeSlots;
         };
         
-         
-
 
         
         const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
             const timeSlots = await slots.find({ venueId, date, status: 'available' });
-            console.log(timeSlots, "view slots by date from db");
+            // console.log(timeSlots, "view slots by date from db");
             return timeSlots;
         };
 
         const getAllTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
             const timeSlots = await slots.find({ venueId, date }); // Retrieve all slots regardless of status
-            console.log(timeSlots, "view all slots by date from db");
+            // console.log(timeSlots, "view all slots by date from db");
             return timeSlots;
         };
 
@@ -82,7 +103,7 @@ export const venueRepositoryMongodb = ()=>{
         //@ts-ignore
         const deleteTimeSlotByVenueIdAndDate = async (venueId, date, startTime, endTime) => {
             const result = await slots.deleteOne({ venueId, date, startTime, endTime });
-            console.log(result, "Deleted time slot from db");
+            // console.log(result, "Deleted time slot from db");
             return result;
         };
         

@@ -54,12 +54,12 @@ export const verifyOwner = async (
     OwnerId:string,
     ownerRepository:ReturnType<ownerDbInterface>
     )=>{
-        console.log(OwnerId,"ownerID get");
+        // console.log(OwnerId,"ownerID get");
         
         if(!ownerOTP)
             throw new CustomError("Please provide an OTP",HttpStatus.BAD_REQUEST);
             const otpOwner = await ownerRepository.findOtpOwner(OwnerId)
-            console.log(otpOwner,"otpUser found");
+            // console.log(otpOwner,"otpUser found");
 
         if(!otpOwner){
             throw new CustomError(
@@ -108,7 +108,7 @@ export const login = async(
 )=>{
     const {email,password} = owner
     const isEmailExist = await ownerDbRepository.getOwnerbyEmail(email)
-    console.log(isEmailExist,"Email checked-owner login");
+    // console.log(isEmailExist,"Email checked-owner login");
 
     if(!isEmailExist){
         throw new CustomError("Invalid credentials", HttpStatus.UNAUTHORIZED);
@@ -150,7 +150,7 @@ export const authGoogleSigninOwner = async(
 )=>{
     const {name,email,email_verified} = ownerData
     const isEmailExist = await ownerDbRepository.getOwnerbyEmail(email)
-    console.log(isEmailExist,"Owner email checked");
+    // console.log(isEmailExist,"Owner email checked");
     if(isEmailExist){
 
         const accessToken = authService.createTokens(
@@ -170,7 +170,7 @@ export const authGoogleSigninOwner = async(
         )
 
         const ownerId = createdOwner._id 
-        console.log(ownerId,"owner id - ");
+        // console.log(ownerId,"owner id - ");
 
         const accessToken = authService.createTokens(
             ownerId,
@@ -198,6 +198,6 @@ export const updateOwner = async (
     ownerDbRepository:ReturnType<ownerDbInterface>
 )=>{
     const owner  = await ownerDbRepository.editProfileOwner(ownerId,updateData)
-    console.log(owner,"edit owner ownerAuth");
+    // console.log(owner,"edit owner ownerAuth");
     
 }

@@ -29,7 +29,7 @@ export const userDbRepository = (
 
     const registerGoogleSignInUser = async(user:googleSignInUserEntityType) => {
          const googleUser = await repository.registerGoogleSignInUser(user);
-         console.log(googleUser,"gppgleuser");
+        //  console.log(googleUser,"gppgleuser");
          
          return googleUser
         }

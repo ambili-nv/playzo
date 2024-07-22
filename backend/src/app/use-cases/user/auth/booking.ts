@@ -7,6 +7,8 @@ export const createBooking = async (data: any,
     userId: string,
     bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
 ) => {
+    console.log("booking");
+    
     const { venueId, slotId, fees, paymentStatus, bookingStatus, date, startTime, endTime } = data;
 
     const booking: BookingEntityType = bookingEntity(
@@ -22,7 +24,7 @@ export const createBooking = async (data: any,
     );
 
    const bookings = await bookingDbRepository.createbooking(booking);
-   console.log(bookings, "bookingsssssssssss");
+//    console.log(bookings, "bookingsssssssssss");
    return bookings;
 };
 
@@ -95,8 +97,8 @@ export const updateBookingStatus = async (
 
 
 export const cancelbooking = async (id: string, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
-    console.log("booking.ts");
-    console.log(id,"di ");
+    // console.log("booking.ts");
+    // console.log(id,"di ");
     
     const updatedData: Record<string, any> = {
         bookingStatus: 'cancelled',
@@ -105,7 +107,7 @@ export const cancelbooking = async (id: string, bookingDbRepository: ReturnType<
     };
 
     const bookingData = await bookingDbRepository.changeBookingStatus(id, updatedData);
-    console.log(bookingData,id,"data bookig.ts");
+    // console.log(bookingData,id,"data bookig.ts");
     
     return bookingData;
 };
@@ -131,3 +133,64 @@ export const fetchAllBookings = async (bookingDbRepository: ReturnType<bookingDb
     return bookings;
 };
 
+
+ 
+
+export const updateWallet = async (
+    userId: string,
+    amount: number,
+    type: 'credit' | 'debit',
+    description: string,
+    bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
+) => {
+    console.log("hello bookinf");
+    
+    const walletUpdate = await bookingDbRepository.updateWallet(userId, amount, type, description);
+    return walletUpdate;
+};
+
+
+
+export const getTransactions = async (
+    userId: string,
+    bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
+) => {
+    const walletData = await bookingDbRepository.getTransaction(userId);
+    return walletData;
+};
+
+export const getWalletbyUserId = async (
+    userId:string,
+    bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
+)=>{
+    const wallet = await bookingDbRepository.getWalletbyUserId(userId)
+    return wallet
+}
+
+
+export const createWalletBooking = async (data: any, 
+    userId: string,
+    bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
+) => {
+    console.log("booking");
+    
+    const { venueId, slotId, fees, paymentStatus, bookingStatus, date, startTime, endTime } = data;
+
+    const booking: BookingEntityType = bookingEntity(
+        userId,
+        venueId,
+        slotId,
+        fees,
+        paymentStatus,
+        bookingStatus,
+        date,
+        startTime,
+        endTime
+    );
+
+   const bookings = await bookingDbRepository.createbooking(booking);
+   await updateBookingStatus
+   await updatePaymentStatus
+//    console.log(bookings, "bookingsssssssssss");
+   return bookings;
+};

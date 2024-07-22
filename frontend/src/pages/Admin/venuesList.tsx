@@ -10,7 +10,7 @@ interface Venue {
     name: string;
     sportsitem: string;
     place: string;
-    price: number;
+    // price: number;
     description: string;
     primaryImage: string;
     secondaryImages: string[];
@@ -86,7 +86,7 @@ const VenuesList: React.FC = () => {
                                 <h2 className="text-xl font-semibold text-green-700 text-center ">{venue.name}</h2>
                                 <p className="text-gray-600 mb-2 mt-5"><strong>SportsItem:</strong> {venue.sportsitem}</p>
                                 <p className="text-gray-600 mb-2"><strong>Location:</strong> {venue.place}</p>
-                                <p className="text-gray-600 mb-2"><strong>Price:</strong> ${venue.price}</p>
+                                {/* <p className="text-gray-600 mb-2"><strong>Price:</strong> ${venue.price}</p> */}
                                 <p className="text-gray-600 mb-2"><strong>Description:</strong> {venue.description}</p>
                                 <p className="text-gray-600 mb-2"><strong>Status:</strong> <span className={venue.isApproved ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>{venue.isApproved ? 'Accepted' : 'Rejected'}</span></p>
                                 <div className="mt-4 flex justify-around">

@@ -125,22 +125,51 @@ const ownerController = (
 
 
 
+    // const uploadVenueHandler = asynchandler(async (
+    //     req: Request,
+    //     res: Response,
+    //     next: NextFunction
+    // ) => {
+    //     try {
+    //         const {  venueData } = req.body;
+    //         const ownerId = venueData.ownerId
+    //         // console.log(ownerId,"owner id - ownnercontroller");
+            
+    //         const place = venueData.place
+    //         // console.log(typeof place,"location type");
+            
+    //         // console.log(venueData, "venue data received");
+
+    //         const newVenue = await uploadVenue(ownerId, venueData, dbRepositoryOwner);
+    //         res.status(HttpStatus.CREATED).json({
+    //             message: "Venue uploaded successfully",
+    //             venue: newVenue,
+    //         });
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // });
+
+
     const uploadVenueHandler = asynchandler(async (
         req: Request,
         res: Response,
         next: NextFunction
     ) => {
         try {
-            const {  venueData } = req.body;
-            const ownerId = venueData.ownerId
-            // console.log(ownerId,"owner id - ownnercontroller");
-            
-            const place = venueData.place
-            // console.log(typeof place,"location type");
-            
-            // console.log(venueData, "venue data received");
-
-            const newVenue = await uploadVenue(ownerId, venueData, dbRepositoryOwner);
+            const { venueData } = req.body;
+            const ownerId = venueData.ownerId;
+            const { place, name, sportsitem, description, primaryImage, secondaryImages } = venueData;
+    
+            const newVenue = await uploadVenue(ownerId, {
+                place,
+                name,
+                sportsitem,
+                description,
+                primaryImage,
+                secondaryImages
+            }, dbRepositoryOwner);
+    
             res.status(HttpStatus.CREATED).json({
                 message: "Venue uploaded successfully",
                 venue: newVenue,
@@ -150,6 +179,7 @@ const ownerController = (
         }
     });
 
+    
     const getOwnerProfile= async(req:Request,res:Response,next:NextFunction)=>{
         try {
             // console.log("OWner Profile - req");
@@ -221,13 +251,33 @@ const ownerController = (
     };
 
 
+    // const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) =>{
+    //     try {
+    //         console.log("slot snd price");
+            
+    //         const { venueId } = req.params; 
+    //         // console.log(venueId,"venueId - slot - got");   
+    //         const  timeSlotData  = req.body;
+    //         // console.log(timeSlotData,"timeslot data - got");
+    //         // console.log(req.body,"req.body - slot - got");
+    //         const newTimeSlots = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
+    //         res.status(HttpStatus.OK).json({
+    //             message: "Time slots saved successfully",
+    //             timeSlots: newTimeSlots,
+    //         });
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
+
+
     const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) =>{
         try {
+            console.log("slot and price");
+            
             const { venueId } = req.params; 
-            // console.log(venueId,"venueId - slot - got");   
             const  timeSlotData  = req.body;
-            // console.log(timeSlotData,"timeslot data - got");
-            // console.log(req.body,"req.body - slot - got");
+    
             const newTimeSlots = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
             res.status(HttpStatus.OK).json({
                 message: "Time slots saved successfully",
@@ -237,13 +287,14 @@ const ownerController = (
             next(error)
         }
     }
+    
 
 
     
     const viewAllSlotsByDate = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { venueId, date } = req.params; // Assuming date is passed as a path parameter
-            console.log(venueId, date, "venueId and date received");
+            // console.log(venueId, date, "venueId and date received");
     
             const timeSlots = await findAllTimeSlotsByVenueIdAndDate(dbVenueRepository, venueId, date);
     

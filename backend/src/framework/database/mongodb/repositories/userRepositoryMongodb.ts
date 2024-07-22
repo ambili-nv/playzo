@@ -21,7 +21,7 @@ const addUser = async(user:userEntityType)=>{
         phoneNumber:user.getphoneNumber(),
         
     })
-    console.log(newUser,"refister details");
+    // console.log(newUser,"refister details");
     
     await newUser.save()
     return newUser
@@ -46,7 +46,7 @@ const findOtpUser = async (userId: string) => {
 };
 
 const updateUserInfo = async (id: string, updateData:Record<string,any>)=>await User.findByIdAndUpdate(id,updateData,{new:true});
-console.log(updateUserInfo,"user info -edit db");
+// console.log(updateUserInfo,"user info -edit db");
 
 const deleteOtpUser = async (userId: string) =>await OTPModel.deleteOne({ userId });
 const getUserbyId = async (id: string) => await User.findById(id);
@@ -92,7 +92,7 @@ const findVerificationCodeAndUpdate = async (
     const getAllusers = async () => {
         try {
             const allUsers = await User.find({ isVerified: true });
-            console.log(allUsers, "users - repo");
+            // console.log(allUsers, "users - repo");
             return allUsers;
         } catch (error) {
             console.error("Error fetching users:", error);
@@ -108,10 +108,10 @@ const findVerificationCodeAndUpdate = async (
 
     const editUserInfo = async (id: string, updateData: Record<string, any>) => {
         try {
-          console.log(`Updating user with ID: ${id}`);
-          console.log('Update data: db.....', updateData);
+        //   console.log(`Updating user with ID: ${id}`);
+        //   console.log('Update data: db.....', updateData);
           const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true });
-          console.log('Updated user:', updatedUser);
+        //   console.log('Updated user:', updatedUser);
           return updatedUser;
         } catch (error) {
           console.error('Error updating user:', error);

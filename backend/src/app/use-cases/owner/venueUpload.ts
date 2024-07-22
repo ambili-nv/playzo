@@ -6,22 +6,50 @@ import { HttpStatus } from "../../../types/httpStatus";
 import { venueDbInterface} from "../../Interfaces/venueDbRepository";
 import { TimeSlotEntity,createTimeSlotEntity } from "../../../enitity/slotsEntity";
 
+// export const uploadVenue = async (
+//     ownerId: string,
+//     venueData: any,
+//     ownerRepository: ReturnType<ownerDbInterface>
+// ) => {
+//     // console.log(venueData,"venue data in usecase");
+    
+//     const { name, sportsitem, place, price, description, primaryImage, secondaryImages } = venueData;
+
+//     const venueEntity: VenueEntity = createVenueEntity(
+//         ownerId,
+//         name,
+//         sportsitem,
+//         // location,
+//         place,
+//         price,
+//         description,
+//         primaryImage,
+//         secondaryImages
+//     );
+
+//     // Add the venue to the repository
+//     const newVenue = await ownerRepository.addVenue(venueEntity);
+
+//     if (!newVenue) {
+//         throw new CustomError("Venue upload failed", HttpStatus.INTERNAL_SERVER_ERROR);
+//     }
+
+//     return newVenue;
+// };
+
+
 export const uploadVenue = async (
     ownerId: string,
     venueData: any,
     ownerRepository: ReturnType<ownerDbInterface>
 ) => {
-    // console.log(venueData,"venue data in usecase");
-    
-    const { name, sportsitem, place, price, description, primaryImage, secondaryImages } = venueData;
+    const { name, sportsitem, place, description, primaryImage, secondaryImages } = venueData;
 
     const venueEntity: VenueEntity = createVenueEntity(
         ownerId,
         name,
         sportsitem,
-        // location,
         place,
-        price,
         description,
         primaryImage,
         secondaryImages
@@ -41,7 +69,7 @@ export const uploadVenue = async (
 export const findVenues= async(venueDbRepository:ReturnType<venueDbInterface>,ownerId:string)=>{
     try {
         const venues = await venueDbRepository.getVenuesByOwner(ownerId);
-        console.log(venues,"venues adminread");
+        // console.log(venues,"venues adminread");
         
         return venues;
     } catch (error) {
@@ -133,20 +161,47 @@ export const findVenueDetails = async (venueDbRepository: ReturnType<venueDbInte
 
 
 
+// export const saveTimeSlots = async (
+//     venueId: string,
+//     timeSlotData: any,
+//     venueRepository: ReturnType<venueDbInterface>
+// ) => {
+//     const { date, timeSlots } = timeSlotData;
+//     // console.log(date, timeSlots, "save time slots");
+
+//     const timeSlotEntities: TimeSlotEntity[] = timeSlots.map((slot: any) =>
+//         createTimeSlotEntity(
+//             venueId,
+//             date,
+//             slot.startTime,
+//             slot.endTime
+//         )
+//     );
+
+//     try {
+//         const newTimeSlots = await venueRepository.addTimeSlots(timeSlotEntities);
+//         return newTimeSlots;
+//     } catch (error) {
+//         throw error
+//     }
+// };
+
+
+
 export const saveTimeSlots = async (
     venueId: string,
     timeSlotData: any,
     venueRepository: ReturnType<venueDbInterface>
 ) => {
     const { date, timeSlots } = timeSlotData;
-    console.log(date, timeSlots, "save time slots");
 
     const timeSlotEntities: TimeSlotEntity[] = timeSlots.map((slot: any) =>
         createTimeSlotEntity(
             venueId,
             date,
             slot.startTime,
-            slot.endTime
+            slot.endTime,
+            slot.price // Add price to entity
         )
     );
 
@@ -157,6 +212,7 @@ export const saveTimeSlots = async (
         throw error
     }
 };
+
 
 
     export const findTimeSlotsByVenueId = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string) => {

@@ -123,7 +123,7 @@ const validateVenueUpload = (values: {
   name: string;
   sportsitem: string;
   place: string;
-  price: string;
+  // price: string;
   description: string;
   primaryImage: File | null;
   secondaryImage: File[] | null;
@@ -132,7 +132,7 @@ const validateVenueUpload = (values: {
     name: string;
     sportsitem: string;
     place: string;
-    price: string;
+    // price: string;
     description: string;
     primaryImage: string;
     secondaryImage: string;
@@ -156,11 +156,11 @@ const validateVenueUpload = (values: {
     errors.place = "Place cannot be a number.";
   }
 
-  if (!values.price.trim()) {
-    errors.price = "Required*";
-  } else if (isNaN(Number(values.price)) || Number(values.price) <= 0) {
-    errors.price = "Price must be a positive number.";
-  }
+  // if (!values.price.trim()) {
+  //   errors.price = "Required*";
+  // } else if (isNaN(Number(values.price)) || Number(values.price) <= 0) {
+  //   errors.price = "Price must be a positive number.";
+  // }
 
   if (!values.description.trim()) {
     errors.description = "Required*";
