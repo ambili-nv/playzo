@@ -6,15 +6,37 @@ export const venueRepositoryMongodb = ()=>{
 
 
 
-        const getVenuesByOwner = async (ownerId:string) => {
+        // const getVenuesByOwner = async (ownerId:string) => {
+        //     try {
+        //         const venue =  await venues.find({ ownerId });
+        //         // console.log(venue,"venue from db");
+        //         return venue
+        //     } catch (error) {
+        //         throw error;
+        //     }
+        // };
+
+        const getVenuesByOwner = async (ownerId: string, page: number, limit: number) => {
             try {
-                const venue =  await venues.find({ ownerId });
-                // console.log(venue,"venue from db");
-                return venue
+                const skip = (page - 1) * limit;
+                const totalVenues = await venues.countDocuments({ ownerId });
+                const venueList = await venues.find({ ownerId })
+                    .skip(skip)
+                    .limit(limit)
+                    .exec();
+        
+                return {
+                    totalVenues,
+                    totalPages: Math.ceil(totalVenues / limit),
+                    currentPage: page,
+                    venueList
+                };
             } catch (error) {
                 throw error;
             }
         };
+        
+        
 
         const getVenueById = async(venueId:string)=>await venues.findById(venueId)
 

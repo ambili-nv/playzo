@@ -26,16 +26,26 @@ const getOwnerbyId = async(id:string)=>await repository.getOwnerById(id)
 
 const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>await repository.registerGoogleSignInOwner(owner)
 
-const getAllOwners = async()=>{
-   try {
-      const allOwners = await repository.getAllOwners();
-      // console.log(allOwners,"from db");
-      return allOwners
+// const getAllOwners = async()=>{
+//    try {
+//       const allOwners = await repository.getAllOwners();
+//       // console.log(allOwners,"from db");
+//       return allOwners
 
-   } catch (error) {
+//    } catch (error) {
       
+//    }
+// }
+
+const getAllOwners = async (page: number, limit: number) => {
+   try {
+       const { allOwners, totalOwners } = await repository.getAllOwners(page, limit);
+       return { allOwners, totalOwners };
+   } catch (error) {
+       // Handle error
    }
-}
+};
+
 
 const updateOwnerBlock = async(id:string,status:boolean)=>{
    await repository.updateOWnerBlock(id,status)

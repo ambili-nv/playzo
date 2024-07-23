@@ -27,17 +27,29 @@
             await repository.changeBookingStatus(id, updatingData);
         };
 
-        const bookingHistory = async (userId: string) => {
-            const bookings = await repository.bookingHistory(userId);
+        // const bookingHistory = async (userId: string) => {
+        //     const bookings = await repository.bookingHistory(userId);
+        //     return bookings;
+        // };
+
+
+        const bookingHistory = async (userId: string, page: number, limit: number) => {
+            const { bookings, total } = await repository.bookingHistory(userId, page, limit);
+            return { bookings, total };
+        };
+        
+
+
+        // const getAllBookings = async () => {
+        //     const bookings = await repository.getAllBookings();
+        //     return bookings;
+        // };
+
+        const getAllBookings = async (page: number, limit: number) => {
+            const bookings = await repository.getAllBookings(page, limit);
             return bookings;
         };
-
-
-        const getAllBookings = async () => {
-            const bookings = await repository.getAllBookings();
-            return bookings;
-        };
-
+        
 
         //  const cancelBooking = async (id: string) => {
         //     await repository.findByIdAndUpdate(id, { bookingStatus: 'cancelled' });
@@ -67,8 +79,8 @@
             return walletUpdate;
         };
 
-        const getTransaction = async (userId: string) => {
-            const transactions = await repository.getWalletTransactions(userId);
+        const getTransaction = async (userId: string, page: number, limit: number) => {
+            const transactions = await repository.getWalletTransactions(userId, page, limit);
             return transactions;
         };
 

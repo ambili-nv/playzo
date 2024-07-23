@@ -211,19 +211,35 @@ const ownerController = (
         }
     }
 
-    const getVenues = async(req:Request,res:Response,next:NextFunction)=>{
-        try {
-            // console.log("get req");
-            const ownerId = req.params.ownerId
-            // console.log(ownerId,"ownerId - contr");
-            const venues = await findVenues(dbVenueRepository,ownerId)
-            // console.log(venues,"venue - owner - get from db");
+    // const getVenues = async(req:Request,res:Response,next:NextFunction)=>{
+    //     try {
+    //         // console.log("get req");
+    //         const ownerId = req.params.ownerId
+    //         // console.log(ownerId,"ownerId - contr");
+    //         const venues = await findVenues(dbVenueRepository,ownerId)
+    //         // console.log(venues,"venue - owner - get from db");
             
+    //         return res.status(HttpStatus.OK).json({ success: true, venues });
+    //     } catch (error) {
+            
+    //     }
+    // }
+
+    const getVenues = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const ownerId = req.params.ownerId;
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 10;
+    
+            const venues = await findVenues(dbVenueRepository, ownerId, page, limit);
+    
             return res.status(HttpStatus.OK).json({ success: true, venues });
         } catch (error) {
-            
+            next(error);
         }
-    }
+    };
+    
+    
 
     const getVenueDetails = async(req:Request,res:Response,next:NextFunction)=>{
         try {

@@ -36,6 +36,14 @@
 //         fetchBookingHistory();
 //     }, []);
 
+//     const formatTime = (time: string) => {
+//         const [hourString, minute] = time.split(':');
+//         const hour = parseInt(hourString, 10);
+//         const ampm = hour >= 12 ? 'PM' : 'AM';
+//         const formattedHour = hour % 12 || 12;
+//         return `${formattedHour}:${minute} ${ampm}`;
+//     };
+
 //     return (
 //         <div className="py-6">
 //             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
@@ -54,7 +62,13 @@
 //                                     Venue
 //                                 </th>
 //                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-//                                     Date & Time
+//                                     Date
+//                                 </th>
+//                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+//                                      Time
+//                                 </th>
+//                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+//                                     Price
 //                                 </th>
 //                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
 //                                     Booking Status
@@ -70,7 +84,9 @@
 //                                     <td className="px-5 py-5 border-b border-gray-200">{booking._id}</td>
 //                                     <td className="px-5 py-5 border-b border-gray-200">{booking.userId.name}</td>
 //                                     <td className="px-5 py-5 border-b border-gray-200">{booking.venueId.name}</td>
-//                                     <td className="px-5 py-5 border-b border-gray-200">{booking.date} {booking.startTime} - {booking.endTime}</td>
+//                                     <td className="px-5 py-5 border-b border-gray-200">{booking.date}</td>
+//                                     <td className="px-5 py-5 border-b border-gray-200">{formatTime(booking.startTime)}to{formatTime(booking.endTime)}</td>
+//                                     <td className="px-5 py-5 border-b border-gray-200">{booking.fees}</td>
 //                                     <td className="px-5 py-5 border-b border-gray-200">{booking.bookingStatus}</td>
 //                                     <td className="px-5 py-5 border-b border-gray-200">{booking.paymentStatus}</td>
 //                                 </tr>
@@ -84,6 +100,7 @@
 // };
 
 // export default BookingHistoryPage;
+
 
 
 
@@ -108,13 +125,19 @@ type Booking = {
 
 const BookingHistoryPage: React.FC = () => {
     const [bookings, setBookings] = useState<Booking[]>([]);
+    const [page, setPage] = useState(1);
+    const [limit] = useState(6); // Items per page
+    const [total, setTotal] = useState(0);
 
     useEffect(() => {
         const fetchBookingHistory = async () => {
             try {
-                const response = await axiosInstance.get<{ success: boolean; bookings: Booking[] }>(OWNER_API + '/bookings');
+                const response = await axiosInstance.get<{ success: boolean; bookings: Booking[], total: number }>(
+                    `${OWNER_API}/bookings?page=${page}&limit=${limit}`
+                );
                 if (response.data.success) {
                     setBookings(response.data.bookings);
+                    setTotal(response.data.total);
                 } else {
                     console.error('Fetch bookings failed:', response.data);
                 }
@@ -124,7 +147,7 @@ const BookingHistoryPage: React.FC = () => {
         };
 
         fetchBookingHistory();
-    }, []);
+    }, [page, limit]);
 
     const formatTime = (time: string) => {
         const [hourString, minute] = time.split(':');
@@ -133,6 +156,8 @@ const BookingHistoryPage: React.FC = () => {
         const formattedHour = hour % 12 || 12;
         return `${formattedHour}:${minute} ${ampm}`;
     };
+
+    const totalPages = Math.ceil(total / limit);
 
     return (
         <div className="py-6">
@@ -175,7 +200,7 @@ const BookingHistoryPage: React.FC = () => {
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.userId.name}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.venueId.name}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.date}</td>
-                                    <td className="px-5 py-5 border-b border-gray-200">{formatTime(booking.startTime)}to{formatTime(booking.endTime)}</td>
+                                    <td className="px-5 py-5 border-b border-gray-200">{formatTime(booking.startTime)} to {formatTime(booking.endTime)}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.fees}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.bookingStatus}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.paymentStatus}</td>
@@ -184,10 +209,26 @@ const BookingHistoryPage: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
+                <div className="mt-4 flex justify-center">
+                    <button
+                        onClick={() => setPage(page - 1)}
+                        disabled={page === 1}
+                        className="px-4 py-2 mx-1 bg-gray-200 rounded-md disabled:opacity-50"
+                    >
+                        Previous
+                    </button>
+                    <span className="px-4 py-2 mx-1">{page} of {totalPages}</span>
+                    <button
+                        onClick={() => setPage(page + 1)}
+                        disabled={page === totalPages}
+                        className="px-4 py-2 mx-1 bg-gray-200 rounded-md disabled:opacity-50"
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
         </div>
     );
 };
 
 export default BookingHistoryPage;
-

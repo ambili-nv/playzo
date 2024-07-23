@@ -66,16 +66,27 @@ export const uploadVenue = async (
 };
 
 
-export const findVenues= async(venueDbRepository:ReturnType<venueDbInterface>,ownerId:string)=>{
-    try {
-        const venues = await venueDbRepository.getVenuesByOwner(ownerId);
-        // console.log(venues,"venues adminread");
+// export const findVenues= async(venueDbRepository:ReturnType<venueDbInterface>,ownerId:string)=>{
+//     try {
+//         const venues = await venueDbRepository.getVenuesByOwner(ownerId);
+//         // console.log(venues,"venues adminread");
         
+//         return venues;
+//     } catch (error) {
+//         throw error;
+//     }
+// }
+
+export const findVenues = async (venueDbRepository: ReturnType<venueDbInterface>, ownerId: string, page: number, limit: number) => {
+    try {
+        const venues = await venueDbRepository.getVenuesByOwner(ownerId, page, limit);
         return venues;
     } catch (error) {
         throw error;
     }
-}
+};
+
+
 
 
 export const findVenueDetails = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string) => {

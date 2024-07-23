@@ -51,9 +51,9 @@ export const userDbRepository = (
     // }
 
 
-    const getAllUsers = async () => {
+    const getAllUsers = async (page: number, limit: number) => {
         try {
-            const allUsers = await repository.getAllusers();
+            const allUsers = await repository.getAllusers(page,limit);
             // console.log(allUsers, "users - service");
             return allUsers;
         } catch (error) {
@@ -61,6 +61,24 @@ export const userDbRepository = (
             throw error;
         }
     };
+
+    // const getAllUsers = async (repository: any, page: number, limit: number) => {
+    //     try {
+    //         const allUsers = await repository.getAllusers(page, limit);
+    //         // console.log(allUsers, "users - service");
+    //         return allUsers;
+    //     } catch (error) {
+    //         console.error("Error in service function:", error);
+    //         throw error;
+    //     }
+    // };
+    
+    
+  
+
+
+
+
 
    
 

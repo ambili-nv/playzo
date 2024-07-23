@@ -39,25 +39,56 @@ export const bookingRepositoryMongodb = () => {
     };
 
 
-    const bookingHistory = async (userId: string) => {
-        const bookings = await Booking.find({ userId })
-            .populate({
-                path: 'venueId', // This is the field in the Booking model referencing the Venue model
-                select: 'name sportsitem' // Specify the fields you want to populate from the Venue model
-            })
-            .exec();
-        // console.log(bookings, "bookings db"); // Logging the fetched bookings
-        return bookings; // Returning the populated bookings array
+    // const bookingHistory = async (userId: string) => {
+    //     const bookings = await Booking.find({ userId })
+    //         .populate({
+    //             path: 'venueId', // This is the field in the Booking model referencing the Venue model
+    //             select: 'name sportsitem' // Specify the fields you want to populate from the Venue model
+    //         })
+    //         .exec();
+    //     // console.log(bookings, "bookings db"); // Logging the fetched bookings
+    //     return bookings; // Returning the populated bookings array
+    // };
+
+
+    const bookingHistory = async (userId: string, page: number, limit: number) => {
+        const skip = (page - 1) * limit;
+        const [bookings, total] = await Promise.all([
+            Booking.find({ userId })
+                .populate({
+                    path: 'venueId', // This is the field in the Booking model referencing the Venue model
+                    select: 'name sportsitem' // Specify the fields you want to populate from the Venue model
+                })
+                .skip(skip)
+                .limit(limit)
+                .exec(),
+            Booking.countDocuments({ userId })
+        ]);
+    
+        return { bookings, total };
     };
+    
 
     
-    const getAllBookings = async () => {
+    // const getAllBookings = async () => {
+    //     const bookings = await Booking.find()
+    //         .populate('userId', 'name') // Populate the userId with the name field
+    //         .populate('venueId', 'name') // Populate the venueId with the name field
+    //         .exec();
+    //     return bookings;
+    // };
+
+    const getAllBookings = async (page: number, limit: number) => {
         const bookings = await Booking.find()
             .populate('userId', 'name') // Populate the userId with the name field
             .populate('venueId', 'name') // Populate the venueId with the name field
+            .skip((page - 1) * limit)
+            .limit(limit)
             .exec();
-        return bookings;
+        const total = await Booking.countDocuments();
+        return { bookings, total };
     };
+    
 
 
     const getBookingById = async (id: string) => {
@@ -112,19 +143,37 @@ export const bookingRepositoryMongodb = () => {
     };
 
 
-    const getWalletTransactions = async (userId: string) => {
+    // const getWalletTransactions = async (userId: string) => {
+    //     const walletDoc = await wallet.findOne({ userId });
+    //     if (!walletDoc) {
+    //         throw new Error('Wallet not found');
+    //     }
+    
+    //     return {
+    //         balance: walletDoc.balance,
+    //         transactions: walletDoc.transactions,
+    //     };
+    // };
+
+
+    
+
+    const getWalletTransactions = async (userId: string, page: number, limit: number) => {
         const walletDoc = await wallet.findOne({ userId });
         if (!walletDoc) {
             throw new Error('Wallet not found');
         }
     
+        // Pagination logic
+        const transactions = walletDoc.transactions.slice((page - 1) * limit, page * limit);
+    
         return {
             balance: walletDoc.balance,
-            transactions: walletDoc.transactions,
+            transactions,
+            totalTransactions: walletDoc.transactions.length
         };
     };
-
-
+    
 
 
 

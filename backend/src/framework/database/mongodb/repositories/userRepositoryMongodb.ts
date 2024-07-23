@@ -89,11 +89,24 @@ const findVerificationCodeAndUpdate = async (
     // }
 
 
-    const getAllusers = async () => {
+    // const getAllusers = async () => {
+    //     try {
+    //         const allUsers = await User.find({ isVerified: true });
+    //         // console.log(allUsers, "users - repo");
+    //         return allUsers;
+    //     } catch (error) {
+    //         console.error("Error fetching users:", error);
+    //         throw error;
+    //     }
+    // };
+
+    const getAllusers = async (page: number, limit: number) => {
         try {
-            const allUsers = await User.find({ isVerified: true });
+            const skip = (page - 1) * limit;
+            const totalUsers = await User.countDocuments({ isVerified: true });
+            const users = await User.find({ isVerified: true }).skip(skip).limit(limit);
             // console.log(allUsers, "users - repo");
-            return allUsers;
+            return { users, totalUsers };
         } catch (error) {
             console.error("Error fetching users:", error);
             throw error;

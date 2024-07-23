@@ -60,15 +60,30 @@ const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>{
     return newOwner
 }
 
-const getAllOwners = async()=>{
-    try{
-        const allOwners = await Owner.find({isVerified:true})
-        // console.log(allOwners,"owners-mongodb-repo");
-        return allOwners
-    } catch(error){
-        throw error
+// const getAllOwners = async()=>{
+//     try{
+//         const allOwners = await Owner.find({isVerified:true})
+//         // console.log(allOwners,"owners-mongodb-repo");
+//         return allOwners
+//     } catch(error){
+//         throw error
+//     }
+// }
+
+
+const getAllOwners = async (page: number, limit: number) => {
+    try {
+        const allOwners = await Owner.find({ isVerified: true })
+            .skip((page - 1) * limit)
+            .limit(limit);
+        const totalOwners = await Owner.countDocuments({ isVerified: true });
+
+        return { allOwners, totalOwners };
+    } catch (error) {
+        throw error;
     }
-}
+};
+
 
 const updateOWnerBlock = async(id:string,status:boolean)=>{
     await Owner.findByIdAndUpdate(id,{isBlocked:status})

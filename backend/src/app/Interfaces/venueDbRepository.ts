@@ -5,10 +5,16 @@ import { TimeSlotEntity } from "../../enitity/slotsEntity";
 export const venueDbRepository = (
     repository : ReturnType<venueRepositoryMongodbType>
 )=>{
-    const getVenuesByOwner = async (ownerId: string) => {
-        const venues = await repository.getVenuesByOwner(ownerId);
+    // const getVenuesByOwner = async (ownerId: string) => {
+    //     const venues = await repository.getVenuesByOwner(ownerId);
+    //     return venues;
+    // };
+    const getVenuesByOwner = async (ownerId: string, page: number, limit: number) => {
+        const venues = await repository.getVenuesByOwner(ownerId, page, limit);
         return venues;
     };
+    
+    
 
     const getVenueById = async(venueId:string)=>await repository.getVenueById(venueId)
 

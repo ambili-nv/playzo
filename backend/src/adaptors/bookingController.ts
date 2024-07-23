@@ -73,44 +73,51 @@
 
 
 
+        // const getBookingHistory = async (req: Request, res: Response, next: NextFunction) => {
+        //     try {
+        //         const userId = req.user.id;
+        //         const bookings = await fetchBookingHistory(userId, dbBookingRepository);
+        //         // console.log(bookings,"bookings cntlt");
+                
+        //         res.status(HttpStatus.OK).json({
+        //             success: true,
+        //             bookings,
+        //         });
+        //     } catch (error) {
+        //         next(error);
+        //     }
+        // };
+
         const getBookingHistory = async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const userId = req.user.id;
-                const bookings = await fetchBookingHistory(userId, dbBookingRepository);
-                // console.log(bookings,"bookings cntlt");
-                
+                const page = parseInt(req.query.page as string) || 1;
+                const limit = parseInt(req.query.limit as string) || 5;
+        
+                const { bookings, total } = await fetchBookingHistory(userId, page, limit, dbBookingRepository);
+        
                 res.status(HttpStatus.OK).json({
                     success: true,
                     bookings,
+                    total,
+                    page,
+                    totalPages: Math.ceil(total / limit)
                 });
             } catch (error) {
                 next(error);
             }
         };
+        
 
-        const adminBookingHistory = async (req: Request, res: Response, next: NextFunction) =>{
+        const  adminBookingHistory = async (req: Request, res: Response, next: NextFunction) =>{
             try {
-                // console.log(req.params,"req params admin");
+                console.log(req.params,"req params admin");
                 const {userId} = req.params
+                const page = parseInt(req.query.page as string) || 1;
+                const limit = parseInt(req.query.limit as string) || 5;
                 //@ts-ignore
-                const bookings =  await fetchBookingHistory(userId, dbBookingRepository);
-                res.status(HttpStatus.OK).json({
-                    success: true,
-                    bookings,
-                });
-            } catch (error) {
-                next(error);
-            }
-        }
-
-
-
-
-
-        const bookingController =  async (req: Request, res: Response, next: NextFunction)=>{
-            try {
-                const bookings = await fetchAllBookings(dbBookingRepository);
-                // console.log(bookings,"booking his owner");
+                const bookings =  await fetchBookingHistory(userId, page, limit, dbBookingRepository);
+                console.log(bookings,"bookingss admin user");
                 
                 res.status(HttpStatus.OK).json({
                     success: true,
@@ -121,6 +128,41 @@
             }
         }
 
+
+
+
+
+        // const bookingController =  async (req: Request, res: Response, next: NextFunction)=>{
+        //     try {
+        //         const bookings = await fetchAllBookings(dbBookingRepository);
+        //         // console.log(bookings,"booking his owner");
+                
+        //         res.status(HttpStatus.OK).json({
+        //             success: true,
+        //             bookings,
+        //         });
+        //     } catch (error) {
+        //         next(error);
+        //     }
+        // }
+
+        const bookingController = async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const { page = 1, limit = 6 } = req.query;
+                const { bookings, total } = await fetchAllBookings(dbBookingRepository, parseInt(page as string), parseInt(limit as string));
+                
+                res.status(HttpStatus.OK).json({
+                    success: true,
+                    bookings,
+                    total,
+                    page: parseInt(page as string),
+                    limit: parseInt(limit as string),
+                });
+            } catch (error) {
+                next(error);
+            }
+        };
+        
        
 
 
@@ -183,17 +225,33 @@ const cancelBooking = async (req: Request, res: Response, next: NextFunction) =>
     }
 };
 
+// const getWalletTransactions = async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//         const userId = req.user.id;
+//         const walletData = await getTransactions(userId,dbBookingRepository);
+//         // console.log(walletData,"wallet data");
+        
+//         res.status(HttpStatus.OK).json(walletData);
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+
 const getWalletTransactions = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.user.id;
-        const walletData = await getTransactions(userId,dbBookingRepository);
-        // console.log(walletData,"wallet data");
-        
+        const page = parseInt(req.query.page as string, 10) || 1;
+        const limit = parseInt(req.query.limit as string, 10) || 5;
+        const walletData = await getTransactions(userId, dbBookingRepository, page, limit);
         res.status(HttpStatus.OK).json(walletData);
     } catch (error) {
         next(error);
     }
 };
+
+
+
 
 
 // const handleWalletPayment = async (req: Request, res: Response, next: NextFunction) => {

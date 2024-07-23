@@ -45,7 +45,7 @@ const adminRoutes =()=>{
 
 
 
-        router.get('/bookings/user/:userId',authenticateAdmin,booking_Controller.adminBookingHistory)
+        router.get('/bookings/user/:userId',booking_Controller.adminBookingHistory)
 
 
 
