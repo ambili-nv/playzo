@@ -2,6 +2,7 @@ import { VenueEntity } from "../../../../enitity/venueEntity";
 import venues from "../models/venues";
 import { TimeSlotEntity } from "../../../../enitity/slotsEntity";
 import slots from "../models/slots";
+import mongoose from "mongoose";
 export const venueRepositoryMongodb = ()=>{
 
 
@@ -109,11 +110,53 @@ export const venueRepositoryMongodb = ()=>{
         
 
         
+        // const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
+        //     const timeSlots = await slots.find({ venueId, date, status: 'available' });
+        //     console.log(timeSlots, "view slots by date from db");
+        //     return timeSlots;
+        // };
+
+        // const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
+        //     console.log("Venue ID:", venueId);
+        //     console.log("Date:", date);
+        
+        //     // Convert date string to Date object if needed
+        //     const queryDate = new Date(date);
+        //     console.log(venueId, date, "Received venueId and date in userRepositoryMongodb");
+        
+        //     const timeSlots = await slots.find({ venueId, date:queryDate, status: 'available' });
+        //     console.log(timeSlots, "Retrieved time slots in userRepositoryMongodb");
+        
+        //     return timeSlots;
+        // };
+
+
         const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
-            const timeSlots = await slots.find({ venueId, date, status: 'available' });
-            // console.log(timeSlots, "view slots by date from db");
+            console.log("Venue ID:", venueId);
+            console.log("Date:", date);
+        
+            // Convert date string to Date object if needed, stripping out the time part
+            const startOfDay = new Date(date);
+            startOfDay.setUTCHours(0, 0, 0, 0);
+            const endOfDay = new Date(date);
+            endOfDay.setUTCHours(23, 59, 59, 999);
+        
+            console.log("Start of Day:", startOfDay);
+            console.log("End of Day:", endOfDay);
+        
+            const timeSlots = await slots.find({
+                venueId: new mongoose.Types.ObjectId(venueId),  
+                date: { $gte: startOfDay, $lte: endOfDay },
+                status: 'available'
+            });
+        
+            console.log("Retrieved time slots:", timeSlots);
+        
             return timeSlots;
         };
+        
+        
+        
 
         const getAllTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
             const timeSlots = await slots.find({ venueId, date }); // Retrieve all slots regardless of status

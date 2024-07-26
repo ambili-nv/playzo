@@ -113,7 +113,7 @@ const WalletPage: React.FC = () => {
         setTransactions(response.data.transactions);
         setTotalPages(Math.ceil(response.data.totalTransactions / 5));
       } catch (error) {
-        setError('Failed to fetch wallet data');
+        // setError('Failed to fetch wallet data');
       } finally {
         setLoading(false);
       }

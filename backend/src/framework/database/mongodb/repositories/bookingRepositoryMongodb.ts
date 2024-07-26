@@ -96,7 +96,15 @@ export const bookingRepositoryMongodb = () => {
     };
 
     const getWalletbyUserId = async (userId: string) => {
-        const Wallet = await wallet.findOne({ userId }).exec(); 
+        let Wallet = await wallet.findOne({ userId }).exec(); 
+
+        if (!Wallet) {
+            Wallet = new wallet({
+                userId,
+                balance: 0, // Initial balance
+                transactions: []
+            });
+        }
         console.log(Wallet, "wallet user from db");
         
         return Wallet;

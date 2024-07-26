@@ -54,8 +54,8 @@ const timeSlotSchema = new mongoose.Schema({
         trim: true,
     },
     price: {
-        type: Number,  // Add this line
-        required: [true, "Price is required"],  // Add this line
+        type: Number,  
+        required: [true, "Price is required"],  
     },
     status: {
         type: String,

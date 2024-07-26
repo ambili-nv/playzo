@@ -54,6 +54,14 @@
         };
 
 
+        const handlePaymentFailure = async (req: Request, res: Response, next: NextFunction) =>{
+            const data = req.body;
+            const userId = req.user.id;
+            const user = await getUserbyId(userId, dbRepositoryUser);
+            await updateWallet(userId, data.fees, 'credit', 'Booking cancelled refund',dbBookingRepository);
+            // await updateSlotStatus(booking.slotId, 'available', dbBookingRepository);
+        }
+
 
         const updateStatus = async (req: Request, res: Response, next: NextFunction) =>{
             try {
@@ -116,12 +124,15 @@
                 const page = parseInt(req.query.page as string) || 1;
                 const limit = parseInt(req.query.limit as string) || 5;
                 //@ts-ignore
-                const bookings =  await fetchBookingHistory(userId, page, limit, dbBookingRepository);
+                const {bookings,total} =  await fetchBookingHistory(userId, page, limit, dbBookingRepository);
                 console.log(bookings,"bookingss admin user");
                 
                 res.status(HttpStatus.OK).json({
                     success: true,
                     bookings,
+                    total,
+                    page,
+                    totalPages: Math.ceil(total / limit)
                 });
             } catch (error) {
                 next(error);
@@ -318,6 +329,8 @@ const handleWalletPayment = async (req: Request, res: Response, next: NextFuncti
 
 
 
+
+
    
         return {
             bookVenue,
@@ -327,7 +340,8 @@ const handleWalletPayment = async (req: Request, res: Response, next: NextFuncti
             bookingController,
             adminBookingHistory,
             getWalletTransactions,
-            handleWalletPayment
+            handleWalletPayment,
+            handlePaymentFailure
         }
     }
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 import axiosInstance from '../../utils/axiosInstance';
 import { useNavigate } from 'react-router-dom';
+import showToast from '../../utils/toaster';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -38,10 +39,14 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId })
 
   useEffect(() => {
     if (selectedDate) {
+      console.log(selectedDate,"date");
+      
       const fetchAvailableSlots = async () => {
         setLoading(true);
         try {
           const response = await axios.get(`${USER_API}/get-slots/${venueId}/${selectedDate}`);
+          console.log(response.data,"");
+          
           setAvailableSlots(response.data.timeSlots);
         } catch (err) {
           setError('Error fetching available slots');
@@ -92,10 +97,15 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId })
         if (response.data) {
           navigate(`/payment_status/${response.data.booking._id}?success=true`);
         } else {
-          setError(response.data.message);
+       
         }
+        setError(response.data.message);
       } catch (err) {
-        setError('Error processing payment with wallet');
+        // setError(response.data.message);
+        // setError('Error processing payment with wallet');
+        if (axios.isAxiosError(err) && err.response) {
+          showToast(err.response.data.message, 'error');
+        } 
       }
     } else if (paymentMethod === 'stripe') {
       const stripe = await loadStripe('pk_test_51PaimnG8EaTCVCc3V37VRPWK4CHnrsjvdwOmKNyu6SZYIUJGBzPSJIuROfma8eqnXpQfQTOmBonXaPtiCUZBCFkx00OxC7tApr');
@@ -131,6 +141,16 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId })
         }
       } catch (err) {
         setError('Error processing payment');
+        const response = await axiosInstance.post(`${USER_API}/payment-failure`, {
+          venueId,
+          slotId: selectedSlot._id,
+          date: selectedDate,
+          startTime: selectedSlot.startTime,
+          endTime: selectedSlot.endTime,
+          fees: selectedSlot.price,
+          paymentStatus: "failed",
+          bookingStatus: "pending",
+        });
       }
     }
   };
@@ -244,6 +264,16 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId })
 };
 
 export default BookingModal;
+
+
+
+
+
+
+
+
+
+
 
 
 

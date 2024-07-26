@@ -49,10 +49,20 @@ const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
 const getTimeSlotsByVenueId = async (venueId: string) => await repository.getTimeSlotsByVenueId(venueId);
 
 
+// const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
+//     const timeSlots = await repository.getTimeSlotsByVenueIdAndDate(venueId, date); // Pass arguments separately
+//     return timeSlots;
+// };
+
 const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
-    const timeSlots = await repository.getTimeSlotsByVenueIdAndDate(venueId, date); // Pass arguments separately
+    console.log(venueId, date, "Received venueId and date in venueDbRepository");
+
+    const timeSlots = await repository.getTimeSlotsByVenueIdAndDate(venueId, date); 
+    console.log(timeSlots, "Retrieved time slots in venueDbRepository");
+
     return timeSlots;
 };
+
 
 
 const getAllTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
