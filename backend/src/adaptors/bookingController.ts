@@ -16,7 +16,6 @@
         getBookingById,
         updateWallet,
         getTransactions,
-        createWalletBooking,
         getWalletbyUserId
     } from "../app/use-cases/user/auth/booking"
     
@@ -53,16 +52,6 @@
             }
         };
 
-
-        const handlePaymentFailure = async (req: Request, res: Response, next: NextFunction) =>{
-            const data = req.body;
-            const userId = req.user.id;
-            const user = await getUserbyId(userId, dbRepositoryUser);
-            await updateWallet(userId, data.fees, 'credit', 'Booking cancelled refund',dbBookingRepository);
-            // await updateSlotStatus(booking.slotId, 'available', dbBookingRepository);
-        }
-
-
         const updateStatus = async (req: Request, res: Response, next: NextFunction) =>{
             try {
                 // console.log("updating");
@@ -79,22 +68,6 @@
             }
         }
 
-
-
-        // const getBookingHistory = async (req: Request, res: Response, next: NextFunction) => {
-        //     try {
-        //         const userId = req.user.id;
-        //         const bookings = await fetchBookingHistory(userId, dbBookingRepository);
-        //         // console.log(bookings,"bookings cntlt");
-                
-        //         res.status(HttpStatus.OK).json({
-        //             success: true,
-        //             bookings,
-        //         });
-        //     } catch (error) {
-        //         next(error);
-        //     }
-        // };
 
         const getBookingHistory = async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -139,23 +112,6 @@
             }
         }
 
-
-
-
-
-        // const bookingController =  async (req: Request, res: Response, next: NextFunction)=>{
-        //     try {
-        //         const bookings = await fetchAllBookings(dbBookingRepository);
-        //         // console.log(bookings,"booking his owner");
-                
-        //         res.status(HttpStatus.OK).json({
-        //             success: true,
-        //             bookings,
-        //         });
-        //     } catch (error) {
-        //         next(error);
-        //     }
-        // }
 
         const bookingController = async (req: Request, res: Response, next: NextFunction) => {
             try {
@@ -236,17 +192,6 @@ const cancelBooking = async (req: Request, res: Response, next: NextFunction) =>
     }
 };
 
-// const getWalletTransactions = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//         const userId = req.user.id;
-//         const walletData = await getTransactions(userId,dbBookingRepository);
-//         // console.log(walletData,"wallet data");
-        
-//         res.status(HttpStatus.OK).json(walletData);
-//     } catch (error) {
-//         next(error);
-//     }
-// };
 
 
 const getWalletTransactions = async (req: Request, res: Response, next: NextFunction) => {
@@ -262,32 +207,6 @@ const getWalletTransactions = async (req: Request, res: Response, next: NextFunc
 };
 
 
-
-
-
-// const handleWalletPayment = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//         // console.log("wallet p");
-        
-//         const { venueId, slotId, date, startTime, endTime, fees } = req.body;
-//         console.log(req.body,"req.body hehe");
-        
-//         const data = req.body
-//         const userId = req.user.id; 
-//         console.log(userId,"userIddd");
-        
-
-//         const result = await createWalletBooking(data, userId, dbBookingRepository);
-//         await updateWallet(userId, fees, 'debit', 'wallet payment',dbBookingRepository)
-//         res.status(HttpStatus.OK).json({
-//             success: true,
-//             message: "Booking created successfully",
-//             result
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
-// };
 
 const handleWalletPayment = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -341,7 +260,6 @@ const handleWalletPayment = async (req: Request, res: Response, next: NextFuncti
             adminBookingHistory,
             getWalletTransactions,
             handleWalletPayment,
-            handlePaymentFailure
         }
     }
 

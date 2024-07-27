@@ -46,15 +46,6 @@ const adminController = (
         }
     };
 
-    // const getAllUsers = async(req:Request,res:Response,next:NextFunction)=>{
-    //     console.log("request got");
-        
-    //     const users = await getUsers(dbUserRepository)
-    //     console.log(users,"users in adminController");
-        
-    //     return res.status(HttpStatus.OK).json({ success: true, users });
-    // }
-
     const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
         console.log("request got");
     
@@ -71,20 +62,6 @@ const adminController = (
         }
     };
 
-
-
-
-
-
-
-    // const getAllOwners = async(req:Request,res:Response,next:NextFunction)=>{
-    //     console.log("request got - owners");
-
-    //     const owners = await getOwners(dbOwnerRepository)
-    //     console.log(owners,"owners in adminController");
-        
-    //     return res.status(HttpStatus.OK).json({success:true,owners})
-    // }
 
 
     const getAllOwners = async (req: Request, res: Response, next: NextFunction) => {
@@ -134,21 +111,6 @@ const adminController = (
     }
 
     const getVenuesByOwner = async(req:Request,res:Response,next:NextFunction)=>{
-        // try {
-        //     console.log(req.params,"req-paramsa");
-            
-        //     const ownerId = req.params.ownerId
-        //     console.log(ownerId,"owner id,venues- controller ");
-
-        //     const venues = await getVenues(dbVenueRepository,ownerId)
-        //     console.log(venues,"venues controller");
-            
-        //     return res.status(HttpStatus.OK).json({ success: true, venues });
-            
-        // } catch (error) {
-        //     return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, error: 'Failed to fetch venues' });
-        // }
-
         try {
             const ownerId = req.params.ownerId;
             const page = parseInt(req.query.page as string) || 1;

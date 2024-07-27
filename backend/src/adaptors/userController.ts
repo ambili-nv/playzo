@@ -226,21 +226,6 @@ const userController = (
         }
     }
 
-    // In your ownerController.js or similar file
-
-// const viewSlotsByDate = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//         const { venueId, date } = req.params;  // Assuming date is passed as a path parameter
-//         console.log(venueId,date,"v and d get");
-        
-//         const timeSlots = await findTimeSlotsByVenueIdAndDate(dbRepositoryVenue, venueId, date);
-//         console.log(timeSlots,"time slots controller");
-        
-//         return res.status(HttpStatus.OK).json({ success: true, timeSlots });
-//     } catch (error) {
-//         next(error);
-//     }
-// };
 
 const viewSlotsByDate = async (req: Request, res: Response, next: NextFunction) => {
     try {

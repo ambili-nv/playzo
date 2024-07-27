@@ -19,9 +19,6 @@ import { uploadVenue,findVenues,findVenueDetails,updateVenue,saveTimeSlots,findA
 import { HttpStatus } from "../types/httpStatus";
 import { venueDbInterface } from "../app/Interfaces/venueDbRepository";
 import { venueRepositoryMongodbType } from "../framework/database/mongodb/repositories/venueRepositoryMongodb";
-import { time } from "console";
-
-
 
 const ownerController = (
     ownerDbRepository:ownerDbInterface,
@@ -122,35 +119,6 @@ const ownerController = (
         }
     }
 
-
-
-
-    // const uploadVenueHandler = asynchandler(async (
-    //     req: Request,
-    //     res: Response,
-    //     next: NextFunction
-    // ) => {
-    //     try {
-    //         const {  venueData } = req.body;
-    //         const ownerId = venueData.ownerId
-    //         // console.log(ownerId,"owner id - ownnercontroller");
-            
-    //         const place = venueData.place
-    //         // console.log(typeof place,"location type");
-            
-    //         // console.log(venueData, "venue data received");
-
-    //         const newVenue = await uploadVenue(ownerId, venueData, dbRepositoryOwner);
-    //         res.status(HttpStatus.CREATED).json({
-    //             message: "Venue uploaded successfully",
-    //             venue: newVenue,
-    //         });
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // });
-
-
     const uploadVenueHandler = asynchandler(async (
         req: Request,
         res: Response,
@@ -211,20 +179,6 @@ const ownerController = (
         }
     }
 
-    // const getVenues = async(req:Request,res:Response,next:NextFunction)=>{
-    //     try {
-    //         // console.log("get req");
-    //         const ownerId = req.params.ownerId
-    //         // console.log(ownerId,"ownerId - contr");
-    //         const venues = await findVenues(dbVenueRepository,ownerId)
-    //         // console.log(venues,"venue - owner - get from db");
-            
-    //         return res.status(HttpStatus.OK).json({ success: true, venues });
-    //     } catch (error) {
-            
-    //     }
-    // }
-
     const getVenues = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const ownerId = req.params.ownerId;
@@ -265,26 +219,6 @@ const ownerController = (
             next(error); // Pass any errors to the error handling middleware
         }
     };
-
-
-    // const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) =>{
-    //     try {
-    //         console.log("slot snd price");
-            
-    //         const { venueId } = req.params; 
-    //         // console.log(venueId,"venueId - slot - got");   
-    //         const  timeSlotData  = req.body;
-    //         // console.log(timeSlotData,"timeslot data - got");
-    //         // console.log(req.body,"req.body - slot - got");
-    //         const newTimeSlots = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
-    //         res.status(HttpStatus.OK).json({
-    //             message: "Time slots saved successfully",
-    //             timeSlots: newTimeSlots,
-    //         });
-    //     } catch (error) {
-    //         next(error)
-    //     }
-    // }
 
 
     const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) =>{
@@ -332,13 +266,6 @@ const ownerController = (
             next(error);
         }
     };
-    
-
-
-
-      
-
-
 
     return {
         registerOwner,

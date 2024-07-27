@@ -5,17 +5,11 @@ import { TimeSlotEntity } from "../../enitity/slotsEntity";
 export const venueDbRepository = (
     repository : ReturnType<venueRepositoryMongodbType>
 )=>{
-    // const getVenuesByOwner = async (ownerId: string) => {
-    //     const venues = await repository.getVenuesByOwner(ownerId);
-    //     return venues;
-    // };
     const getVenuesByOwner = async (ownerId: string, page: number, limit: number) => {
         const venues = await repository.getVenuesByOwner(ownerId, page, limit);
         return venues;
     };
     
-    
-
     const getVenueById = async(venueId:string)=>await repository.getVenueById(venueId)
 
     const updateVenue = async (venueId: string, updateFields: Partial<VenueEntity>) => await repository.updateVenue(venueId, updateFields);
@@ -30,29 +24,12 @@ export const venueDbRepository = (
         }
     }
 
-
-// const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
-//     const newTimeSlot = await repository.addTimeSlots(timeSlots);
-//     return newTimeSlot;
-// };
-
-
 const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
     const newTimeSlot = await repository.addTimeSlots(timeSlots);
     return newTimeSlot;
 };
 
-
-
-
-
 const getTimeSlotsByVenueId = async (venueId: string) => await repository.getTimeSlotsByVenueId(venueId);
-
-
-// const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
-//     const timeSlots = await repository.getTimeSlotsByVenueIdAndDate(venueId, date); // Pass arguments separately
-//     return timeSlots;
-// };
 
 const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
     console.log(venueId, date, "Received venueId and date in venueDbRepository");
@@ -62,8 +39,6 @@ const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
 
     return timeSlots;
 };
-
-
 
 const getAllTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
     const timeSlots = await repository.getAllTimeSlotsByVenueIdAndDate(venueId, date); // Pass arguments separately
@@ -76,9 +51,6 @@ const deleteTimeSlotByVenueIdAndDate = async (venueId, date, startTime, endTime)
     return result;
 };
 
-
-
-    
     return{
         getVenuesByOwner,
         getVenueById,
@@ -91,8 +63,5 @@ const deleteTimeSlotByVenueIdAndDate = async (venueId, date, startTime, endTime)
         deleteTimeSlotByVenueIdAndDate
     }
 }
-
-
-
 
 export type venueDbInterface = typeof venueDbRepository

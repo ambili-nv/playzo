@@ -44,13 +44,6 @@ export const userDbRepository = (
         await repository.updateUserBlock(id,status)
     }
 
-    // const getAllUsers = async()=> {
-    //     // const allUsers =
-    //      await repository.getAllusers()
-    //     // return allUsers
-    // }
-
-
     const getAllUsers = async (page: number, limit: number) => {
         try {
             const allUsers = await repository.getAllusers(page,limit);
@@ -62,26 +55,6 @@ export const userDbRepository = (
         }
     };
 
-    // const getAllUsers = async (repository: any, page: number, limit: number) => {
-    //     try {
-    //         const allUsers = await repository.getAllusers(page, limit);
-    //         // console.log(allUsers, "users - service");
-    //         return allUsers;
-    //     } catch (error) {
-    //         console.error("Error in service function:", error);
-    //         throw error;
-    //     }
-    // };
-    
-    
-  
-
-
-
-
-
-   
-
     const editProfile = async (userID: string, userData: Record<string, any>) => {
         try {
           return await repository.editUserInfo(userID, userData);
@@ -91,10 +64,6 @@ export const userDbRepository = (
         }
       };
       
-
-    
-
-
     return{
         addUser,
         getUserbyEmail,

@@ -27,34 +27,15 @@
             await repository.changeBookingStatus(id, updatingData);
         };
 
-        // const bookingHistory = async (userId: string) => {
-        //     const bookings = await repository.bookingHistory(userId);
-        //     return bookings;
-        // };
-
-
         const bookingHistory = async (userId: string, page: number, limit: number) => {
             const { bookings, total } = await repository.bookingHistory(userId, page, limit);
             return { bookings, total };
         };
-        
-
-
-        // const getAllBookings = async () => {
-        //     const bookings = await repository.getAllBookings();
-        //     return bookings;
-        // };
 
         const getAllBookings = async (page: number, limit: number) => {
             const bookings = await repository.getAllBookings(page, limit);
             return bookings;
         };
-        
-
-        //  const cancelBooking = async (id: string) => {
-        //     await repository.findByIdAndUpdate(id, { bookingStatus: 'cancelled' });
-        // };
-        
 
         const getBookingById = async (id: string) => {
             const booking = await repository.getBookingById(id);

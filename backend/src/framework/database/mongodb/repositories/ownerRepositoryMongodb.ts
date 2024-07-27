@@ -8,8 +8,7 @@ export const ownerRepositoryMongodb = () =>{
 
     const getOwnerbyEmail = async (email:any)=>{
         const owner : OwnerInterface | null = await Owner.findOne({email})
-        // console.log(owner,"owner db");
-        
+        // console.log(owner,"owner db");       
         return owner
     }
 
@@ -46,11 +45,6 @@ const deleteOtpOwner = async(ownerId:string)=>await OTPmodel.deleteOne({ownerId}
 const getOwnerById = async (id:string)=>await Owner.findById(id)
 
 const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>{
-    // await Owner.create({
-    //     name:owner.name(),
-    //     email:owner.email(),
-    //     isVerified:owner.email_verified()
-    // })
     const newOwner : any = new Owner({
         name:owner.name(),
         email:owner.email(),
@@ -59,17 +53,6 @@ const registerGoogleSignInOwner = async(owner:googleSignInOwnerEntityType)=>{
     await newOwner.save()
     return newOwner
 }
-
-// const getAllOwners = async()=>{
-//     try{
-//         const allOwners = await Owner.find({isVerified:true})
-//         // console.log(allOwners,"owners-mongodb-repo");
-//         return allOwners
-//     } catch(error){
-//         throw error
-//     }
-// }
-
 
 const getAllOwners = async (page: number, limit: number) => {
     try {
@@ -88,25 +71,6 @@ const getAllOwners = async (page: number, limit: number) => {
 const updateOWnerBlock = async(id:string,status:boolean)=>{
     await Owner.findByIdAndUpdate(id,{isBlocked:status})
 }
-
-// const addVenue = async (venue: VenueEntity) => {
-//     const newVenue = new venues({
-//         ownerId: venue.ownerId,
-//         name: venue.name,
-//         sportsitem:venue.sportsitem,
-//         // location: venue.location,
-//         place: venue.place,
-//         price: venue.price,
-//         description: venue.description,
-//         primaryImage: venue.primaryImage,
-//         secondaryImages: venue.secondaryImages,
-//     });
-//     // console.log(newVenue.ownerId,"owner id - db");
-    
-//     await newVenue.save();
-//     return newVenue;
-// };
-
 
 const addVenue = async (venue: VenueEntity) => {
     const newVenue = new venues({

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { OWNER_API } from '../../constants'; // Assuming OWNER_API is defined for owner's API endpoints
-import showToast from '../../utils/toaster'; // Assuming showToast is a utility for displaying toast notifications
-import axiosInstance from '../../utils/axiosInstance'; // Assuming axiosInstance is configured with base URL and interceptors
+import { OWNER_API } from '../../constants'; 
+import showToast from '../../utils/toaster'; 
+import axiosInstance from '../../utils/axiosInstance'; 
 import { useNavigate } from 'react-router-dom';
 
 interface Venue {

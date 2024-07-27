@@ -1,6 +1,4 @@
 import { venueDbInterface, venueDbRepository } from "../../../Interfaces/venueDbRepository";
-import { userDbInterface } from "../../../Interfaces/userDbRepository";
-
 
 export const getVenue = async (venueDbRepository:ReturnType<venueDbInterface>)=>{
     try {
@@ -12,18 +10,6 @@ export const getVenue = async (venueDbRepository:ReturnType<venueDbInterface>)=>
         throw error
     }
 }
-
-
-
-// export const findTimeSlotsByVenueIdAndDate = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string, date: string) => {
-//     try {
-//         const timeSlots = await venueDbRepository.getTimeSlotsByVenueIdAndDate(venueId, date);
-//         return timeSlots;
-//     } catch (error) {
-//         throw error;
-//     }
-// };
-
 
 export const findTimeSlotsByVenueIdAndDate = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string, date: string) => {
     try {

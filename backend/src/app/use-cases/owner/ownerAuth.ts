@@ -6,7 +6,6 @@ import { HttpStatus } from "../../../types/httpStatus";
 import { AuthServiceInterfaceType } from "../../service-interface/authServiceInrerface";
 import sentMail from "../../../utils/sendMail";
 import { otpEmail } from "../../../utils/userEmail";
-import { authService } from "../../../framework/Services/authService";
 
 // owner Register
 

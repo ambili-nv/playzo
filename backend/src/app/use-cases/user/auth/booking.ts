@@ -119,24 +119,11 @@ export const getBookingById = async (id: string,bookingDbRepository: ReturnType<
 };
 
 
-
-
-
-// export const fetchBookingHistory = async (userId: string, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
-//     const bookings = await bookingDbRepository.bookingHistory(userId);
-//     return bookings;
-// };
-
 export const fetchBookingHistory = async (userId: string, page: number, limit: number, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
     const { bookings, total } = await bookingDbRepository.bookingHistory(userId, page, limit);
     return { bookings, total };
 };
 
-
-// export const fetchAllBookings = async (bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
-//     const bookings = await bookingDbRepository.getAllBookings();
-//     return bookings;
-// };
 export const fetchAllBookings = async (bookingDbRepository: ReturnType<bookingDbRepositoryInterface>, page: number, limit: number) => {
     const bookings = await bookingDbRepository.getAllBookings(page, limit);
     return bookings;
@@ -157,16 +144,6 @@ export const updateWallet = async (
     const walletUpdate = await bookingDbRepository.updateWallet(userId, amount, type, description);
     return walletUpdate;
 };
-
-
-
-// export const getTransactions = async (
-//     userId: string,
-//     bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
-// ) => {
-//     const walletData = await bookingDbRepository.getTransaction(userId);
-//     return walletData;
-// };
 
 export const getTransactions = async (
     userId: string,

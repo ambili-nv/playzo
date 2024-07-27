@@ -38,27 +38,18 @@ const ownerRoutes = ()=>{
     router.post("/upload-venues",authenticateOwner,controller.uploadVenueHandler)
     router.get("/ownerprofile",authenticateOwner,controller.getOwnerProfile)
     router.patch("/edit-ownerprofile",authenticateOwner,controller.editOwnerProfile)
-    // router.get("/venue-details",authenticateOwner,controller.venueDetails)
     router.get("/myvenue-list/:ownerId",authenticateOwner,controller.getVenues)
     router.get("/venue-details/:venueId",authenticateOwner,controller.getVenueDetails)
     router.patch("/update-venue/:venueId",authenticateOwner,controller.updateVenueDetails)
     router.post("/add-slots/:venueId",authenticateOwner,controller.saveTimeSlotsHandler )
-    // router.get("/view-slots/:venueId",authenticateOwner,controller.viewSlots )
     router.get('/view-slots/:venueId/:date', authenticateOwner,controller.viewAllSlotsByDate);
     router.delete('/delete-slot/:venueId', authenticateOwner,controller.deleteSlot   );
 
 
-
-
-
-
-
-    
+   
     router.get('/bookings',authenticateOwner,booking_Controller.bookingController)
 
-
-
-    return router
+     return router
 }
 
 export default ownerRoutes

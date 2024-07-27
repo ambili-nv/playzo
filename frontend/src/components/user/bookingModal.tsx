@@ -141,16 +141,6 @@ const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, venueId })
         }
       } catch (err) {
         setError('Error processing payment');
-        const response = await axiosInstance.post(`${USER_API}/payment-failure`, {
-          venueId,
-          slotId: selectedSlot._id,
-          date: selectedDate,
-          startTime: selectedSlot.startTime,
-          endTime: selectedSlot.endTime,
-          fees: selectedSlot.price,
-          paymentStatus: "failed",
-          bookingStatus: "pending",
-        });
       }
     }
   };

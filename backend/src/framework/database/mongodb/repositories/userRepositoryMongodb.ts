@@ -2,7 +2,6 @@ import { googleSignInUserEntityType, userEntityType } from "../../../../enitity/
 import { UserInterface } from "../../../../types/userInterface";
 import User from "../models/user";
 import OTPModel from "../models/OTPmodel";
-import owner from "../models/owner";
 
 export const userRepositoryMongodb =()=>{
 
@@ -52,12 +51,6 @@ const deleteOtpUser = async (userId: string) =>await OTPModel.deleteOne({ userId
 const getUserbyId = async (id: string) => await User.findById(id);
 
 const registerGoogleSignInUser = async(user:googleSignInUserEntityType)=>{
-    // await User.create({
-    //     name:user.name(),
-    //     email:user.email(),
-    //     isVerified:user.email_verified(),
-
-    // })
     const newUser : any = new User({
         name:user.name(),
         email:user.email(),
@@ -80,25 +73,6 @@ const findVerificationCodeAndUpdate = async (
       { password: newPassword, verificationCode: null },
       { upsert: true }
     );
-
-
-    // const getAllusers = async ()=>{
-    //     const allUSers = await User.find({isVerified:true})
-    // console.log(allUSers,"users - repo");
-    // return allUSers
-    // }
-
-
-    // const getAllusers = async () => {
-    //     try {
-    //         const allUsers = await User.find({ isVerified: true });
-    //         // console.log(allUsers, "users - repo");
-    //         return allUsers;
-    //     } catch (error) {
-    //         console.error("Error fetching users:", error);
-    //         throw error;
-    //     }
-    // };
 
     const getAllusers = async (page: number, limit: number) => {
         try {
@@ -131,15 +105,6 @@ const findVerificationCodeAndUpdate = async (
           throw error;
         }
       };
-
-
-  
-
-
-
-
-
-      
 
 return {
     addUser,

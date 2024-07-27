@@ -1,23 +1,7 @@
 import { ownerDbInterface} from "../../Interfaces/ownerDbRepository";
 import { userDbInterface} from "../../Interfaces/userDbRepository";
 import { venueDbInterface} from "../../Interfaces/venueDbRepository";
-// export const getUsers = async(userDbRepository:ReturnType<userDbInterface>)=>{
-//     await userDbRepository.getAllUsers();
-//     console.log(getUsers,"get users data from db");
-    
-// }
 
-
-// export const getUsers = async (userDbRepository: ReturnType<userDbInterface>) => {
-//     try {
-//         const users = await userDbRepository.getAllUsers();
-//         console.log(users, "get users data from db");
-//         return users; // return the data for further use
-//     } catch (error) {
-//         console.error("Error in getUsers function:", error);
-//         throw error;
-//     }
-// };
 
 export const getUsers = async (userDbRepository: ReturnType<userDbInterface>, page: number, limit: number) => {
     try {
@@ -30,21 +14,6 @@ export const getUsers = async (userDbRepository: ReturnType<userDbInterface>, pa
         throw error;
     }
 };
-
-
-
-
-
-// export const getOwners  = async(ownerDbRepository:ReturnType<ownerDbInterface>)=>{
-//     try {
-//         const owners = await ownerDbRepository.getAllOwners();
-//         console.log(owners,"owners data in use-case");
-//         return owners
-        
-//     } catch (error) {
-        
-//     }
-// }
 
 export const getOwners = async (ownerDbRepository: ReturnType<ownerDbInterface>, page: number, limit: number) => {
     try {
