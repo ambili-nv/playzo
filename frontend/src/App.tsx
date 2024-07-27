@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import store, { persistor } from "./redux/store/store";
 import { PersistGate } from 'redux-persist/integration/react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import SocketProvider from './context/socketContext';
 
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -16,7 +17,9 @@ function App() {
       <PersistGate persistor={persistor}>
       <GoogleOAuthProvider clientId={clientId}>
       <BrowserRouter>
+      <SocketProvider  >
         <MainRouter />
+        </SocketProvider>
         <Toaster />
       </BrowserRouter>
         </GoogleOAuthProvider>
