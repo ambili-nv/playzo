@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { ChatDbRepositoryInterace } from "../app/Interfaces/chatDbRepository"
 import { ChatRepositoryMongodbType } from "../framework/database/mongodb/repositories/chatRepositoryMongodb"
 import { HttpStatus } from "../types/httpStatus";
-import { newChat } from "../app/use-cases/chat/add";
+import { newChat,newMessage } from "../app/use-cases/chat/add";
 import { getChat } from "../app/use-cases/chat/read";
 
 
@@ -34,9 +34,20 @@ const chatController = (
         res.status(HttpStatus.OK).json({ success: true, chats });
     }
 
+    const createNewMessage =  async(req:Request,res:Response,next:NextFunction) =>{
+        try {
+            console.log(req.body);
+            
+            const message = await newMessage(req.body, chatRepository);
+        } catch (error) {
+            
+        }
+    }
+
     return {
         createNewChat,
-        getChats
+        getChats,
+        createNewMessage
     }
 
 

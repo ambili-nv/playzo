@@ -1,4 +1,5 @@
 import { ChatRepositoryMongodbType } from "../../framework/database/mongodb/repositories/chatRepositoryMongodb";
+import { newMessageInterface } from "../../types/chatInterface";
 
 export const chatDbRepository = (
     repository: ReturnType<ChatRepositoryMongodbType>
@@ -18,12 +19,16 @@ export const chatDbRepository = (
        return chats
     }
 
+    
+    const addNewMessage = async (newMessageData: newMessageInterface) =>
+        await repository.addNewMessage(newMessageData);
 
 
     return{
         createNewChat,
         getAllChats,
-        checkChat
+        checkChat,
+        addNewMessage
     }
 
 }

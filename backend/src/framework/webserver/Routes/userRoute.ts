@@ -1,7 +1,9 @@
 import express from "express";
 import { userDbRepository } from "../../../app/Interfaces/userDbRepository";
+import { ownerDbRepository } from "../../../app/Interfaces/ownerDbRepository";
 import { authService } from "../../Services/authService";
 import {userRepositoryMongodb} from "../../database/mongodb/repositories/userRepositoryMongodb";
+import { ownerRepositoryMongodb } from "../../database/mongodb/repositories/ownerRepositoryMongodb";
 import { authServiceInterface } from "../../../app/service-interface/authServiceInrerface";
 import userController from '../../../adaptors/userController'
 import { venueDbRepository } from "../../../app/Interfaces/venueDbRepository";
@@ -18,7 +20,9 @@ const userRoutes =()=>{
         authServiceInterface,
         authService,
         venueDbRepository,
-        venueRepositoryMongodb
+        venueRepositoryMongodb,
+        ownerDbRepository,
+        ownerRepositoryMongodb
         );
 
 
@@ -43,6 +47,7 @@ const userRoutes =()=>{
     router.patch("/edit-profile",authenticateUser,controller.editUserProfile)
     router.get("/single-venue/:venueId",controller.getSingleVenue)
     router.get('/get-slots/:venueId/:date', controller.viewSlotsByDate);
+    router.get('/owner/:ownerId', controller.getOwnerDetails);
 
 
 

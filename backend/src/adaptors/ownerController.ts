@@ -182,6 +182,10 @@ const ownerController = (
     const getVenues = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const ownerId = req.params.ownerId;
+            console.log(ownerId,"type of owner veneu");
+            console.log(typeof(ownerId),"hehe");
+            
+            
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 10;
     

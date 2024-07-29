@@ -13,6 +13,7 @@ const chatRoutes = ()=>{
 router.post("/conversations",chat_Controller.createNewChat)
 router.get("/conversations/:senderId",chat_Controller.getChats)
 
+router.post("/messages",chat_Controller.createNewMessage)
     return router;
 }
 

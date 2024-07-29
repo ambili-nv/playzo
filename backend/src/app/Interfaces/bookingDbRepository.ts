@@ -32,8 +32,8 @@
             return { bookings, total };
         };
 
-        const getAllBookings = async (page: number, limit: number) => {
-            const bookings = await repository.getAllBookings(page, limit);
+        const getAllBookings = async (id:string,page: number, limit: number) => {
+            const bookings = await repository.getAllBookings(id,page, limit);
             return bookings;
         };
 

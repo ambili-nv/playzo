@@ -124,8 +124,8 @@ export const fetchBookingHistory = async (userId: string, page: number, limit: n
     return { bookings, total };
 };
 
-export const fetchAllBookings = async (bookingDbRepository: ReturnType<bookingDbRepositoryInterface>, page: number, limit: number) => {
-    const bookings = await bookingDbRepository.getAllBookings(page, limit);
+export const fetchAllBookings = async (id:string,bookingDbRepository: ReturnType<bookingDbRepositoryInterface>, page: number, limit: number) => {
+    const bookings = await bookingDbRepository.getAllBookings(id,page, limit);
     return bookings;
 };
 

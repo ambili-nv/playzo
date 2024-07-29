@@ -47,7 +47,7 @@ const ownerRoutes = ()=>{
 
 
    
-    router.get('/bookings',authenticateOwner,booking_Controller.bookingController)
+    router.get('/bookings/:ownerId',authenticateOwner,booking_Controller.bookingController)
 
      return router
 }

@@ -10,10 +10,12 @@ export const venueRepositoryMongodb = ()=>{
                 const skip = (page - 1) * limit;
                 const totalVenues = await venues.countDocuments({ ownerId });
                 const venueList = await venues.find({ ownerId })
+                
+                
                     .skip(skip)
                     .limit(limit)
                     .exec();
-        
+                    console.log(venueList,"venuelist //////");
                 return {
                     totalVenues,
                     totalPages: Math.ceil(totalVenues / limit),

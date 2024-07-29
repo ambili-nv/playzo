@@ -115,8 +115,19 @@
 
         const bookingController = async (req: Request, res: Response, next: NextFunction) => {
             try {
+                const { ownerId } = req.params;
+                console.log(typeof(ownerId),"in chat tyoe");
+        
+                console.log("Fetching owner data for ID:", ownerId);
+                // const ownerId = id.toString()
+                // const id = String(req.owner._id);
+                // const ownerId = String(id)   
+
+                // console.log(ownerId,"owner bookng");
+                // console.log(req.params,"id owner");
+                
                 const { page = 1, limit = 6 } = req.query;
-                const { bookings, total } = await fetchAllBookings(dbBookingRepository, parseInt(page as string), parseInt(limit as string));
+                const { bookings, total } = await fetchAllBookings(ownerId,dbBookingRepository, parseInt(page as string), parseInt(limit as string));
                 
                 res.status(HttpStatus.OK).json({
                     success: true,

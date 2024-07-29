@@ -1,4 +1,5 @@
 import { ChatDbRepositoryInterace } from "../../Interfaces/chatDbRepository";
+import { newMessageInterface } from "../../../types/chatInterface";
 
 export const newChat = async(
     senderId: string,
@@ -10,4 +11,11 @@ export const newChat = async(
         return isChatExist
     }
     return await chatRepository.createNewChat([senderId, recieverId]);
+}
+
+export const newMessage = async (
+    newMessageData: newMessageInterface,
+    chatRepository: ReturnType<ChatDbRepositoryInterace>
+)=>{
+    await chatRepository.addNewMessage(newMessageData);
 }

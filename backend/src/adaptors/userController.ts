@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import asynchandler from "express-async-handler";
 import { userDbInterface } from "../app/Interfaces/userDbRepository";
+import { ownerDbInterface } from "../app/Interfaces/ownerDbRepository";
 import { userRepositoryMongodbType } from "../framework/database/mongodb/repositories/userRepositoryMongodb";
 import { AuthService } from "../framework/Services/authService";
 import { AuthServiceInterfaceType} from "../app/service-interface/authServiceInrerface";
@@ -20,7 +21,8 @@ import {
 import { getVenue,findTimeSlotsByVenueIdAndDate  } from "../app/use-cases/user/auth/userRead";
 import { getUser,updateUser } from "../app/use-cases/user/auth/profile";
 import { findVenueDetails } from "../app/use-cases/owner/venueUpload";
-
+import { ownerRepositoryMongodbType } from "../framework/database/mongodb/repositories/ownerRepositoryMongodb";
+import { getSingleOwner } from "../app/use-cases/owner/ownerAuth";
 
 const userController = (
     userDbRepository: userDbInterface,
@@ -28,12 +30,15 @@ const userController = (
     authServiceInterface: AuthServiceInterfaceType,
     authServiceImpl:AuthService,
     venueDbRepository:venueDbInterface,
-    venueRepositoryImpl:venueRepositoryMongodbType
+    venueRepositoryImpl:venueRepositoryMongodbType,
+    ownerDbRepository:ownerDbInterface,
+    ownerRepositoryImpl:ownerRepositoryMongodbType
 ) => {
 
     const dbRepositoryUser = userDbRepository(userRepositoryImpl());
     const authService = authServiceInterface(authServiceImpl());
     const dbRepositoryVenue = venueDbRepository(venueRepositoryImpl())
+    const dbRepositoryOwner = ownerDbRepository(ownerRepositoryImpl())
 
     // Register User POST - Method
     const registerUser = asynchandler(async (
@@ -241,6 +246,41 @@ const viewSlotsByDate = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
+// const getOwnerDetails = async (req: Request, res: Response, next: NextFunction)=>{
+//     try {
+//         console.log(req.params);
+        
+//         const id = req.params
+//         console.log(id,"owner d id controller");
+//         //@ts-ignore
+//         const owner = await getSingleOwner(id,dbRepositoryOwner)
+//         console.log(owner,"owner d in c");
+        
+//         return res.status(HttpStatus.OK).json({ success: true, owner });
+//     } catch (error) {
+        
+//     }
+// }
+
+
+const getOwnerDetails = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Extract ownerId from req.params
+        const { ownerId } = req.params;
+        console.log(typeof(ownerId),"in chat tyoe");
+        
+        console.log("Fetching owner data for ID:", ownerId);
+        
+        // Pass ownerId to getSingleOwner
+        const owner = await getSingleOwner(ownerId, dbRepositoryOwner);
+        console.log("Owner data:", owner);
+        
+        return res.status(HttpStatus.OK).json({ success: true, owner });
+    } catch (error) {
+        console.error("Error fetching owner details:", error);
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: "Error fetching owner details" });
+    }
+};
 
 
 
@@ -256,7 +296,8 @@ const viewSlotsByDate = async (req: Request, res: Response, next: NextFunction) 
         getUserProfile,
         editUserProfile,
         getSingleVenue,
-        viewSlotsByDate
+        viewSlotsByDate,
+        getOwnerDetails
     }
 }
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
 import { OWNER_API } from '../../constants';
+import { useAppSelector } from '../../redux/store/store';
 
 type Booking = {
     _id: string;
@@ -21,12 +22,14 @@ const BookingHistoryPage: React.FC = () => {
     const [page, setPage] = useState(1);
     const [limit] = useState(6); 
     const [total, setTotal] = useState(0);
+    const owner = useAppSelector((state) => state.ownerSlice)
 
     useEffect(() => {
         const fetchBookingHistory = async () => {
             try {
+                const ownerId = owner.id
                 const response = await axiosInstance.get<{ success: boolean; bookings: Booking[], total: number }>(
-                    `${OWNER_API}/bookings?page=${page}&limit=${limit}`
+                    `${OWNER_API}/bookings/${ownerId}?page=${page}&limit=${limit}`
                 );
                 if (response.data.success) {
                     setBookings(response.data.bookings);
@@ -87,7 +90,7 @@ const BookingHistoryPage: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {bookings.map((booking) => (
+                            {bookings?.map((booking) => (
                                 <tr key={booking._id}>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking._id}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.userId.name}</td>

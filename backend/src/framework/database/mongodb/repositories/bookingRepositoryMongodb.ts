@@ -2,6 +2,9 @@ import Booking from "../models/Booking";
 import slots from "../models/slots";
 import { BookingEntityType } from "../../../../enitity/bookingEntity";
 import wallet from "../models/wallet";
+import mongoose from "mongoose";
+import user from "../models/user";
+import venues from "../models/venues";
 
 export const bookingRepositoryMongodb = () => {
     const createBooking = async (data: BookingEntityType) => {
@@ -83,17 +86,46 @@ export const bookingRepositoryMongodb = () => {
     
     
 
-    const getAllBookings = async (page: number, limit: number) => {
-        const bookings = await Booking.find()
-            .populate('userId', 'name') // Populate the userId with the name field
-            .populate('venueId', 'name') // Populate the venueId with the name field
+    // const getAllBookings = async (id:string,page: number, limit: number) => {
+    //     // const bookings = await Booking.find()
+    //     const bookings = await Booking.findById(id)
+    //         .populate('userId', 'name') // Populate the userId with the name field
+    //         .populate('venueId', 'name') // Populate the venueId with the name field
+    //         .skip((page - 1) * limit)
+    //         .limit(limit)
+    //         .exec();
+    //     const total = await Booking.countDocuments();
+    //     console.log(bookings,"db book");
+        
+    //     return { bookings, total };
+    // };
+
+
+    const getAllBookings = async (ownerId: string, page: number, limit: number) => {
+        // Find venues owned by the specified owner
+        // const Venue = await venues.find({ ownerId});
+        const venueList = await venues.find({ ownerId })
+        console.log(venueList,"venues////////////");
+        
+        const venueIds = venueList.map(venue => venue._id);
+    
+        // Find bookings associated with these venues
+        const bookings = await Booking.find({ venueId: { $in: venueIds } })
+            .populate('userId', 'name') // Populate userId with the name field
+            .populate('venueId', 'name') // Populate venueId with the name field
             .skip((page - 1) * limit)
             .limit(limit)
             .exec();
-        const total = await Booking.countDocuments();
+    
+        // Count total bookings for these venues
+        const total = await Booking.countDocuments({ venueId: { $in: venueIds } });
+    
         return { bookings, total };
     };
     
+    
+    
+
 
 
     const getBookingById = async (id: string) => {

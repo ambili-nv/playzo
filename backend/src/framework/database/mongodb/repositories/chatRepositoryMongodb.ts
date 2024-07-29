@@ -1,5 +1,6 @@
 import conversation from "../models/conversation";
 import message from "../models/message";
+import { newMessageInterface } from "../../../../types/chatInterface";
 
 export const chatRepositoryMongodb = ()=>{
 
@@ -16,10 +17,14 @@ export const chatRepositoryMongodb = ()=>{
        return allChat
     }
 
+    const addNewMessage = async (newMessageData: newMessageInterface) =>
+        await message.create(newMessageData);
+
       return {
         addNewChat,
         getAllChats,
-        isChatExists
+        isChatExists,
+        addNewMessage
     }
 }
 

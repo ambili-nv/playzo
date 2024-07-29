@@ -200,3 +200,13 @@ export const updateOwner = async (
     // console.log(owner,"edit owner ownerAuth");
     
 }
+
+
+export const getSingleOwner = async (
+    ownerId:string,
+    ownerDbRepository:ReturnType<ownerDbInterface>
+)=>{
+   const owner =  await ownerDbRepository.getOwnerbyId(ownerId)
+   console.log(owner,"owner //////////////////");
+   return owner
+}
