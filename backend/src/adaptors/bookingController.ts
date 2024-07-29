@@ -247,6 +247,18 @@ const handleWalletPayment = async (req: Request, res: Response, next: NextFuncti
 };
 
 
+// const chat = async (req: Request, res: Response, next: NextFunction)=>{
+//     console.log(req.body,"chat body");
+//     // const {id} = req.body
+//     const { senderId, recieverId } = req.body;
+//     console.log(senderId,recieverId,"//////////////");
+    
+//     // console.log(id,"////////////");
+    
+    
+// }
+
+
 
 
 
@@ -260,6 +272,7 @@ const handleWalletPayment = async (req: Request, res: Response, next: NextFuncti
             adminBookingHistory,
             getWalletTransactions,
             handleWalletPayment,
+            // chat
         }
     }
 

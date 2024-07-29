@@ -52,6 +52,7 @@ const userRoutes =()=>{
     router.get('/wallet',authenticateUser,booking_Controller.getWalletTransactions)
     router.patch('/cancel-booking/:bookingId',authenticateUser,booking_Controller.cancelBooking)
     router.post('/wallet-payment',authenticateUser,booking_Controller.handleWalletPayment)    
+    // router.post('/conversations',authenticateUser,booking_Controller.chat)    
 
     return router;
 }

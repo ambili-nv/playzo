@@ -40,13 +40,35 @@ export const bookingRepositoryMongodb = () => {
 
 
 
+    // const bookingHistory = async (userId: string, page: number, limit: number) => {
+    //     const skip = (page - 1) * limit;
+    //     const [bookings, total] = await Promise.all([
+    //         Booking.find({ userId })
+    //             .populate({
+    //                 path: 'venueId', // This is the field in the Booking model referencing the Venue model
+    //                 select: 'name sportsitem' // Specify the fields you want to populate from the Venue model
+    //             })
+    //             .skip(skip)
+    //             .limit(limit)
+    //             .exec(),
+    //         Booking.countDocuments({ userId })
+    //     ]);
+    //     console.log(bookings,"booking from db");
+        
+    //     return { bookings, total };
+    // };
+
     const bookingHistory = async (userId: string, page: number, limit: number) => {
         const skip = (page - 1) * limit;
         const [bookings, total] = await Promise.all([
             Booking.find({ userId })
                 .populate({
-                    path: 'venueId', // This is the field in the Booking model referencing the Venue model
-                    select: 'name sportsitem' // Specify the fields you want to populate from the Venue model
+                    path: 'venueId',
+                    select: 'name sportsitem ownerId', // Include ownerId
+                    populate: {
+                        path: 'ownerId', // Populate the ownerId field
+                        select: 'ownerId' // Select the fields you want from Owner model
+                    }
                 })
                 .skip(skip)
                 .limit(limit)
@@ -54,8 +76,11 @@ export const bookingRepositoryMongodb = () => {
             Booking.countDocuments({ userId })
         ]);
     
+        console.log(bookings, "booking from db");
+    
         return { bookings, total };
     };
+    
     
 
     const getAllBookings = async (page: number, limit: number) => {

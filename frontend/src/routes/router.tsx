@@ -97,7 +97,7 @@ export const MainRouter = () => {
           <Route path="booking-history/:userId" element={<AdminBookingHistory/>} />
         </Route>
         </Route>
-      {/* <Route path="*" element={<ErrorPAge />} /> */}
+      <Route path="*" element={<ErrorPAge />} />
       </Routes>
     </Suspense>
   );
