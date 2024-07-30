@@ -17,5 +17,7 @@ export const newMessage = async (
     newMessageData: newMessageInterface,
     chatRepository: ReturnType<ChatDbRepositoryInterace>
 )=>{
-    await chatRepository.addNewMessage(newMessageData);
+   const message = await chatRepository.addNewMessage(newMessageData);
+   console.log(message);
+   return message
 }

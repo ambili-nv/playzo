@@ -3,7 +3,7 @@ import { ChatDbRepositoryInterace } from "../app/Interfaces/chatDbRepository"
 import { ChatRepositoryMongodbType } from "../framework/database/mongodb/repositories/chatRepositoryMongodb"
 import { HttpStatus } from "../types/httpStatus";
 import { newChat,newMessage } from "../app/use-cases/chat/add";
-import { getChat } from "../app/use-cases/chat/read";
+import { getChat,fetchMessages } from "../app/use-cases/chat/read";
 
 
 const chatController = (
@@ -39,6 +39,21 @@ const chatController = (
             console.log(req.body);
             
             const message = await newMessage(req.body, chatRepository);
+            console.log(message,"33");
+            
+            res.status(HttpStatus.OK).json(message);
+        } catch (error) {
+            
+        }
+    }
+
+    const getMessages =  async(req:Request,res:Response,next:NextFunction) =>{
+        try {
+            const {conversationId} = req.params
+            console.log(conversationId,"conversationis chat controller");
+            const messages = await fetchMessages(conversationId,chatRepository) 
+            console.log(messages,"retrieve messages in chat controller");
+            res.status(HttpStatus.OK).json({ success: true, messages });
         } catch (error) {
             
         }
@@ -47,7 +62,8 @@ const chatController = (
     return {
         createNewChat,
         getChats,
-        createNewMessage
+        createNewMessage,
+        getMessages
     }
 
 

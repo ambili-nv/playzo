@@ -235,10 +235,10 @@ const userController = (
 const viewSlotsByDate = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { venueId, date } = req.params;  
-        console.log(venueId, date, "Received venueId and date");
+        // console.log(venueId, date, "Received venueId and date");
 
         const timeSlots = await findTimeSlotsByVenueIdAndDate(dbRepositoryVenue, venueId, date);
-        console.log(timeSlots, "Retrieved time slots in controller");
+        // console.log(timeSlots, "Retrieved time slots in controller");
 
         return res.status(HttpStatus.OK).json({ success: true, timeSlots });
     } catch (error) {
@@ -267,13 +267,13 @@ const getOwnerDetails = async (req: Request, res: Response, next: NextFunction) 
     try {
         // Extract ownerId from req.params
         const { ownerId } = req.params;
-        console.log(typeof(ownerId),"in chat tyoe");
+        // console.log(typeof(ownerId),"in chat tyoe");
         
-        console.log("Fetching owner data for ID:", ownerId);
+        // console.log("Fetching owner data for ID:", ownerId);
         
         // Pass ownerId to getSingleOwner
         const owner = await getSingleOwner(ownerId, dbRepositoryOwner);
-        console.log("Owner data:", owner);
+        // console.log("Owner data:", owner);
         
         return res.status(HttpStatus.OK).json({ success: true, owner });
     } catch (error) {

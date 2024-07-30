@@ -105,7 +105,7 @@ export const bookingRepositoryMongodb = () => {
         // Find venues owned by the specified owner
         // const Venue = await venues.find({ ownerId});
         const venueList = await venues.find({ ownerId })
-        console.log(venueList,"venues////////////");
+        // console.log(venueList,"venues////////////");
         
         const venueIds = venueList.map(venue => venue._id);
     
@@ -142,7 +142,7 @@ export const bookingRepositoryMongodb = () => {
                 transactions: []
             });
         }
-        console.log(Wallet, "wallet user from db");
+        // console.log(Wallet, "wallet user from db");
         
         return Wallet;
     }

@@ -9,7 +9,7 @@ interface ConversationProps {
     members: string[];
     lastMessage: {
       text: string;
-      // createdAt: string;
+      createdAt: string;
     };
   };
   lastMessage: {
@@ -18,17 +18,17 @@ interface ConversationProps {
 }
 
 const Conversation: React.FC<ConversationProps> = ({ conversation,lastMessage }) => {
-  console.log("Conversation component rendered");
+  // console.log("Conversation component rendered");
   const [ownerData, setOwnerData] =  useState<any>({})
 
   useEffect(() => {
     const fetchOwnerData = async () => {
       try {
         const ownerId = conversation.members[1];
-        console.log("Fetching owner data for ID:", ownerId);
+        // console.log("Fetching owner data for ID:", ownerId);
 
         const response = await axios.get(`${USER_API}/owner/${ownerId}`);
-        console.log("Owner data response:", response.data);
+        // console.log("Owner data response:", response.data);
 
         setOwnerData(response.data.owner);
       } catch (error) {
@@ -40,7 +40,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation,lastMessage })
       fetchOwnerData();
     }
   }, [conversation]);
-  console.log(ownerData,"ownerData//");
+  // console.log(ownerData,"ownerData//");
   
 
   return (
@@ -63,7 +63,7 @@ const Conversation: React.FC<ConversationProps> = ({ conversation,lastMessage })
         </p>
       </div>
       <span className="text-gray-400 text-xs flex-shrink-0">
-        {/* {new Date(conversation.lastMessage.createdAt).toLocaleDateString()} */}
+        {new Date(conversation.lastMessage?.createdAt).toLocaleDateString()}
       </span>
     </div>
   );

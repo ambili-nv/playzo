@@ -47,7 +47,7 @@ const adminController = (
     };
 
     const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
-        console.log("request got");
+        // console.log("request got");
     
         const { page = 1, limit = 6 } = req.query; // Default to page 1 and limit 10 if not provided
     
@@ -65,13 +65,13 @@ const adminController = (
 
 
     const getAllOwners = async (req: Request, res: Response, next: NextFunction) => {
-        console.log("request got - owners");
+        // console.log("request got - owners");
     
         const page = parseInt(req.query.page as string) || 1;
         const limit = parseInt(req.query.limit as string) || 10;
     //@ts-ignore
         const { allOwners, totalOwners } = await getOwners(dbOwnerRepository, page, limit);
-        console.log(allOwners, "owners in adminController");
+        // console.log(allOwners, "owners in adminController");
     
         return res.status(HttpStatus.OK).json({ success: true, owners: allOwners, totalOwners, currentPage: page, totalPages: Math.ceil(totalOwners / limit) });
     }
@@ -81,7 +81,7 @@ const adminController = (
     const blockUser = async(req:Request,res:Response,next:NextFunction)=>{
         try {
             const {id} = req.params
-            console.log(id,"user-block ID");
+            // console.log(id,"user-block ID");
     
             const updatedUser = await userBlock(id,dbUserRepository);
             return res.status(HttpStatus.OK).json({
@@ -97,7 +97,7 @@ const adminController = (
     const blockOwner = async(req:Request,res:Response,next:NextFunction)=>{
         try {
             const {id} = req.params
-            console.log(id,"owner-block, id");
+            // console.log(id,"owner-block, id");
             const updatedOwner = await OwnerBlock(id,dbOwnerRepository);
             return res.status(HttpStatus.OK).json({
                 success:true,
@@ -125,10 +125,10 @@ const adminController = (
     }
 
     const handleAccept = async(req:Request,res:Response,next:NextFunction)=>{
-        console.log(req.params,"reqparams id - con");
+        // console.log(req.params,"reqparams id - con");
         
         const venueId = req.params.venueId
-        console.log(venueId,"venue id - con");
+        // console.log(venueId,"venue id - con");
 
         try {
             const { venue, ownerEmail } = await acceptVenue(venueId,dbVenueRepository,dbOwnerRepository);

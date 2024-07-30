@@ -44,7 +44,7 @@
 
         const getWalletbyUserId = async (id: string) => {
             const wallet = await repository.getWalletbyUserId(id);
-            console.log(wallet, "wallet user from repo");
+            // console.log(wallet, "wallet user from repo");
             
             return wallet;
         };

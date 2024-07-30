@@ -20,15 +20,27 @@ export const chatDbRepository = (
     }
 
     
-    const addNewMessage = async (newMessageData: newMessageInterface) =>
-        await repository.addNewMessage(newMessageData);
+    const addNewMessage = async (newMessageData: newMessageInterface) =>{
+
+        const newMessage = await repository.addNewMessage(newMessageData);
+        console.log(newMessage,"nw msg rep");
+        return newMessage
+        
+    }
+
+
+    const getMessages = async(conversationId:string)=>{
+      const messages =   await repository.getMessages(conversationId)
+      return messages
+    }
 
 
     return{
         createNewChat,
         getAllChats,
         checkChat,
-        addNewMessage
+        addNewMessage,
+        getMessages
     }
 
 }

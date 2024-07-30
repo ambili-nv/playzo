@@ -92,13 +92,13 @@
 
         const  adminBookingHistory = async (req: Request, res: Response, next: NextFunction) =>{
             try {
-                console.log(req.params,"req params admin");
+                // console.log(req.params,"req params admin");
                 const {userId} = req.params
                 const page = parseInt(req.query.page as string) || 1;
                 const limit = parseInt(req.query.limit as string) || 5;
                 //@ts-ignore
                 const {bookings,total} =  await fetchBookingHistory(userId, page, limit, dbBookingRepository);
-                console.log(bookings,"bookingss admin user");
+                // console.log(bookings,"bookingss admin user");
                 
                 res.status(HttpStatus.OK).json({
                     success: true,
@@ -116,9 +116,9 @@
         const bookingController = async (req: Request, res: Response, next: NextFunction) => {
             try {
                 const { ownerId } = req.params;
-                console.log(typeof(ownerId),"in chat tyoe");
+                // console.log(typeof(ownerId),"in chat tyoe");
         
-                console.log("Fetching owner data for ID:", ownerId);
+                // console.log("Fetching owner data for ID:", ownerId);
                 // const ownerId = id.toString()
                 // const id = String(req.owner._id);
                 // const ownerId = String(id)   
@@ -223,11 +223,11 @@ const handleWalletPayment = async (req: Request, res: Response, next: NextFuncti
     try {
         const { venueId, slotId, date, startTime, endTime, fees } = req.body;
         const userId = req.user.id;
-        console.log(userId,"userID for wallet");
+        // console.log(userId,"userID for wallet");
         
         // Check user wallet balance before proceeding
         const user = await getWalletbyUserId(userId, dbBookingRepository);
-        console.log(user,"wallet user");
+        // console.log(user,"wallet user");
         
         //@ts-ignore
         if (user.balance < fees) {

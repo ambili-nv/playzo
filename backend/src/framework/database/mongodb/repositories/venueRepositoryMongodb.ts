@@ -15,7 +15,7 @@ export const venueRepositoryMongodb = ()=>{
                     .skip(skip)
                     .limit(limit)
                     .exec();
-                    console.log(venueList,"venuelist //////");
+                    // console.log(venueList,"venuelist //////");
                 return {
                     totalVenues,
                     totalPages: Math.ceil(totalVenues / limit),
@@ -68,14 +68,14 @@ export const venueRepositoryMongodb = ()=>{
             }
         
             const newTimeSlots = await slots.insertMany(timeSlots);
-            console.log(newTimeSlots, "slots db");
+            // console.log(newTimeSlots, "slots db");
         
             return newTimeSlots;
         };
         
         const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
-            console.log("Venue ID:", venueId);
-            console.log("Date:", date);
+            // console.log("Venue ID:", venueId);
+            // console.log("Date:", date);
         
             // Convert date string to Date object if needed, stripping out the time part
             const startOfDay = new Date(date);
@@ -83,8 +83,8 @@ export const venueRepositoryMongodb = ()=>{
             const endOfDay = new Date(date);
             endOfDay.setUTCHours(23, 59, 59, 999);
         
-            console.log("Start of Day:", startOfDay);
-            console.log("End of Day:", endOfDay);
+            // console.log("Start of Day:", startOfDay);
+            // console.log("End of Day:", endOfDay);
         
             const timeSlots = await slots.find({
                 venueId: new mongoose.Types.ObjectId(venueId),  
@@ -92,7 +92,7 @@ export const venueRepositoryMongodb = ()=>{
                 status: 'available'
             });
         
-            console.log("Retrieved time slots:", timeSlots);
+            // console.log("Retrieved time slots:", timeSlots);
         
             return timeSlots;
         };

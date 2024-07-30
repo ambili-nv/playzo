@@ -14,6 +14,9 @@ router.post("/conversations",chat_Controller.createNewChat)
 router.get("/conversations/:senderId",chat_Controller.getChats)
 
 router.post("/messages",chat_Controller.createNewMessage)
+router.get("/messages/:conversationId",chat_Controller.getMessages)
+
+
     return router;
 }
 
