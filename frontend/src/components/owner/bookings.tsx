@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
 import { OWNER_API } from '../../constants';
 import { useAppSelector } from '../../redux/store/store';
+import { MessageSquare } from 'lucide-react';
+import { CHAT_API } from '../../constants';
+import { useNavigate } from 'react-router-dom';
 
 type Booking = {
     _id: string;
@@ -19,10 +22,12 @@ type Booking = {
 
 const BookingHistoryPage: React.FC = () => {
     const [bookings, setBookings] = useState<Booking[]>([]);
+    const [user, setUser] = useState<string | null>(null);
     const [page, setPage] = useState(1);
     const [limit] = useState(6); 
     const [total, setTotal] = useState(0);
     const owner = useAppSelector((state) => state.ownerSlice)
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchBookingHistory = async () => {
@@ -33,6 +38,8 @@ const BookingHistoryPage: React.FC = () => {
                 );
                 if (response.data.success) {
                     setBookings(response.data.bookings);
+                    console.log(response.data.bookings,"owner chat");
+                    
                     setTotal(response.data.total);
                 } else {
                     console.error('Fetch bookings failed:', response.data);
@@ -54,6 +61,16 @@ const BookingHistoryPage: React.FC = () => {
     };
 
     const totalPages = Math.ceil(total / limit);
+
+
+    const handleChat = (userId:string)=>{
+        axiosInstance
+        .post(CHAT_API+'/conversations',{
+          senderId :userId,
+          recieverId:owner.id
+        })
+        navigate('/owner/chat')
+      }
 
     return (
         <div className="py-6">
@@ -87,6 +104,9 @@ const BookingHistoryPage: React.FC = () => {
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Payment Status
                                 </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                   Chat
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -100,6 +120,12 @@ const BookingHistoryPage: React.FC = () => {
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.fees}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.bookingStatus}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.paymentStatus}</td>
+                                    <td className="py-2 px-4 border-b text-center">
+                          <MessageSquare
+                            style={{ cursor: 'pointer', color: 'green' }}
+                            onClick={() => handleChat(booking.userId._id)}
+                          />
+                        </td>
                                 </tr>
                             ))}
                         </tbody>

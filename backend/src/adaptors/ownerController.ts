@@ -19,6 +19,9 @@ import { uploadVenue,findVenues,findVenueDetails,updateVenue,saveTimeSlots,findA
 import { HttpStatus } from "../types/httpStatus";
 import { venueDbInterface } from "../app/Interfaces/venueDbRepository";
 import { venueRepositoryMongodbType } from "../framework/database/mongodb/repositories/venueRepositoryMongodb";
+import { userDbInterface } from "../app/Interfaces/userDbRepository";
+import { userRepositoryMongodbType } from "../framework/database/mongodb/repositories/userRepositoryMongodb";
+import { getUserbyId } from "../app/use-cases/user/auth/userAuth";
 
 const ownerController = (
     ownerDbRepository:ownerDbInterface,
@@ -26,11 +29,14 @@ const ownerController = (
     authServiceInterface:AuthServiceInterfaceType,
     authServiceImpl:AuthService,
     venueDbRepository:venueDbInterface,
-    venueDbRepositoryImpl:venueRepositoryMongodbType
+    venueDbRepositoryImpl:venueRepositoryMongodbType,
+    userDbRepository:userDbInterface,
+    userDbRepositoryImpl:userRepositoryMongodbType
 )=>{
     const dbRepositoryOwner = ownerDbRepository(ownerRepositoryImpl())
     const authService = authServiceInterface(authServiceImpl())
     const dbVenueRepository = venueDbRepository(venueDbRepositoryImpl());
+    const dbRepositoryUser = userDbRepository(userDbRepositoryImpl())
     //owner Register - POST Method
     const registerOwner = asynchandler(async(
         req:Request,
@@ -271,6 +277,18 @@ const ownerController = (
         }
     };
 
+
+    const getUserDetails = async (req: Request, res: Response, next: NextFunction)=>{
+        try {
+            const {userId} = req.params
+            console.log(userId,"userid d c");
+            const user = await getUserbyId(userId,dbRepositoryUser)
+            return res.status(HttpStatus.OK).json({ success: true, user });
+        } catch (error) {
+            
+        }
+    }
+
     return {
         registerOwner,
         VerifyOTP,
@@ -285,7 +303,8 @@ const ownerController = (
         updateVenueDetails,
         saveTimeSlotsHandler,
         viewAllSlotsByDate,
-        deleteSlot
+        deleteSlot,
+        getUserDetails
     }
 }
 

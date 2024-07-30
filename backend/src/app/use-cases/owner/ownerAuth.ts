@@ -6,6 +6,7 @@ import { HttpStatus } from "../../../types/httpStatus";
 import { AuthServiceInterfaceType } from "../../service-interface/authServiceInrerface";
 import sentMail from "../../../utils/sendMail";
 import { otpEmail } from "../../../utils/userEmail";
+import { userDbInterface } from "../../Interfaces/userDbRepository";
 
 // owner Register
 
@@ -207,6 +208,7 @@ export const getSingleOwner = async (
     ownerDbRepository:ReturnType<ownerDbInterface>
 )=>{
    const owner =  await ownerDbRepository.getOwnerbyId(ownerId)
-   console.log(owner,"owner //////////////////");
+//    console.log(owner,"owner //////////////////");
    return owner
 }
+

@@ -267,6 +267,6 @@ export const getUserbyId = async (
     userRepository:ReturnType<userDbInterface>
 )=>{
    const user =  await userRepository.getUserbyId(id)
-   console.log(user,"/////////////////");
+//    console.log(user,"/////////////////");
    return user;
 }

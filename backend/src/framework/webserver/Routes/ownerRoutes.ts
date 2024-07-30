@@ -12,6 +12,7 @@ import { bookingRepositoryMongodb } from "../../database/mongodb/repositories/bo
 import bookingController from "../../../adaptors/bookingController";
 import { userDbRepository } from "../../../app/Interfaces/userDbRepository";
 import {userRepositoryMongodb} from "../../database/mongodb/repositories/userRepositoryMongodb";
+
 const ownerRoutes = ()=>{
     const router = express.Router();
     const controller = ownerController(
@@ -21,6 +22,8 @@ const ownerRoutes = ()=>{
         authService,
         venueDbRepository,
         venueRepositoryMongodb,
+        userDbRepository,
+        userRepositoryMongodb,
     )
 
     const booking_Controller:any = bookingController(
@@ -44,6 +47,7 @@ const ownerRoutes = ()=>{
     router.post("/add-slots/:venueId",authenticateOwner,controller.saveTimeSlotsHandler )
     router.get('/view-slots/:venueId/:date', authenticateOwner,controller.viewAllSlotsByDate);
     router.delete('/delete-slot/:venueId', authenticateOwner,controller.deleteSlot   );
+    router.get('/user/:userId',controller.getUserDetails   );
 
 
    
