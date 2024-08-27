@@ -29,7 +29,7 @@
         };
 
         const bookingHistory = async (userId: string, page: number, limit: number) => {
-            const { bookings, total } = await repository.bookingHistory(userId, page, limit);
+            const { bookings, total } = await repository.bookingHistory(userId,page,limit);
             return { bookings, total };
         };
 

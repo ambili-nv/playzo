@@ -161,6 +161,7 @@ interface Venue {
 
 interface Booking {
   _id: string;
+  bookingId:string;
   venueId: Venue;
   date: string;
   startTime: string;
@@ -186,7 +187,8 @@ const BookingDetailsPage: React.FC = () => {
         if (bookingId) {
           const response = await axiosInstance.get(`${USER_API}/booking-details/${bookingId}`);
           setBooking(response.data.bookings);
-
+          console.log(response.data.bookings,"mmmmm");
+          
           // Check if the current time is after the end time of the booking slot
           const currentTime = new Date();
           const bookingEndTime = new Date(`${response.data.bookings.date}T${convertTo24HourFormat(response.data.bookings.endTime)}`);
@@ -235,7 +237,7 @@ const BookingDetailsPage: React.FC = () => {
         {booking ? (
           <div className="space-y-6">
             <div className="bg-gray-50 p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-semibold mb-4 text-gray-700">Booking ID: {booking._id}</h2>
+              <h2 className="text-2xl font-semibold mb-4 text-gray-700">Booking ID: {booking.bookingId}</h2>
               <div className="space-y-4 text-gray-600">
                 <div className="flex items-center">
                   <span className="font-medium w-32">Venue:</span>

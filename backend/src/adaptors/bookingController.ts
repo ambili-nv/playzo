@@ -5,6 +5,7 @@
     import { Request,Response,NextFunction } from "express"
     import { HttpStatus } from "../types/httpStatus"
     import { getUserbyId } from "../app/use-cases/user/auth/userAuth"
+    import { v4 as uuidv4 } from 'uuid';
     import { createBooking,
         createPayment,
         updateSlotStatus,
@@ -21,7 +22,7 @@
         getallBookings,
         generateBookingReport
     } from "../app/use-cases/user/auth/booking"
-import { Types } from "mongoose"
+
     
 
     const bookingController = (
@@ -97,25 +98,41 @@ import { Types } from "mongoose"
         }
 
 
+        // const getBookingHistory = async (req: Request, res: Response, next: NextFunction) => {
+        //     try {
+        //         const userId = req.user.id;
+        //         const { bookings, total } = await fetchBookingHistory(userId, dbBookingRepository);
+        
+        //         res.status(HttpStatus.OK).json({
+        //             success: true,
+        //             bookings,
+        //             total,
+        //         });
+        //     } catch (error) {
+        //         next(error);
+        //     }
+        // };
+
         const getBookingHistory = async (req: Request, res: Response, next: NextFunction) => {
-            try {
-                const userId = req.user.id;
-                const page = parseInt(req.query.page as string) || 1;
-                const limit = parseInt(req.query.limit as string) || 5;
-        
-                const { bookings, total } = await fetchBookingHistory(userId, page, limit, dbBookingRepository);
-        
-                res.status(HttpStatus.OK).json({
-                    success: true,
-                    bookings,
-                    total,
-                    page,
-                    totalPages: Math.ceil(total / limit)
-                });
-            } catch (error) {
-                next(error);
-            }
-        };
+    try {
+        const userId = req.user.id;
+        const page = parseInt(req.query.page as string, 10) || 1;
+        const limit = parseInt(req.query.limit as string, 10) || 5;
+
+        const { bookings, total } = await fetchBookingHistory(userId, dbBookingRepository, page, limit);
+
+        res.status(HttpStatus.OK).json({
+            success: true,
+            bookings,
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
         
 
         const  adminBookingHistory = async (req: Request, res: Response, next: NextFunction) =>{
@@ -159,70 +176,6 @@ import { Types } from "mongoose"
         };
         
        
-
-
-// const cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//         const id = req.params.bookingId;
-
-//         const booking = await getBookingById(id, dbBookingRepository);
-//         if (!booking) {
-//             return res.status(HttpStatus.NOT_FOUND).json({
-//                 success: false,
-//                 message: "Booking not found",
-//             });
-//         }
-
-//         const bookingDate = booking.date;
-//         const dateTimeString = `${bookingDate}T${booking.startTime}:00.000Z`;
-//         console.log(dateTimeString,"vdffffvd");
-        
-
-//         let slotStartTime;
-//         try {
-//             slotStartTime = Date.parse(dateTimeString);
-//             console.log(slotStartTime,"/vdfgad");
-            
-//             if (isNaN(slotStartTime)) {
-//                 throw new Error("Invalid start time");
-//             }
-//         } catch (error) {
-//             console.error("Error parsing startTime:", error);
-//             return res.status(HttpStatus.BAD_REQUEST).json({
-//                 success: false,
-//                 message: "Invalid start time format",
-//             });
-//         }
-
-//         const currentTime = Date.now();
-//         const twentyFourHoursInMs = 24 * 60 * 60 * 1000;
-//         const cancellationDeadline = slotStartTime - twentyFourHoursInMs;
-
-//         if (currentTime >= cancellationDeadline) {
-//             return res.status(HttpStatus.BAD_REQUEST).json({
-//                 success: false,
-//                 message: "Cannot cancel booking less than 24 hours before the slot start time",
-//             });
-//         }
-
-//         await cancelbooking(id, dbBookingRepository);
-//          //@ts-ignore
-//         await updateSlotStatus(booking.slotId, 'available', dbBookingRepository);
-
-//         // Update wallet balance and add transaction
-//         const userId = booking.userId;
-//         const amount = booking.fees;
-//         //@ts-ignore
-//         await updateWallet(userId, amount, 'credit', 'Booking cancelled refund',dbBookingRepository);
-
-//         res.status(HttpStatus.OK).json({
-//             success: true,
-//             message: "Booking cancelled successfully",
-//         });
-//     } catch (error) {
-//         next(error);
-//     }
-// };
 
 
 const convertTo24Hour = (time12h: string): string => {

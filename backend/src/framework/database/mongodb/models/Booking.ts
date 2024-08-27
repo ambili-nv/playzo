@@ -42,6 +42,10 @@ const bookingSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  bookingId: { 
+    type: String, 
+    required: true, 
+    unique: true },
   createdAt: {
     type: Date,
     default: Date.now

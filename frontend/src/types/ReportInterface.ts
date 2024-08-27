@@ -1,4 +1,3 @@
-// Define the ReportInterface with the expected fields
 export interface ReportInterface {
     _id: string;
     bookingStatus: string;
@@ -10,8 +9,7 @@ export interface ReportInterface {
     slotId: string;
     startTime: string;
     userId: { _id: string; name: string };
-    venueId: { _id: string; name: string };
-    totalAmount: number;
+    venueId: { _id: string; name: string; sportsitem : string };
   }
   
 

@@ -98,6 +98,7 @@ const VenuePage: React.FC = () => {
   if (error) return <div>{error}</div>;
 
   return (
+    
     <div className="container mx-auto px-4 py-8 mt-12 bg-gray-100">
       {venue ? (
         <>

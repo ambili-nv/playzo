@@ -46,7 +46,7 @@ const Dashboard = () => {
           const bookingsData = response.data.bookingData.bookings;
           console.log(bookingsData,"bookings data");
           
-          setBookingsCount(response.data.bookingData.totalBookings);
+          setBookingsCount(response.data.bookingData.totalBookings)
           setBookings(bookingsData);
           calculateMonthlyBookings(bookingsData);
           calculateYearlyBookings(bookingsData);
@@ -114,18 +114,18 @@ const Dashboard = () => {
     ],
   };
 
-  const doughnutChartData = {
-    labels: ['Venues', 'Users', 'Bookings'],
-    datasets: [
-      {
-        label: 'Total',
-        data: [venues, users, bookingCount],
-        backgroundColor: ['rgba(75,192,192,0.2)', 'rgba(153,102,255,0.2)', 'rgba(255,159,64,0.2)'],
-        borderColor: ['rgba(75,192,192,1)', 'rgba(153,102,255,1)', 'rgba(255,159,64,1)'],
-        borderWidth: 1,
-      },
-    ],
-  };
+  // const doughnutChartData = {
+  //   labels: ['Venues', 'Users', 'Bookings'],
+  //   datasets: [
+  //     {
+  //       label: 'Total',
+  //       data: [venues, users, bookingCount],
+  //       backgroundColor: ['rgba(75,192,192,0.2)', 'rgba(153,102,255,0.2)', 'rgba(255,159,64,0.2)'],
+  //       borderColor: ['rgba(75,192,192,1)', 'rgba(153,102,255,1)', 'rgba(255,159,64,1)'],
+  //       borderWidth: 1,
+  //     },
+  //   ],
+  // };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -171,12 +171,12 @@ const Dashboard = () => {
             <Line data={lineChartData} />
           </div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-lg flex-1">
+        {/* <div className="bg-white p-6 rounded-lg shadow-lg flex-1">
           <h3 className="text-xl font-semibold mb-4">Overall Distribution</h3>
           <div className="flex justify-center items-center h-72">
             <Doughnut data={doughnutChartData} />
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="bg-white p-6 rounded-lg shadow-lg mt-6">
         <h3 className="text-xl font-semibold mb-4">Recent Bookings</h3>
@@ -195,7 +195,7 @@ const Dashboard = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {recentBookings.map((booking) => (
               <tr key={booking._id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{booking._id}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{booking.bookingId}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{booking.userId.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{booking.venueId.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{booking.venueId.sportsitem}</td>

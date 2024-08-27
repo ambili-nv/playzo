@@ -37,11 +37,14 @@ const ProfilePage: React.FC = () => {
   const [profilePic, setProfilePic] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
   const [showModal, setShowModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   // const [ownerIds, setOwnerIds] = useState<Set<string>>(new Set());
+
+  const [currentPage, setCurrentPage] = useState(1);
+const [totalPages, setTotalPages] = useState(1);
+
+
   const [ownerIds, setCurrentOwnerId] = useState<string | null>(null);
   const navigate = useNavigate()
   const user = useAppSelector((state) => state.userSlice);
@@ -70,24 +73,56 @@ const ProfilePage: React.FC = () => {
     fetchProfile();
   }, []);
 
+  // useEffect(() => {
+  //   const fetchBookings = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(`${USER_API}/booking-history`, {
+
+  //       });
+  //       console.log(response.data, "booking hsitory");
+
+  //       if (response.data && response.data.bookings) {
+  //         const sortedBookings = response.data.bookings.sort((a: Booking, b: Booking) =>
+  //           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  //         );
+  //         setBookings(sortedBookings);
+
+  //         // Extract and save the current owner ID
+  //         if (sortedBookings.length > 0) {
+  //           const ownerId = sortedBookings[0].venueId.ownerId._id;
+  //           setCurrentOwnerId(ownerId);
+  //         }
+  //       } else {
+  //         console.log('No bookings found in response');
+  //       }
+  //     } catch (error) {
+  //       console.error('Failed to fetch bookings', error);
+  //     }
+  //   };
+
+  //   fetchBookings();
+  // });
+
+
   useEffect(() => {
     const fetchBookings = async () => {
       try {
         const response = await axiosInstance.get(`${USER_API}/booking-history`, {
           params: {
             page: currentPage,
-            limit: 5
-          }
+            limit: 5, // Number of bookings per page
+          },
         });
-        console.log(response.data, "booking hsitory");
-
+  
         if (response.data && response.data.bookings) {
-          const sortedBookings = response.data.bookings.sort((a: Booking, b: Booking) =>
+          setTotalPages(response.data.totalPages);
+
+                    const sortedBookings = response.data.bookings.sort((a: Booking, b: Booking) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
           setBookings(sortedBookings);
-          setTotalPages(response.data.totalPages);
 
+          
           // Extract and save the current owner ID
           if (sortedBookings.length > 0) {
             const ownerId = sortedBookings[0].venueId.ownerId._id;
@@ -95,14 +130,17 @@ const ProfilePage: React.FC = () => {
           }
         } else {
           console.log('No bookings found in response');
+        
+          // setBookings(response.data.bookings);
         }
       } catch (error) {
         console.error('Failed to fetch bookings', error);
       }
     };
-
+  
     fetchBookings();
   }, [currentPage]);
+  
 
 
   const handleCancelBooking = async () => {
@@ -185,18 +223,22 @@ const ProfilePage: React.FC = () => {
   };
 
 
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
   };
+  
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+
+
+
+
 
   const handleChat = () => {
     axiosInstance
@@ -207,7 +249,7 @@ const ProfilePage: React.FC = () => {
     navigate('/user/chat')
   }
 
-    const handleViewDetails = (bookingId: string) => {
+  const handleViewDetails = (bookingId: string) => {
     navigate(`/booking-details/${bookingId}`);
   };
 
@@ -356,18 +398,20 @@ const ProfilePage: React.FC = () => {
                 <button
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50"
+                  className={`px-4 py-2 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-green-500 text-white hover:bg-green-600'}`}
                 >
                   Previous
                 </button>
+                <span className="px-4 py-2">Page {currentPage} of {totalPages}</span>
                 <button
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50"
+                  className={`px-4 py-2 rounded-lg ${currentPage === totalPages ? 'bg-gray-300' : 'bg-green-500 text-white hover:bg-green-600'}`}
                 >
                   Next
                 </button>
               </div>
+
             </div>
           )}
           {activeTab === 'wallet' && (

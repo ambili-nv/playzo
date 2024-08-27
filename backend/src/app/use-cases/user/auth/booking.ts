@@ -3,14 +3,60 @@ import {bookingDbRepositoryInterface } from '../../../Interfaces/bookingDbReposi
 import { BookingReportFilter } from '../../../../types/BookingReportInterface';
 import Stripe from "stripe";
 import configKeys from '../../../../config';
-import { Types } from "mongoose";
+import { v4 as uuidv4 } from 'uuid';
 
-export const createBooking = async (data: any, 
+
+// export const createBooking = async (data: any, 
+//     userId: string,
+//     bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
+// ) => {
+//     console.log("booking");
+    
+//     const { venueId, slotId, fees, paymentStatus, bookingStatus, date, startTime, endTime } = data;
+
+//     const booking: BookingEntityType = bookingEntity(
+//         userId,
+//         venueId,
+//         slotId,
+//         fees,
+//         paymentStatus,
+//         bookingStatus,
+//         date,
+//         startTime,
+//         endTime
+//     );
+
+//    const bookings = await bookingDbRepository.createbooking(booking);
+// //    console.log(bookings, "bookingsssssssssss");
+//    return bookings;
+// };
+
+
+
+// const generateUniqueBookingId = async (bookingDbRepository: ReturnType<bookingDbRepositoryInterface>): Promise<string> => {
+//     let uniqueId: string;
+//     let isUnique: boolean = false;
+
+//     // do {
+//         uniqueId = Math.floor(10000000 + Math.random() * 90000000).toString(); // Generates an 8-digit number
+//         // isUnique = !(await bookingDbRepository.isBookingIdExists(uniqueId)); // Check if the ID already exists
+//     // } while (!isUnique);
+
+//     return uniqueId;
+// };
+
+
+
+export const createBooking = async (
+    data: any,
     userId: string,
     bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
 ) => {
     console.log("booking");
     
+    const bookingId = Math.floor(10000000 + Math.random() * 90000000).toString(); // Generates an 8-digit number
+
+
     const { venueId, slotId, fees, paymentStatus, bookingStatus, date, startTime, endTime } = data;
 
     const booking: BookingEntityType = bookingEntity(
@@ -22,13 +68,15 @@ export const createBooking = async (data: any,
         bookingStatus,
         date,
         startTime,
-        endTime
+        endTime,
+        bookingId // Pass the generated booking ID
     );
 
-   const bookings = await bookingDbRepository.createbooking(booking);
-//    console.log(bookings, "bookingsssssssssss");
-   return bookings;
+    const bookings = await bookingDbRepository.createbooking(booking);
+    return bookings;
 };
+
+
 
 const stripe = new Stripe(configKeys.STRIPE_SECRET_KEY);
 
@@ -125,10 +173,18 @@ export const getBookingById = async (id: string,bookingDbRepository: ReturnType<
 };
 
 
-export const fetchBookingHistory = async (userId: string, page: number, limit: number, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
+// export const fetchBookingHistory = async (userId: string, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
+//     const { bookings, total } = await bookingDbRepository.bookingHistory(userId);
+//     return { bookings, total };
+// };
+export const fetchBookingHistory = async (userId: string, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>, page: number, limit: number) => {
     const { bookings, total } = await bookingDbRepository.bookingHistory(userId, page, limit);
     return { bookings, total };
 };
+
+
+
+
 
 export const fetchAllBookings = async (id:string,bookingDbRepository: ReturnType<bookingDbRepositoryInterface>, page: number, limit: number) => {
     const bookings = await bookingDbRepository.getAllBookings(id,page, limit);
@@ -180,7 +236,7 @@ export const createWalletBooking = async (data: any,
 ) => {
     console.log("booking");
     
-    const { venueId, slotId, fees, paymentStatus, bookingStatus, date, startTime, endTime } = data;
+    const { venueId, slotId, fees, paymentStatus, bookingStatus, date, startTime, endTime,bookingId } = data;
 
     const booking: BookingEntityType = bookingEntity(
         userId,
@@ -191,7 +247,8 @@ export const createWalletBooking = async (data: any,
         bookingStatus,
         date,
         startTime,
-        endTime
+        endTime,
+        bookingId
     );
 
    const bookings = await bookingDbRepository.createbooking(booking);

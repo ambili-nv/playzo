@@ -9,6 +9,8 @@ import { populate } from "dotenv";
 import { BookingReportFilter } from "../../../../types/BookingReportInterface";
 
 export const bookingRepositoryMongodb = () => {
+
+
     const createBooking = async (data: BookingEntityType) => {
         return await Booking.create({
             userId: data.getUserId(),
@@ -20,6 +22,7 @@ export const bookingRepositoryMongodb = () => {
             date: data.getDate(),
             startTime: data.getStartTime(),
             endTime: data.getEndTime(),
+            bookingId: data.getBookingId(), 
             createdAt: data.getCreatedAt(),
         });
     }
@@ -63,20 +66,40 @@ export const bookingRepositoryMongodb = () => {
     //     return { bookings, total };
     // };
 
+    // const bookingHistory = async (userId: string) => {
+    //     const [bookings, total] = await Promise.all([
+    //         Booking.find({ userId })
+    //             .populate({
+    //                 path: 'venueId',
+    //                 select: 'name sportsitem ownerId place', // Include ownerId
+    //                 populate: {
+    //                     path: 'ownerId', // Populate the ownerId field
+    //                     select: 'ownerId' // Select the fields you want from Owner model
+    //                 }
+    //             })
+    //             .exec(),
+    //         Booking.countDocuments({ userId })
+    //     ]);
+    
+    //     console.log(bookings, "booking from db");
+    
+    //     return { bookings, total };
+    // };
     const bookingHistory = async (userId: string, page: number, limit: number) => {
         const skip = (page - 1) * limit;
+    
         const [bookings, total] = await Promise.all([
             Booking.find({ userId })
-                .populate({
-                    path: 'venueId',
-                    select: 'name sportsitem ownerId place', // Include ownerId
-                    populate: {
-                        path: 'ownerId', // Populate the ownerId field
-                        select: 'ownerId' // Select the fields you want from Owner model
-                    }
-                })
                 .skip(skip)
                 .limit(limit)
+                .populate({
+                    path: 'venueId',
+                    select: 'name sportsitem ownerId place',
+                    populate: {
+                        path: 'ownerId',
+                        select: 'ownerId'
+                    }
+                })
                 .exec(),
             Booking.countDocuments({ userId })
         ]);
@@ -86,21 +109,7 @@ export const bookingRepositoryMongodb = () => {
         return { bookings, total };
     };
     
-    
 
-    // const getAllBookings = async (id:string,page: number, limit: number) => {
-    //     // const bookings = await Booking.find()
-    //     const bookings = await Booking.findById(id)
-    //         .populate('userId', 'name') // Populate the userId with the name field
-    //         .populate('venueId', 'name') // Populate the venueId with the name field
-    //         .skip((page - 1) * limit)
-    //         .limit(limit)
-    //         .exec();
-    //     const total = await Booking.countDocuments();
-    //     console.log(bookings,"db book");
-        
-    //     return { bookings, total };
-    // };
 
 
     const getAllBookings = async (ownerId: string, page: number, limit: number) => {
@@ -292,7 +301,7 @@ const getBookingReport = async (
             createdAt: { $gte: startDate, $lte: endDate } // Filter by date range
         })
             .populate('userId', 'name') // Populate userId with the name field
-            .populate('venueId', 'name') // Populate venueId with the name field
+            .populate('venueId', 'name sportsitem') // Populate venueId with the name field
             .exec();
 
             // Calculate total amount

@@ -7,7 +7,8 @@ export default function bookingEntity (
     bookingStatus: string,
     date: string,
     startTime: string,
-    endTime: string
+    endTime: string,
+    bookingId: string 
 ) {
     return {
         getUserId: () => userId,
@@ -19,6 +20,7 @@ export default function bookingEntity (
         getDate: () => date,
         getStartTime: () => startTime,
         getEndTime: () => endTime,
+        getBookingId: () => bookingId, 
         getCreatedAt: () => new Date()
     };
 };

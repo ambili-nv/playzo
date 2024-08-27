@@ -1,7 +1,3 @@
-
-
-
-
 import { useFormik } from 'formik';
 import { IoClose } from 'react-icons/io5';
 import { useCallback, useState } from 'react';
@@ -9,7 +5,9 @@ import axios from 'axios';
 import { OWNER_API } from '../../../constants'; // Adjust the path if necessary
 import showToast from '../../../utils/toaster';
 import * as Yup from 'yup';
-import { ownerBookingPdfGenerator, ownerArrayToExcel } from '../../../utils/exportData';
+import { ownerBookingPdfGenerator,
+  //  ownerArrayToExcel
+   } from '../../../utils/exportData';
 import axiosInstance from '../../../utils/axiosInstance';
 
 const validationSchema = Yup.object().shape({
@@ -34,6 +32,8 @@ const ReportRequestModal: React.FC<{ isModalOpen: (isOpen: boolean) => void }> =
           params: { startDate, endDate },
         });
         console.log(response.data.report.bookings,"report data");
+        console.log(response.data.report.totalAmount,"total-amount");
+        console.log(response.data.report," data ");
         
         setData(response.data.report.bookings);
         setHasData(response.data.report.bookings.length > 0);
@@ -43,17 +43,16 @@ const ReportRequestModal: React.FC<{ isModalOpen: (isOpen: boolean) => void }> =
     },
   });
 
-  console.log(formik.values.startDate,formik.values.endDate,"/////////////");
   
 
-  const exportFile = useCallback(() => {
-    try {
-      const fileName = `${formik.values.startDate}-${formik.values.endDate} Report.xls`;
-      ownerArrayToExcel.convertArrayToTable(data, fileName);
-    } catch (error) {
-      console.error('Error in generating Excel', error);
-    }
-  }, [data, formik.values]);
+  // const exportFile = useCallback(() => {
+  //   try {
+  //     const fileName = `${formik.values.startDate}-${formik.values.endDate} Report.xls`;
+  //     ownerArrayToExcel.convertArrayToTable(data, fileName);
+  //   } catch (error) {
+  //     console.error('Error in generating Excel', error);
+  //   }
+  // }, [data, formik.values]);
 
   return (
     <div
@@ -118,12 +117,12 @@ const ReportRequestModal: React.FC<{ isModalOpen: (isOpen: boolean) => void }> =
               >
                 Download PDF
               </button>
-              <button
+              {/* <button
                 className="text-white w-full bg-gray-500 hover:bg-gray-600 focus:ring-green-400 focus:ring-2 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                 onClick={exportFile}
               >
                 Download Excel
-              </button>
+              </button> */}
             </div>
           )}
           {!hasData && <p className="text-center text-gray-500 mt-4">No matching data for the selected dates</p>}
