@@ -72,20 +72,39 @@ const updateOWnerBlock = async(id:string,status:boolean)=>{
     await Owner.findByIdAndUpdate(id,{isBlocked:status})
 }
 
+// const addVenue = async (venue: VenueEntity) => {
+//     const newVenue = new venues({
+//         ownerId: venue.ownerId,
+//         name: venue.name,
+//         sportsitem: venue.sportsitem,
+//         place: venue.place,
+//         description: venue.description,
+//         primaryImage: venue.primaryImage,
+//         secondaryImages: venue.secondaryImages,
+//     });
+    
+//     await newVenue.save();
+//     return newVenue;
+// };
+
+
 const addVenue = async (venue: VenueEntity) => {
     const newVenue = new venues({
-        ownerId: venue.ownerId,
-        name: venue.name,
-        sportsitem: venue.sportsitem,
-        place: venue.place,
-        description: venue.description,
-        primaryImage: venue.primaryImage,
-        secondaryImages: venue.secondaryImages,
+      ownerId: venue.ownerId,
+      name: venue.name,
+      sportsitem: venue.sportsitem,
+      place: venue.place,
+      description: venue.description,
+      primaryImage: venue.primaryImage,
+      secondaryImages: venue.secondaryImages,
+      coordinates: venue.coordinates // Add coordinates
     });
-    
+  console.log(newVenue,"nuw vwunw db");
+  
     await newVenue.save();
     return newVenue;
-};
+  };
+  
 
 
 const editOwnerInfo = async (id:string,updateData:Record<string,any>)=>{

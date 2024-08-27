@@ -5,6 +5,8 @@ import wallet from "../models/wallet";
 import mongoose from "mongoose";
 import user from "../models/user";
 import venues from "../models/venues";
+import { populate } from "dotenv";
+import { BookingReportFilter } from "../../../../types/BookingReportInterface";
 
 export const bookingRepositoryMongodb = () => {
     const createBooking = async (data: BookingEntityType) => {
@@ -67,7 +69,7 @@ export const bookingRepositoryMongodb = () => {
             Booking.find({ userId })
                 .populate({
                     path: 'venueId',
-                    select: 'name sportsitem ownerId', // Include ownerId
+                    select: 'name sportsitem ownerId place', // Include ownerId
                     populate: {
                         path: 'ownerId', // Populate the ownerId field
                         select: 'ownerId' // Select the fields you want from Owner model
@@ -204,6 +206,113 @@ export const bookingRepositoryMongodb = () => {
         };
     };
     
+    // const getBookingDetail = async(bookingId:String)=>{
+    //     const booking = Booking.findById(bookingId)
+    //     .populate({
+    //         path: 'venueId',
+    //         select: 'name sportsitem ownerId place', // Include ownerId
+    //         populate: {
+    //             path: 'ownerId', // Populate the ownerId field
+    //             select: 'ownerId' // Select the fields you want from Owner model
+    //         }
+    //     })
+    // }
+
+
+    const getBookingDetail = async (bookingId: string) => {
+        try {
+          const booking = await Booking.findById(bookingId)
+          .populate({
+            path: 'userId',
+            select: 'name email', // Select only the fields you need from User
+          })
+            .populate({
+              path: 'venueId',
+              select: 'name sportsitem place', // Exclude ownerId if not needed here
+              populate: {
+                path: 'ownerId', // Populate the ownerId field
+                select: 'name', // Select the fields you want from the Owner model
+              }
+            });
+      console.log(booking,"booking db//////////");
+      
+          return booking;
+        } catch (error) {
+          console.error('Error fetching booking details:', error);
+          throw error; // Re-throw error to handle it upstream
+        }
+      };      
+      
+
+      const getallBookings = async()=>{
+        try {
+            const totalBookings = await Booking.countDocuments( { bookingStatus: "confirmed" });
+            const bookings  =await Booking.find({bookingStatus: "confirmed"})
+            .populate('userId', 'name') // Populate userId with the name field
+            .populate('venueId', 'name sportsitem')
+            // console.log(bookings,"/////// bookings from db");
+            return {bookings,totalBookings}
+        } catch (error) {
+            
+        }
+      }
+
+// const getBookingReport = async (filter: BookingReportFilter) => {
+//     try {
+//         console.log('Filter applied:', JSON.stringify(filter));
+//         const bookings = await Booking.find(filter) // Apply the filter here
+//             .populate('userId', 'name') // Populate userId with the name field
+//             .populate('venueId', 'name sportsitem') // Populate venueId with name and sportsitem fields
+//             .exec(); // Ensure the query is executed
+//         console.log(bookings, "bookings from db");
+//         return bookings;
+        
+//     } catch (error) {
+        
+//     }
+// };
+
+
+
+const getBookingReport = async (
+    ownerId: string,
+    startDate: Date,
+    endDate: Date
+) => {
+    try {
+        // Find venues owned by the specified owner
+        const venueList = await venues.find({ ownerId });
+        
+        // Extract venue IDs
+        const venueIds = venueList.map(venue => venue._id);
+    
+        // Find bookings associated with these venues and within the specified date range
+        const bookings = await Booking.find({
+            venueId: { $in: venueIds },
+            createdAt: { $gte: startDate, $lte: endDate } // Filter by date range
+        })
+            .populate('userId', 'name') // Populate userId with the name field
+            .populate('venueId', 'name') // Populate venueId with the name field
+            .exec();
+
+            // Calculate total amount
+        const totalAmount = bookings.reduce((sum, booking) => sum + booking.fees, 0);
+
+            console.log(bookings , "bookings from db");
+            console.log(totalAmount , "db");
+    
+        return { bookings,totalAmount };
+    } catch (error) {
+        console.error('Error retrieving bookings:', error);
+        throw error;
+    }
+};
+
+
+
+
+
+
 
 
 
@@ -218,7 +327,10 @@ export const bookingRepositoryMongodb = () => {
         getBookingById,
         updateWallet,
         getWalletTransactions,
-        getWalletbyUserId
+        getWalletbyUserId,
+        getBookingDetail,
+        getallBookings,
+        getBookingReport
     }
 }
 

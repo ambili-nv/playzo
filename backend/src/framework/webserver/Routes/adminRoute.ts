@@ -36,6 +36,8 @@ const adminRoutes =()=>{
     
         router.post("/login",controller.adminLogin)
         router.get("/users",authenticateAdmin,controller.getAllUsers)
+        router.get("/venues",authenticateAdmin,controller.getAllVenues)
+      
         router.patch("/block-user/:id",authenticateAdmin,controller.blockUser)
         router.get("/owners",authenticateAdmin,controller.getAllOwners)
         router.patch("/block-owner/:id",authenticateAdmin,controller.blockOwner)
@@ -46,6 +48,7 @@ const adminRoutes =()=>{
 
 
         router.get('/bookings/user/:userId',booking_Controller.adminBookingHistory)
+        router.get('/bookings',booking_Controller.getAllBookings)
 
 
 

@@ -43,10 +43,10 @@ const Message: React.FC<MessageProps> = ({
   receiverName,
 }) => {
   return (
-    <div className="message flex flex-col mt-5">
+    <div className="message flex flex-col mt-8">
       {/* Fixed Profile Header */}
       <div className="fixed top-1  w-full    px-3 py-2 h-13 bg-gray-200 flex items-center justify-between ">
-        <div className="flex items-center">
+        <div className="flex items-center pt-12 mt-6">
           <img
             src={receiverProfilePicture}
             alt="Profile"

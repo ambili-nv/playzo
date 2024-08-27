@@ -12,8 +12,9 @@ import { userBlock,OwnerBlock } from "../app/use-cases/Admin/adminUpdate";
 import { getOwners } from "../app/use-cases/Admin/adminRead";
 import { venueRepositoryMongodbType } from "../framework/database/mongodb/repositories/venueRepositoryMongodb";
 import { venueDbInterface } from "../app/Interfaces/venueDbRepository";
-import { getVenues } from "../app/use-cases/Admin/adminRead";
+import { getVenues,getAllVenue } from "../app/use-cases/Admin/adminRead";
 import { acceptVenue,rejectVenue} from "../app/use-cases/Admin/adminUpdate";
+import { getBookings } from "../app/use-cases/user/auth/booking";
 
 const adminController = (
     authServiceInterface: AuthServiceInterfaceType,
@@ -47,13 +48,13 @@ const adminController = (
     };
 
     const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
-        // console.log("request got");
+        console.log("request got");
     
         const { page = 1, limit = 6 } = req.query; // Default to page 1 and limit 10 if not provided
     
         try {
             const usersData = await getUsers(dbUserRepository, parseInt(page as string), parseInt(limit as string));
-            // console.log(usersData.users, "users in adminController");
+            console.log(usersData.users, "users in adminController");
     
             return res.status(HttpStatus.OK).json({ success: true, ...usersData });
         } catch (error) {
@@ -62,6 +63,28 @@ const adminController = (
         }
     };
 
+
+    const getAllVenues = async (req: Request, res: Response, next: NextFunction) =>{
+
+        try {
+            console.log("request got");
+            const venueData = await getAllVenue(dbVenueRepository)
+            console.log(venueData,"venue data //////////");
+            
+            return res.status(HttpStatus.OK).json({ success: true, venueData });
+        } catch (error) {
+            return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error fetching users' });
+        }
+
+    }
+
+    const getAllBookings = async (req: Request, res: Response, next: NextFunction) =>{
+        try {
+            // const bookingData = await getBookings(db)
+        } catch (error) {
+            
+        }
+    }
 
 
     const getAllOwners = async (req: Request, res: Response, next: NextFunction) => {
@@ -174,6 +197,8 @@ const adminController = (
         getVenuesByOwner,
         handleAccept,
         handleReject,
+        getAllVenues,
+        getAllBookings
     };
 };
 

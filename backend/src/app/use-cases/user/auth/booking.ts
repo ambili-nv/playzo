@@ -1,7 +1,9 @@
 import bookingEntity, { BookingEntityType } from '../../../../enitity/bookingEntity';
 import {bookingDbRepositoryInterface } from '../../../Interfaces/bookingDbRepository';
+import { BookingReportFilter } from '../../../../types/BookingReportInterface';
 import Stripe from "stripe";
 import configKeys from '../../../../config';
+import { Types } from "mongoose";
 
 export const createBooking = async (data: any, 
     userId: string,
@@ -55,6 +57,10 @@ export const createPayment = async (userName: string, email: string, bookingId: 
     return session.id;
 };
 
+
+// export const createPayment = async ()=>{
+
+// }
 export const updateSlotStatus = async (
     slotId: string,
     status: string,
@@ -193,4 +199,57 @@ export const createWalletBooking = async (data: any,
    await updatePaymentStatus
 //    console.log(bookings, "bookingsssssssssss");
    return bookings;
+};
+
+
+export const getBookings = async(bookingId:string,bookingDbRepository: ReturnType<bookingDbRepositoryInterface>)=>{
+    const booking = await bookingDbRepository.getBookings(bookingId)
+    console.log(booking,"booking booking");
+    
+    return booking
+}
+
+export const getallBookings = async(bookingDbRepository: ReturnType<bookingDbRepositoryInterface>)=>{
+    const bookings = await bookingDbRepository.getallBookings()
+    console.log(bookings,"bookings ///");
+    return bookings
+}
+
+// export const generateBookingReport = async(
+//     ownerId: string,
+//     startDate: string,
+//     endDate: string,
+//     bookingDbRepository: ReturnType<bookingDbRepositoryInterface>,
+// )=>{
+//     const filter: BookingReportFilter = {
+//         ownerId: new Types.ObjectId(ownerId),
+//         createdAt: {
+//           $gte: new Date(startDate),
+//           $lte: new Date(endDate),
+//         },
+//       };
+//       const report  =  await bookingDbRepository.getBookingReport(filter);
+//       console.log(report ,"reportrt booking.ts");
+//       return report
+// }
+
+export const generateBookingReport = async (
+    ownerId: string,
+    startDate: Date,
+    endDate: Date,
+    bookingDbRepository: ReturnType<bookingDbRepositoryInterface>,
+) => {
+    // const filter: BookingReportFilter = {
+    //     ownerId: new Types.ObjectId(ownerId),
+    //     createdAt: {
+    //         $gte: startDate,
+    //         $lte: endDate,
+    //     },
+    // };
+    // console.log('Filter:', JSON.stringify(filter));
+    const report = await bookingDbRepository.getBookingReport(ownerId,startDate,endDate);
+    const { bookings, totalAmount } = report;
+    console.log('Report:', report);
+    return { bookings, totalAmount };
+    // return report;
 };

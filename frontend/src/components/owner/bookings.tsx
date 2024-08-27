@@ -72,6 +72,10 @@ const BookingHistoryPage: React.FC = () => {
         navigate('/owner/chat')
       }
 
+      const handleViewDetails = (bookingId: string) => {
+        navigate(`/owner/booking-details/${bookingId}`);
+      };
+
     return (
         <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
@@ -80,9 +84,9 @@ const BookingHistoryPage: React.FC = () => {
                     <table className="min-w-full leading-normal">
                         <thead>
                             <tr>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Booking ID
-                                </th>
+                                </th> */}
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     User
                                 </th>
@@ -95,7 +99,7 @@ const BookingHistoryPage: React.FC = () => {
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                      Time
                                 </th>
-                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                {/* <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Price
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -103,29 +107,43 @@ const BookingHistoryPage: React.FC = () => {
                                 </th>
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Payment Status
-                                </th>
+                                </th> */}
                                 <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                    Chat
+                                </th>
+                                <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                   View Details
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             {bookings?.map((booking) => (
                                 <tr key={booking._id}>
-                                    <td className="px-5 py-5 border-b border-gray-200">{booking._id}</td>
+                                    {/* <td className="px-5 py-5 border-b border-gray-200">{booking._id}</td> */}
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.userId.name}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.venueId.name}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.date}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{formatTime(booking.startTime)} to {formatTime(booking.endTime)}</td>
-                                    <td className="px-5 py-5 border-b border-gray-200">{booking.fees}</td>
+                                    {/* <td className="px-5 py-5 border-b border-gray-200">{booking.fees}</td>
                                     <td className="px-5 py-5 border-b border-gray-200">{booking.bookingStatus}</td>
-                                    <td className="px-5 py-5 border-b border-gray-200">{booking.paymentStatus}</td>
+                                    <td className="px-5 py-5 border-b border-gray-200">{booking.paymentStatus}</td> */}
                                     <td className="py-2 px-4 border-b text-center">
                           <MessageSquare
                             style={{ cursor: 'pointer', color: 'green' }}
                             onClick={() => handleChat(booking.userId._id)}
                           />
                         </td>
+
+
+                        <td className="p-3 border-b border-gray-200 text-sm text-gray-700">
+                            <button
+                              className="text-indigo-600 hover:text-indigo-900"
+                              onClick={() => handleViewDetails(booking._id)}
+                            >
+                              View Details
+                            </button>
+                          </td>
+
                                 </tr>
                             ))}
                         </tbody>

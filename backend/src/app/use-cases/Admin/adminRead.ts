@@ -25,6 +25,17 @@ export const getOwners = async (ownerDbRepository: ReturnType<ownerDbInterface>,
     }
 };
 
+export const getAllVenue =  async(venueDbRepository:ReturnType<venueDbInterface>)=>{
+    try {
+        console.log("request got");
+        const Venue = venueDbRepository.getVenue()
+        console.log(Venue);
+        return Venue
+    } catch (error) {
+        
+    }
+}
+
 
 
 export const getVenues = async(venueDbRepository:ReturnType<venueDbInterface>, ownerId: string, page: number, limit: number)=>{

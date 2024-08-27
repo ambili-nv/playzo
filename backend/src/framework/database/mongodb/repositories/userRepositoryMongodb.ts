@@ -20,7 +20,7 @@ const addUser = async(user:userEntityType)=>{
         phoneNumber:user.getphoneNumber(),
         
     })
-    // console.log(newUser,"refister details");
+    console.log(newUser,"refister details");
     
     await newUser.save()
     return newUser

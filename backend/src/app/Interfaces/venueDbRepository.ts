@@ -1,6 +1,7 @@
 import { VenueEntity } from "../../enitity/venueEntity"
 import { venueRepositoryMongodbType } from "../../framework/database/mongodb/repositories/venueRepositoryMongodb";
 import { TimeSlotEntity } from "../../enitity/slotsEntity";
+import ratingEntity, { RatingEntityType } from "../../enitity/ratingEntity";
 
 export const venueDbRepository = (
     repository : ReturnType<venueRepositoryMongodbType>
@@ -11,6 +12,8 @@ export const venueDbRepository = (
     };
     
     const getVenueById = async(venueId:string)=>await repository.getVenueById(venueId)
+
+
 
     const updateVenue = async (venueId: string, updateFields: Partial<VenueEntity>) => await repository.updateVenue(venueId, updateFields);
 
@@ -28,6 +31,16 @@ const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
     const newTimeSlot = await repository.addTimeSlots(timeSlots);
     return newTimeSlot;
 };
+
+
+const getVenue = async()=>{
+    const venue  = await repository.getVenue()
+    console.log(venue,"enue repo");
+    return venue
+}
+
+
+
 
 const getTimeSlotsByVenueId = async (venueId: string) => await repository.getTimeSlotsByVenueId(venueId);
 
@@ -51,6 +64,13 @@ const deleteTimeSlotByVenueIdAndDate = async (venueId, date, startTime, endTime)
     return result;
 };
 
+const addRating = async (ratingData: RatingEntityType) =>
+    await repository.addRating(ratingData);
+
+
+const getRatings = async (filter: Record<string, any>) =>
+    await repository.getRatings(filter);
+
     return{
         getVenuesByOwner,
         getVenueById,
@@ -60,7 +80,10 @@ const deleteTimeSlotByVenueIdAndDate = async (venueId, date, startTime, endTime)
         getTimeSlotsByVenueId,
         getTimeSlotsByVenueIdAndDate,
         getAllTimeSlotsByVenueIdAndDate,
-        deleteTimeSlotByVenueIdAndDate
+        deleteTimeSlotByVenueIdAndDate,
+        addRating,
+        getRatings,
+        getVenue
     }
 }
 

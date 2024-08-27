@@ -18,6 +18,6 @@ export const newMessage = async (
     chatRepository: ReturnType<ChatDbRepositoryInterace>
 )=>{
    const message = await chatRepository.addNewMessage(newMessageData);
-   console.log(message);
+//    console.log(message);
    return message
 }

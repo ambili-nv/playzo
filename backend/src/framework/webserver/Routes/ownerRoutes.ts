@@ -45,13 +45,16 @@ const ownerRoutes = ()=>{
     router.get("/venue-details/:venueId",authenticateOwner,controller.getVenueDetails)
     router.patch("/update-venue/:venueId",authenticateOwner,controller.updateVenueDetails)
     router.post("/add-slots/:venueId",authenticateOwner,controller.saveTimeSlotsHandler )
-    router.get('/view-slots/:venueId/:date', authenticateOwner,controller.viewAllSlotsByDate);
+    router.get('/view-slots/:venueId', authenticateOwner,controller.viewAllSlotsByDate);
     router.delete('/delete-slot/:venueId', authenticateOwner,controller.deleteSlot   );
     router.get('/user/:userId',controller.getUserDetails   );
-
-
-   
+    
+    
+    
+    
     router.get('/bookings/:ownerId',authenticateOwner,booking_Controller.bookingController)
+    router.get('/booking-details/:bookingId',authenticateOwner,booking_Controller.getBookingDetails)
+    router.get('/generate-report',authenticateOwner,booking_Controller.generateReports);
 
      return router
 }

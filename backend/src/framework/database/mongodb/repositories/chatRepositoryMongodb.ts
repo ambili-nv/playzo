@@ -20,25 +20,29 @@ export const chatRepositoryMongodb = ()=>{
     const addNewMessage = async (newMessageData: newMessageInterface) =>{
 
       const nwMessage = await message.create(newMessageData);
-      console.log(nwMessage,"nwmsg db");
+      // console.log(nwMessage,"nwmsg db");
       return nwMessage
     }
 
     const getMessages = async (conversationId:string)=>{
-      console.log("msg db");
-      console.log(conversationId,"id c in db");
+      // console.log("msg db");
+      // console.log(conversationId,"id c in db");
       
       const messages = await message.find({conversationId:conversationId})
-      console.log(messages,"msg from db");
+      // console.log(messages,"msg from db");
       return messages
     }
+
+
+
+
 
       return {
         addNewChat,
         getAllChats,
         isChatExists,
         addNewMessage,
-        getMessages
+        getMessages,
     }
 }
 

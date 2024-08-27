@@ -23,6 +23,7 @@ import { getUser,updateUser } from "../app/use-cases/user/auth/profile";
 import { findVenueDetails } from "../app/use-cases/owner/venueUpload";
 import { ownerRepositoryMongodbType } from "../framework/database/mongodb/repositories/ownerRepositoryMongodb";
 import { getSingleOwner } from "../app/use-cases/owner/ownerAuth";
+import { addNewRating, ratings } from "../app/use-cases/user/auth/rating";
 
 const userController = (
     userDbRepository: userDbInterface,
@@ -82,7 +83,7 @@ const userController = (
         try{
             console.log(req.body,"user otp");
             const {userId} = req.body;
-            // console.log(userId,"resend otp - user");
+            console.log(userId,"resend otp - user");
             
             await deleteOTP(userId,dbRepositoryUser,authService);
             res.json({message:"New otp sent to mail"});
@@ -224,8 +225,9 @@ const userController = (
             const venueId = req.params.venueId
             // console.log(venueId,"parasm");
             const venueDetails = await findVenueDetails(dbRepositoryVenue, venueId);
+            const rating = await ratings (venueId,dbRepositoryVenue)
             // console.log(venueDetails, "venue details from db");
-            return res.status(HttpStatus.OK).json({ success: true, venueDetails });
+            return res.status(HttpStatus.OK).json({ success: true, venueDetails,rating });
         } catch (error) {
             next(error);
         }
@@ -246,34 +248,18 @@ const viewSlotsByDate = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
-// const getOwnerDetails = async (req: Request, res: Response, next: NextFunction)=>{
-//     try {
-//         console.log(req.params);
-        
-//         const id = req.params
-//         console.log(id,"owner d id controller");
-//         //@ts-ignore
-//         const owner = await getSingleOwner(id,dbRepositoryOwner)
-//         console.log(owner,"owner d in c");
-        
-//         return res.status(HttpStatus.OK).json({ success: true, owner });
-//     } catch (error) {
-        
-//     }
-// }
-
 
 const getOwnerDetails = async (req: Request, res: Response, next: NextFunction) => {
     try {
         // Extract ownerId from req.params
         const { ownerId } = req.params;
-        // console.log(typeof(ownerId),"in chat tyoe");
+        console.log(typeof(ownerId),"in chat tyoe");getOwnerDetails
         
-        // console.log("Fetching owner data for ID:", ownerId);
+        console.log("Fetching owner data for ID:", ownerId);
         
         // Pass ownerId to getSingleOwner
         const owner = await getSingleOwner(ownerId, dbRepositoryOwner);
-        // console.log("Owner data:", owner);
+        console.log("Owner data:", owner);
         
         return res.status(HttpStatus.OK).json({ success: true, owner });
     } catch (error) {
@@ -282,6 +268,19 @@ const getOwnerDetails = async (req: Request, res: Response, next: NextFunction) 
     }
 };
 
+
+const addRating = async (req: Request, res: Response, next: NextFunction) =>{
+    try {
+        const userId = req.user.id
+        console.log(userId,"userId - rating");
+        console.log(req.body);
+       const ratings =  await addNewRating(userId,req.body,dbRepositoryVenue)
+       return res.status(HttpStatus.OK).json({ success: true, ratings });
+    } catch (error) {
+        console.error("Error in adding reviews", error);
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ success: false, message: "Error in adding reviews" });
+    }
+}
 
 
     return {
@@ -297,7 +296,8 @@ const getOwnerDetails = async (req: Request, res: Response, next: NextFunction) 
         editUserProfile,
         getSingleVenue,
         viewSlotsByDate,
-        getOwnerDetails
+        getOwnerDetails,
+        addRating
     }
 }
 

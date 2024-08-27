@@ -23,7 +23,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }) =>
 
   return (
     <aside
-      className={`fixed top-0 left-0 w-64 h-screen bg-green-600 text-white transition-transform transform ${
+      className={`fixed top-0 left-0 w-64 h-screen bg-green-500 text-white transition-transform transform ${
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >

@@ -5,33 +5,63 @@ import { HttpStatus } from "../../../types/httpStatus";
 import { venueDbInterface} from "../../Interfaces/venueDbRepository";
 import { TimeSlotEntity,createTimeSlotEntity } from "../../../enitity/slotsEntity";
 
+// export const uploadVenue = async (
+//     ownerId: string,
+//     venueData: any,
+//     ownerRepository: ReturnType<ownerDbInterface>
+// ) => {
+//     const { name, sportsitem, place, description, primaryImage, secondaryImages } = venueData;
+
+//     const venueEntity: VenueEntity = createVenueEntity(
+//         ownerId,
+//         name,
+//         sportsitem,
+//         place,
+//         description,
+//         primaryImage,
+//         secondaryImages
+//     );
+
+//     // Add the venue to the repository
+//     const newVenue = await ownerRepository.addVenue(venueEntity);
+
+//     if (!newVenue) {
+//         throw new CustomError("Venue upload failed", HttpStatus.INTERNAL_SERVER_ERROR);
+//     }
+
+//     return newVenue;
+// };
+
 export const uploadVenue = async (
     ownerId: string,
     venueData: any,
     ownerRepository: ReturnType<ownerDbInterface>
-) => {
-    const { name, sportsitem, place, description, primaryImage, secondaryImages } = venueData;
-
+  ) => {
+    const { name, sportsitem, place, description, primaryImage, secondaryImages, coordinates } = venueData;
+  console.log(venueData,"vnwuw data upload vnue ");
+  
     const venueEntity: VenueEntity = createVenueEntity(
-        ownerId,
-        name,
-        sportsitem,
-        place,
-        description,
-        primaryImage,
-        secondaryImages
+      ownerId,
+      name,
+      sportsitem,
+      place,
+      description,
+      primaryImage,
+      secondaryImages,
+      coordinates // Add coordinates
     );
-
+  
     // Add the venue to the repository
     const newVenue = await ownerRepository.addVenue(venueEntity);
-
+   console.log(newVenue,"new Vwnuw vwnuw uplod");
+   
     if (!newVenue) {
-        throw new CustomError("Venue upload failed", HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new CustomError("Venue upload failed", HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
+  
     return newVenue;
-};
-
+  };
+  
 
 export const findVenues = async (venueDbRepository: ReturnType<venueDbInterface>, ownerId: string, page: number, limit: number) => {
     try {
@@ -62,29 +92,102 @@ export const findVenueDetails = async (venueDbRepository: ReturnType<venueDbInte
         }
     };
 
+    
+
+// export const saveTimeSlots = async (
+//     venueId: string,
+//     timeSlotData: any,
+//     venueRepository: ReturnType<venueDbInterface>
+// ) => {
+//     const { date, timeSlots } = timeSlotData;
+
+//     const timeSlotEntities: TimeSlotEntity[] = timeSlots.map((slot: any) =>
+//         createTimeSlotEntity(
+//             venueId,
+//             date,
+//             slot.startTime,
+//             slot.endTime,
+//             slot.price // Add price to entity
+//         )
+//     );
+
+//     try {
+//         const newTimeSlots = await venueRepository.addTimeSlots(timeSlotEntities);
+//         return newTimeSlots;
+//     } catch (error) {
+//         throw error
+//     }
+// };
+
+// export const saveTimeSlots = async (
+//     venueId: string,
+//     timeSlotData: any,
+//     venueRepository: ReturnType<venueDbInterface>
+// ) => {
+//     const { startDate, endDate, timeSlots } = timeSlotData;
+//     console.log( startDate, endDate, timeSlots," startDate, endDate, timeSlots");
+    
+
+//     const start = new Date(startDate);
+//     const end = new Date(endDate);
+//     const timeSlotEntities: TimeSlotEntity[] = [];
+
+//     while (start <= end) {
+//         for (const slot of timeSlots) {
+//             timeSlotEntities.push(createTimeSlotEntity(
+//                 venueId,
+//                 start.toISOString().split('T')[0], // Only the date part
+//                 slot.startTime,
+//                 slot.endTime,
+//                 slot.price // Add price to entity
+//             ));
+//         }
+//         start.setDate(start.getDate() + 1); // Move to the next day
+//     }
+
+//     try {
+//         const newTimeSlots = await venueRepository.addTimeSlots(timeSlotEntities);
+//         return newTimeSlots;
+//     } catch (error) {
+//         throw error;
+//     }
+// };
 
 export const saveTimeSlots = async (
     venueId: string,
     timeSlotData: any,
     venueRepository: ReturnType<venueDbInterface>
 ) => {
-    const { date, timeSlots } = timeSlotData;
+    const { startDate, endDate, slots } = timeSlotData; // Change `timeSlots` to `slots`
+    console.log(startDate, endDate, slots, "startDate, endDate, slots");
 
-    const timeSlotEntities: TimeSlotEntity[] = timeSlots.map((slot: any) =>
-        createTimeSlotEntity(
-            venueId,
-            date,
-            slot.startTime,
-            slot.endTime,
-            slot.price // Add price to entity
-        )
-    );
+    if (!Array.isArray(slots)) {
+        throw new Error("slots should be an array");
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const timeSlotEntities: TimeSlotEntity[] = [];
+
+    while (start <= end) {
+        for (const slot of slots) {
+            const [startTime, endTime] = slot.time.split(' - ');
+            timeSlotEntities.push(createTimeSlotEntity(
+                venueId,
+                start.toISOString().split('T')[0], // Only the date part
+                startTime,
+                endTime,
+                parseFloat(slot.price) // Convert price to number
+            ));
+        }
+        start.setDate(start.getDate() + 1); // Move to the next day
+    }
 
     try {
         const newTimeSlots = await venueRepository.addTimeSlots(timeSlotEntities);
         return newTimeSlots;
     } catch (error) {
-        throw error
+        throw error;
     }
 };
 

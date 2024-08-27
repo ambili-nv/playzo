@@ -9,7 +9,7 @@ const SlotPage : React.FC = ()=>{
         <>
         <OwnerNavbar/>
         <TimeSlotManager/>
-        <Footer/>
+        {/* <Footer/> */}
         </>
     )
 }

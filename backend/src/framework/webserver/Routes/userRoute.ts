@@ -48,12 +48,15 @@ const userRoutes =()=>{
     router.get("/single-venue/:venueId",controller.getSingleVenue)
     router.get('/get-slots/:venueId/:date', controller.viewSlotsByDate);
     router.get('/owner/:ownerId', controller.getOwnerDetails);
+    router.post('/reviews',authenticateUser, controller.addRating);
 
 
 
     router.post('/create-checkout-session',authenticateUser,booking_Controller.bookVenue)
+    router.post('/retry-payment',authenticateUser,booking_Controller.retryPayment)
     router.patch('/payment/status/:id',authenticateUser,booking_Controller.updateStatus)
     router.get('/booking-history',authenticateUser,booking_Controller.getBookingHistory)
+    router.get('/booking-details/:bookingId',authenticateUser,booking_Controller.getBookingDetails)
     router.get('/wallet',authenticateUser,booking_Controller.getWalletTransactions)
     router.patch('/cancel-booking/:bookingId',authenticateUser,booking_Controller.cancelBooking)
     router.post('/wallet-payment',authenticateUser,booking_Controller.handleWalletPayment)    

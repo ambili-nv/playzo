@@ -37,7 +37,7 @@ const OwnerNavbar = () => {
                 <Link to="/owner/bookings" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
                   Bookings
                 </Link>
-                <Link to="/owner/slots" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
+                <Link to="/owner/viewslots" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
                   Slot
                 </Link>
                 <Link to="/owner/homepage" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
@@ -76,7 +76,7 @@ const OwnerNavbar = () => {
           <Link to="/book" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-black ">
             Bookings
           </Link>
-          <Link to="/book" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-black ">
+          <Link to="/owner/viewslots" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-black ">
             Slot
           </Link>
           <Link to="/contact" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-black ">

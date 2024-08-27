@@ -1,5 +1,6 @@
     import { bookingRepositoryMongodbType } from "../../framework/database/mongodb/repositories/bookingRepositoryMongodb"
     import { BookingEntityType } from "../../enitity/bookingEntity"
+    import { BookingReportFilter } from "../../types/BookingReportInterface"
 
     export const bookingDbRepository = (
         repository: ReturnType<bookingRepositoryMongodbType>
@@ -65,8 +66,28 @@
             return transactions;
         };
 
-        // const update
+        const getBookings = async(bookingId:string)=>{
+            const booking = await repository.getBookingDetail(bookingId);
+            console.log(booking,"booking repo/'////////");
+            return booking
+            
+        }
         
+
+        const getallBookings = async()=>{
+            const bookings = await repository.getallBookings()
+            console.log(bookings,"////////");
+            return bookings
+        }
+
+        const getBookingReport = async (ownerId: any,startDate: any,endDate: any) =>{
+
+            const report  = await repository.getBookingReport(ownerId,startDate,endDate);
+            const { bookings, totalAmount } = report;
+            console.log(report,"in");
+            return { bookings, totalAmount }
+            // return report
+        }
         
 
         return {
@@ -79,7 +100,10 @@
             getBookingById,
             updateWallet,
             getTransaction,
-            getWalletbyUserId
+            getWalletbyUserId,
+            getBookings,
+            getallBookings,
+            getBookingReport
         }
     }
 

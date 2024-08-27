@@ -3,6 +3,11 @@ import venues from "../models/venues";
 import { TimeSlotEntity } from "../../../../enitity/slotsEntity";
 import slots from "../models/slots";
 import mongoose from "mongoose";
+import rating from "../models/rating";
+import ratingEntity, { RatingEntityType } from "../../../../enitity/ratingEntity";
+import user from "../models/user";
+// import venues from "../models/venues";
+
 export const venueRepositoryMongodb = ()=>{
 
         const getVenuesByOwner = async (ownerId: string, page: number, limit: number) => {
@@ -29,21 +34,81 @@ export const venueRepositoryMongodb = ()=>{
         
         
 
-        const getVenueById = async(venueId:string)=>await venues.findById(venueId)
+        const getVenueById = async(venueId:string)=>await venues.findById(venueId).exec();
+
+        const getRatingsByVenueId = async (venueId: string) => {
+            return await rating.find({ venueId: venueId }).exec();
+        };
+
+
+        const getUsersByIds = async (userIds: string[]) => {
+            return await user.find({ _id: { $in: userIds } }).exec();
+        };
+
+
+
 
         const updateVenue = async (venueId: string, updateFields: Partial<VenueEntity>) => {
             return await venues.findByIdAndUpdate(venueId, updateFields, { new: true });
         };
 
-        const getAllVenues = async ()=>{
-            try {
-                const allVenues = await venues.find({isApproved:true})
-                return allVenues
-            } catch (error) {
-                
-            }
-        }
+        const getRatings = async (filter: Record<string, any>) =>
+            await rating.find(filter)
+                .populate({
+                path: 'userId',
+                select: 'name ', // Select only the fields you need from User
+              })
 
+
+
+        // const getAllVenues = async ()=>{
+        //     try {
+        //         const allVenues = await venues.find({isApproved:true})
+        //         return allVenues
+        //     } catch (error) {
+                
+        //     }
+        // }
+
+
+        const getAllVenues = async () => {
+            try {
+                // Aggregation to filter approved venues, join with ratings, and compute the average rating
+                const venuesWithRatings = await venues.aggregate([
+                    {
+                        $match: { isApproved: true } // Filter only approved venues
+                    },
+                    {
+                        $lookup: {
+                            from: 'ratings', // The name of the ratings collection
+                            localField: '_id',
+                            foreignField: 'venueId',
+                            as: 'ratings'
+                        }
+                    },
+                    {
+                        $addFields: {
+                            averageRating: {
+                                $cond: {
+                                    if: { $gt: [{ $size: '$ratings' }, 0] },
+                                    then: { $divide: [{ $sum: '$ratings.rating' }, { $size: '$ratings' }] },
+                                    else: 0
+                                }
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            ratings: 0 // Optionally remove the ratings field from the result
+                        }
+                    }
+                ]);
+        
+                return venuesWithRatings;
+            } catch (error) {
+                // throw new Error('Error fetching venues with ratings: ' + error.message);
+            }
+        };
 
         const getTimeSlotsByVenueId = async (venueId: string) => {
             const timeSlots = await slots.find({ venueId });
@@ -52,6 +117,28 @@ export const venueRepositoryMongodb = ()=>{
             return timeSlots;
         };
         
+        // const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
+        //     for (const slot of timeSlots) {
+        //         const existingSlots = await slots.find({
+        //             venueId: slot.venueId,
+        //             date: slot.date,
+        //             $or: [
+        //                 { startTime: { $lt: slot.endTime }, endTime: { $gt: slot.startTime } }
+        //             ]
+        //         });
+        
+        //         if (existingSlots.length > 0) {
+        //             throw new Error("Please select another slot");
+        //         }
+        //     }
+        
+        //     const newTimeSlots = await slots.insertMany(timeSlots);
+        //     // console.log(newTimeSlots, "slots db");
+        
+        //     return newTimeSlots;
+        // };
+
+
         const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
             for (const slot of timeSlots) {
                 const existingSlots = await slots.find({
@@ -63,15 +150,17 @@ export const venueRepositoryMongodb = ()=>{
                 });
         
                 if (existingSlots.length > 0) {
-                    throw new Error("Please select another slot");
+                    throw new Error("Slots already added Please select another date");
                 }
             }
         
             const newTimeSlots = await slots.insertMany(timeSlots);
-            // console.log(newTimeSlots, "slots db");
-        
             return newTimeSlots;
         };
+        
+
+
+        
         
         const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
             // console.log("Venue ID:", venueId);
@@ -113,7 +202,24 @@ export const venueRepositoryMongodb = ()=>{
             // console.log(result, "Deleted time slot from db");
             return result;
         };
+
+
+        const addRating = async (ratingData: RatingEntityType) =>
+            await rating.create({
+              userId: ratingData.getUserId(),
+              venueId: ratingData.getVenueId(),
+              rating: ratingData.getRating(),
+              comment: ratingData.getComment(),
+            });
         
+        
+        const getVenue = async()=>{
+            const totalVenues = await venues.countDocuments( { isApproved: true });
+            const venue = await venues.find( { isApproved: true });
+            console.log(totalVenues,venue,"db///////////");
+            
+            return({totalVenues,venue})
+        }    
     
 
         return{
@@ -125,7 +231,12 @@ export const venueRepositoryMongodb = ()=>{
             getTimeSlotsByVenueId,
             getTimeSlotsByVenueIdAndDate,
             getAllTimeSlotsByVenueIdAndDate,
-            deleteTimeSlotByVenueIdAndDate
+            deleteTimeSlotByVenueIdAndDate,
+            addRating,
+            getUsersByIds,
+            getRatingsByVenueId,
+            getRatings,
+            getVenue
         }
     
 }

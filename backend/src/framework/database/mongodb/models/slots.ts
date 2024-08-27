@@ -33,3 +33,6 @@ const timeSlotSchema = new mongoose.Schema({
 });
 
 export default mongoose.model("Slots", timeSlotSchema);
+
+
+

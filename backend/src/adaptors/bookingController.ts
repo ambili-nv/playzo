@@ -16,8 +16,12 @@
         getBookingById,
         updateWallet,
         getTransactions,
-        getWalletbyUserId
+        getWalletbyUserId,
+        getBookings,
+        getallBookings,
+        generateBookingReport
     } from "../app/use-cases/user/auth/booking"
+import { Types } from "mongoose"
     
 
     const bookingController = (
@@ -52,12 +56,36 @@
             }
         };
 
+
+        const retryPayment = async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const { bookingId } = req.body;
+                const userId = req.user.id;
+        
+                // Fetch booking details
+                const booking = await getBookingById(bookingId, dbBookingRepository);
+                if (!booking) {
+                    return res.status(404).json({ success: false, message: 'Booking not found' });
+                }
+        
+                const user = await getUserbyId(userId, dbRepositoryUser);
+                //@ts-ignore
+                const sessionId = await createPayment(user.name, user.email, booking.id, booking.fees);
+        
+                res.status(HttpStatus.OK).json({
+                    success: true,
+                    sessionId,
+                });
+            } catch (error) {
+                next(error);
+            }
+        };
+
         const updateStatus = async (req: Request, res: Response, next: NextFunction) =>{
             try {
                 // console.log("updating");
                 const { id } = req.params;
                 const { paymentStatus } = req.body;
-                // console.log(id,paymentStatus,"id payment sts");
                 const updateStatus = await updatePaymentStatus(id,dbBookingRepository)
 
                 await updateBookingStatus(id,paymentStatus,dbBookingRepository)
@@ -98,7 +126,6 @@
                 const limit = parseInt(req.query.limit as string) || 5;
                 //@ts-ignore
                 const {bookings,total} =  await fetchBookingHistory(userId, page, limit, dbBookingRepository);
-                // console.log(bookings,"bookingss admin user");
                 
                 res.status(HttpStatus.OK).json({
                     success: true,
@@ -115,17 +142,7 @@
 
         const bookingController = async (req: Request, res: Response, next: NextFunction) => {
             try {
-                const { ownerId } = req.params;
-                // console.log(typeof(ownerId),"in chat tyoe");
-        
-                // console.log("Fetching owner data for ID:", ownerId);
-                // const ownerId = id.toString()
-                // const id = String(req.owner._id);
-                // const ownerId = String(id)   
-
-                // console.log(ownerId,"owner bookng");
-                // console.log(req.params,"id owner");
-                
+                const { ownerId } = req.params;                
                 const { page = 1, limit = 6 } = req.query;
                 const { bookings, total } = await fetchAllBookings(ownerId,dbBookingRepository, parseInt(page as string), parseInt(limit as string));
                 
@@ -144,6 +161,85 @@
        
 
 
+// const cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//         const id = req.params.bookingId;
+
+//         const booking = await getBookingById(id, dbBookingRepository);
+//         if (!booking) {
+//             return res.status(HttpStatus.NOT_FOUND).json({
+//                 success: false,
+//                 message: "Booking not found",
+//             });
+//         }
+
+//         const bookingDate = booking.date;
+//         const dateTimeString = `${bookingDate}T${booking.startTime}:00.000Z`;
+//         console.log(dateTimeString,"vdffffvd");
+        
+
+//         let slotStartTime;
+//         try {
+//             slotStartTime = Date.parse(dateTimeString);
+//             console.log(slotStartTime,"/vdfgad");
+            
+//             if (isNaN(slotStartTime)) {
+//                 throw new Error("Invalid start time");
+//             }
+//         } catch (error) {
+//             console.error("Error parsing startTime:", error);
+//             return res.status(HttpStatus.BAD_REQUEST).json({
+//                 success: false,
+//                 message: "Invalid start time format",
+//             });
+//         }
+
+//         const currentTime = Date.now();
+//         const twentyFourHoursInMs = 24 * 60 * 60 * 1000;
+//         const cancellationDeadline = slotStartTime - twentyFourHoursInMs;
+
+//         if (currentTime >= cancellationDeadline) {
+//             return res.status(HttpStatus.BAD_REQUEST).json({
+//                 success: false,
+//                 message: "Cannot cancel booking less than 24 hours before the slot start time",
+//             });
+//         }
+
+//         await cancelbooking(id, dbBookingRepository);
+//          //@ts-ignore
+//         await updateSlotStatus(booking.slotId, 'available', dbBookingRepository);
+
+//         // Update wallet balance and add transaction
+//         const userId = booking.userId;
+//         const amount = booking.fees;
+//         //@ts-ignore
+//         await updateWallet(userId, amount, 'credit', 'Booking cancelled refund',dbBookingRepository);
+
+//         res.status(HttpStatus.OK).json({
+//             success: true,
+//             message: "Booking cancelled successfully",
+//         });
+//     } catch (error) {
+//         next(error);
+//     }
+// };
+
+
+const convertTo24Hour = (time12h: string): string => {
+    const [time, modifier] = time12h.split(' ');
+    let [hours, minutes] = time.split(':');
+
+    if (hours === '12') {
+        hours = '00';
+    }
+
+    if (modifier.toUpperCase() === 'PM') {
+        hours = (parseInt(hours, 10) + 12).toString();
+    }
+
+    return `${hours}:${minutes}`;
+};
+
 const cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = req.params.bookingId;
@@ -156,12 +252,21 @@ const cancelBooking = async (req: Request, res: Response, next: NextFunction) =>
             });
         }
 
-        const bookingDate = booking.date;
-        const dateTimeString = `${bookingDate}T${booking.startTime}:00.000Z`;
+        const bookingDate = booking.date; // e.g., "2024-09-09"
+        const originalStartTime = booking.startTime; // e.g., "10:00 AM"
+
+        // Convert the 12-hour time (with AM/PM) to 24-hour format
+        const startTime24h = convertTo24Hour(originalStartTime);
+
+        // Create a valid ISO date-time string
+        const dateTimeString = `${bookingDate}T${startTime24h}:00.000Z`;
+        console.log(dateTimeString, "formatted dateTimeString");
 
         let slotStartTime;
         try {
             slotStartTime = Date.parse(dateTimeString);
+            console.log(slotStartTime, "parsed slotStartTime");
+
             if (isNaN(slotStartTime)) {
                 throw new Error("Invalid start time");
             }
@@ -185,14 +290,14 @@ const cancelBooking = async (req: Request, res: Response, next: NextFunction) =>
         }
 
         await cancelbooking(id, dbBookingRepository);
-         //@ts-ignore
+        //@ts-ignore
         await updateSlotStatus(booking.slotId, 'available', dbBookingRepository);
 
         // Update wallet balance and add transaction
         const userId = booking.userId;
         const amount = booking.fees;
         //@ts-ignore
-        await updateWallet(userId, amount, 'credit', 'Booking cancelled refund',dbBookingRepository);
+        await updateWallet(userId, amount, 'credit', 'Booking cancelled refund', dbBookingRepository);
 
         res.status(HttpStatus.OK).json({
             success: true,
@@ -202,6 +307,10 @@ const cancelBooking = async (req: Request, res: Response, next: NextFunction) =>
         next(error);
     }
 };
+
+
+
+
 
 
 
@@ -223,7 +332,6 @@ const handleWalletPayment = async (req: Request, res: Response, next: NextFuncti
     try {
         const { venueId, slotId, date, startTime, endTime, fees } = req.body;
         const userId = req.user.id;
-        // console.log(userId,"userID for wallet");
         
         // Check user wallet balance before proceeding
         const user = await getWalletbyUserId(userId, dbBookingRepository);
@@ -258,17 +366,109 @@ const handleWalletPayment = async (req: Request, res: Response, next: NextFuncti
 };
 
 
-// const chat = async (req: Request, res: Response, next: NextFunction)=>{
-//     console.log(req.body,"chat body");
-//     // const {id} = req.body
-//     const { senderId, recieverId } = req.body;
-//     console.log(senderId,recieverId,"//////////////");
+const getBookingDetails = async (req: Request, res: Response, next: NextFunction) =>{
+    try {
+        const {bookingId} = req.params
+        const bookings = await getBookings(bookingId,dbBookingRepository)
+        
+        res.status(HttpStatus.OK).json({
+            success: true,
+            message: "Booking created successfully",
+            bookings,
+        });
+    } catch (error) {
+        
+    }
+}
+
+
+const getAllBookings = async (req: Request, res: Response, next: NextFunction) =>{
+    try {
+        const bookingData = await getallBookings(dbBookingRepository)        
+        res.status(HttpStatus.OK).json({
+            success: true,
+            message: "Booking created successfully",
+            bookingData,
+        });
+    } catch (error) {
+        
+    }
+}
+
+
+// const generateReports = async (req: Request, res: Response, next: NextFunction)=>{
+
+//     try {
+//         const ownerId = req.owner.id
+//         console.log(ownerId,"owner id report controller");
+
+//         const { startDate, endDate } = req.query as {
+//             startDate: string;
+//             endDate: string;
+//         };
+//         console.log(startDate,endDate,"dates report controller");
+
+//         const report = await generateBookingReport(
+//             ownerId,
+//             startDate,
+//             endDate,
+//             dbBookingRepository,
+//           );
+//           console.log(report,"report controller ");
+          
+//           res.status(HttpStatus.OK).json({
+//             success: true,
+//             message: "Report generated successfully",
+//             report,
+//           });
     
-//     // console.log(id,"////////////");
-    
+//     } catch (error) {
+//         next(error)
+//     }
     
 // }
 
+
+const generateReports = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const ownerId = req.owner.id;
+        console.log(ownerId, "owner id report controller");
+
+        const { startDate, endDate } = req.query as {
+            startDate: string;
+            endDate: string;
+        };
+        console.log(startDate, endDate, "dates report controller");
+
+        // Convert date strings to Date objects
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+
+        // Adjust end date to include the whole end day
+        end.setUTCHours(23, 59, 59, 999);
+
+        console.log('Parsed Start Date:', start);
+        console.log('Parsed End Date:', end);
+
+        const report = await generateBookingReport(
+            ownerId,
+            start,
+            end,
+            dbBookingRepository
+        );
+        console.log('Report generated:', report);
+
+        res.status(HttpStatus.OK).json({
+            success: true,
+            message: "Report generated successfully",
+            report,
+        });
+
+    } catch (error) {
+        console.error('Error generating report:', error);
+        next(error);
+    }
+};
 
 
 
@@ -283,7 +483,10 @@ const handleWalletPayment = async (req: Request, res: Response, next: NextFuncti
             adminBookingHistory,
             getWalletTransactions,
             handleWalletPayment,
-            // chat
+            retryPayment,
+            getBookingDetails,
+            getAllBookings,
+            generateReports
         }
     }
 

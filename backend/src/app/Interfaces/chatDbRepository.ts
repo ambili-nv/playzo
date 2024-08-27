@@ -14,7 +14,7 @@ export const chatDbRepository = (
 
     const getAllChats =async (senderId:string)=>{
        const chats =  await repository.getAllChats(senderId)
-       console.log(chats,"dbRepo chats");
+    //    console.log(chats,"dbRepo chats");
        
        return chats
     }
@@ -23,7 +23,7 @@ export const chatDbRepository = (
     const addNewMessage = async (newMessageData: newMessageInterface) =>{
 
         const newMessage = await repository.addNewMessage(newMessageData);
-        console.log(newMessage,"nw msg rep");
+        // console.log(newMessage,"nw msg rep");
         return newMessage
         
     }
@@ -33,14 +33,12 @@ export const chatDbRepository = (
       const messages =   await repository.getMessages(conversationId)
       return messages
     }
-
-
     return{
         createNewChat,
         getAllChats,
         checkChat,
         addNewMessage,
-        getMessages
+        getMessages,
     }
 
 }

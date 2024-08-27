@@ -4,13 +4,14 @@ import { OWNER_API } from '../../constants';
 import showToast from '../../utils/toaster'; 
 import axiosInstance from '../../utils/axiosInstance'; 
 import { useNavigate } from 'react-router-dom';
+import OwnerNavbar from './Header/OwnerNavbar';
 
 interface Venue {
     _id: string;
     name: string;
     sportsitem: string;
     place: string;
-    price: number;
+    // price: number;
     description: string;
     primaryImage: string;
     secondaryImages: string[];
@@ -38,7 +39,7 @@ const MyVenuesList: React.FC = () => {
                     },
                     params: {
                         page,
-                        limit: 10
+                        limit: 6
                     }
                 });
 
@@ -69,7 +70,9 @@ const MyVenuesList: React.FC = () => {
     };
 
     return (
-        <div className="p-6 bg-gray-100 min-h-screen">
+        <>
+        <OwnerNavbar/>
+        <div className="p-6 bg-gray-100 min-h-screen mt-12">
             <h1 className="text-2xl font-bold text-green-700 mb-4 mt-12 ml-12">Venue List</h1>
             {isLoading ? (
                 <p>Loading...</p>
@@ -95,7 +98,7 @@ const MyVenuesList: React.FC = () => {
                                     <h2 className="text-xl font-semibold text-green-700 text-center">{venue.name}</h2>
                                     <p className="text-gray-600 mb-2 mt-5"><strong>SportsItem:</strong> {venue.sportsitem}</p>
                                     <p className="text-gray-600 mb-2"><strong>Location:</strong> {venue.place}</p>
-                                    <p className="text-gray-600 mb-2"><strong>Price:</strong> ${venue.price}</p>
+                                    {/* <p className="text-gray-600 mb-2"><strong>Price:</strong> ${venue.price}</p> */}
                                     <p className="text-gray-600 mb-2"><strong>Description:</strong> {venue.description}</p>
                                     <p className="text-gray-600 mb-2"><strong>Status:</strong> <span className={venue.isApproved ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>{venue.isApproved ? 'Accepted' : 'Rejected'}</span></p>
                                     <div className="mt-4 flex justify-around">
@@ -111,6 +114,12 @@ const MyVenuesList: React.FC = () => {
                                             className="px-4 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
                                         >
                                             Add Slot
+                                        </button>
+                                        <button
+                                            onClick={() => navigate(`/owner/viewslots/${venue._id}`)}
+                                            className="px-4 py-2 bg-green-500 text-white rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        >
+                                            view Slot
                                         </button>
                                     </div>
                                 </div>
@@ -137,6 +146,8 @@ const MyVenuesList: React.FC = () => {
                 </>
             )}
         </div>
+
+        </>
     );
 };
 

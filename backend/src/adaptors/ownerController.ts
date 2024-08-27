@@ -125,34 +125,71 @@ const ownerController = (
         }
     }
 
+    // const uploadVenueHandler = asynchandler(async (
+    //     req: Request,
+    //     res: Response,
+    //     next: NextFunction
+    // ) => {
+    //     try {
+    //         const { venueData } = req.body;
+    //         const ownerId = venueData.ownerId;
+    //         const { place, name, sportsitem, description, primaryImage, secondaryImages } = venueData;
+    
+    //         const newVenue = await uploadVenue(ownerId, {
+    //             place,
+    //             name,
+    //             sportsitem,
+    //             description,
+    //             primaryImage,
+    //             secondaryImages
+    //         }, dbRepositoryOwner);
+    
+    //         res.status(HttpStatus.CREATED).json({
+    //             message: "Venue uploaded successfully",
+    //             venue: newVenue,
+    //         });
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // });
+
+
     const uploadVenueHandler = asynchandler(async (
         req: Request,
         res: Response,
         next: NextFunction
-    ) => {
+      ) => {
         try {
-            const { venueData } = req.body;
-            const ownerId = venueData.ownerId;
-            const { place, name, sportsitem, description, primaryImage, secondaryImages } = venueData;
-    
-            const newVenue = await uploadVenue(ownerId, {
-                place,
-                name,
-                sportsitem,
-                description,
-                primaryImage,
-                secondaryImages
-            }, dbRepositoryOwner);
-    
-            res.status(HttpStatus.CREATED).json({
-                message: "Venue uploaded successfully",
-                venue: newVenue,
-            });
+          const { venueData } = req.body;
+          console.log("Incoming venueData:", venueData);
+      
+          const ownerId = venueData.ownerId;
+          const { place, name, sportsitem, description, primaryImage, secondaryImages, latitude, longitude } = venueData;
+      
+          // Create coordinates object from latitude and longitude
+          const coordinates = { lat: latitude, lng: longitude };
+      
+          console.log("Coordinates object:", coordinates);
+      
+          const newVenue = await uploadVenue(ownerId, {
+            place,
+            name,
+            sportsitem,
+            description,
+            primaryImage,
+            secondaryImages,
+            coordinates // Pass coordinates
+          }, dbRepositoryOwner);
+      
+          res.status(HttpStatus.CREATED).json({
+            message: "Venue uploaded successfully",
+            venue: newVenue,
+          });
         } catch (error) {
-            next(error);
+          next(error);
         }
-    });
-
+      });
+      
     
     const getOwnerProfile= async(req:Request,res:Response,next:NextFunction)=>{
         try {
@@ -231,31 +268,117 @@ const ownerController = (
     };
 
 
-    const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) =>{
-        try {
-            // console.log("slot and price");
+    // const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) =>{
+    //     try {
+    //         // console.log("slot and price");
             
-            const { venueId } = req.params; 
-            const  timeSlotData  = req.body;
+    //         const { venueId } = req.params; 
+    //         const  timeSlotData  = req.body;
+    //         console.log(req.body,"req.body slots in controller");
+            
+    //         const newTimeSlots = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
+    //         res.status(HttpStatus.OK).json({
+    //             message: "Time slots saved successfully",
+    //             timeSlots: newTimeSlots,
+    //         });
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
+
+
+
     
-            const newTimeSlots = await saveTimeSlots(venueId, timeSlotData, dbVenueRepository);
+    // const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) => {
+    //     try {
+    //         const { venueId } = req.params;
+    //         const { startDate, endDate, slots } = req.body;
+    //         console.log(req.body,"reqbody");
+            
+    //         console.log(startDate, endDate, slots, "Received Data");
+    
+    //         // Validate date range
+    //         if (!startDate || !endDate || new Date(startDate) > new Date(endDate)) {
+    //             return res.status(HttpStatus.BAD_REQUEST).json({
+    //                 message: "Invalid date range provided."
+    //             });
+    //         }
+    
+    //         const newTimeSlots = await saveTimeSlots(venueId, { startDate, endDate, slots }, dbVenueRepository);
+    //         res.status(HttpStatus.OK).json({
+    //             message: "Time slots saved successfully",
+    //             timeSlots: newTimeSlots,
+    //         });
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // }
+    
+    const saveTimeSlotsHandler = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { venueId } = req.params;
+            const { startDate, endDate, slots } = req.body; // Update field name to 'slots'
+    
+            if (!Array.isArray(slots)) {
+                return res.status(HttpStatus.BAD_REQUEST).json({
+                    message: "Slots should be an array."
+                });
+            }
+    
+            // Validate date range
+            if (!startDate || !endDate || new Date(startDate) > new Date(endDate)) {
+                return res.status(HttpStatus.BAD_REQUEST).json({
+                    message: "Invalid date range provided."
+                });
+            }
+    
+            const newTimeSlots = await saveTimeSlots(venueId, { startDate, endDate, slots }, dbVenueRepository);
             res.status(HttpStatus.OK).json({
                 message: "Time slots saved successfully",
                 timeSlots: newTimeSlots,
             });
         } catch (error) {
-            next(error)
+            //@ts-ignore
+            if (error.message.includes("Slots already added")) {
+                return res.status(HttpStatus.BAD_REQUEST).json({
+                    //@ts-ignore
+                    message: error.message
+                });
+            }
+            next(error);
         }
-    }
+    };
     
 
 
     
+    
+
+
+    
+    // const viewAllSlotsByDate = async (req: Request, res: Response, next: NextFunction) => {
+    //     try {
+    //         const { venueId, date } = req.params; // Assuming date is passed as a path parameter
+    //         console.log(venueId, date, "venueId and date received");
+    //         console.log(req.body);
+            
+    //         const timeSlots = await findAllTimeSlotsByVenueIdAndDate(dbVenueRepository, venueId, date);
+    
+    //         return res.status(HttpStatus.OK).json({ success: true, timeSlots });
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // };
+
+
     const viewAllSlotsByDate = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { venueId, date } = req.params; // Assuming date is passed as a path parameter
-            // console.log(venueId, date, "venueId and date received");
+            const { venueId } = req.params;
+            const date = req.query.date as string; // Extract date from query parameters
     
+            console.log(venueId, date, "venueId and date received");
+            console.log(req.body);
+            
             const timeSlots = await findAllTimeSlotsByVenueIdAndDate(dbVenueRepository, venueId, date);
     
             return res.status(HttpStatus.OK).json({ success: true, timeSlots });
@@ -263,9 +386,21 @@ const ownerController = (
             next(error);
         }
     };
+    
 
+    //  const deleteSlot = async (req: Request, res: Response, next: NextFunction)=> {
+    //     const { venueId } = req.params;
+    //     const { date, startTime, endTime } = req.body;
+    
+    //     try {
+    //         await deleteTimeSlotByVenueIdAndDate(dbVenueRepository, venueId, date, startTime, endTime);
+    //         return res.status(200).json({ success: true, message: 'Time slot deleted successfully' });
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // };
 
-     const deleteSlot = async (req: Request, res: Response, next: NextFunction)=> {
+    const deleteSlot = async (req: Request, res: Response, next: NextFunction) => {
         const { venueId } = req.params;
         const { date, startTime, endTime } = req.body;
     
@@ -276,6 +411,9 @@ const ownerController = (
             next(error);
         }
     };
+    
+
+
 
 
     const getUserDetails = async (req: Request, res: Response, next: NextFunction)=>{

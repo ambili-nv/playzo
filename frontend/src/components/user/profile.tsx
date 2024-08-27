@@ -18,6 +18,7 @@ interface Booking {
     name: string;
     sportsitem: string;
     _id: string;
+    place: string;
   };
   date: string;
   startTime: string;
@@ -78,6 +79,7 @@ const ProfilePage: React.FC = () => {
             limit: 5
           }
         });
+        console.log(response.data, "booking hsitory");
 
         if (response.data && response.data.bookings) {
           const sortedBookings = response.data.bookings.sort((a: Booking, b: Booking) =>
@@ -101,7 +103,7 @@ const ProfilePage: React.FC = () => {
 
     fetchBookings();
   }, [currentPage]);
-  
+
 
   const handleCancelBooking = async () => {
     if (!selectedBooking) return;
@@ -182,13 +184,7 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  const formatTime = (time: string) => {
-    const [hours, minutes] = time.split(':');
-    const intHours = parseInt(hours, 10);
-    const suffix = intHours >= 12 ? 'PM' : 'AM';
-    const formattedHours = intHours % 12 || 12;
-    return `${formattedHours}:${minutes} ${suffix}`;
-  };
+
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -202,14 +198,18 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  const handleChat = ()=>{
+  const handleChat = () => {
     axiosInstance
-    .post(CHAT_API+'/conversations',{
-      senderId :user.id,
-      recieverId:ownerIds
-    })
+      .post(CHAT_API + '/conversations', {
+        senderId: user.id,
+        recieverId: ownerIds
+      })
     navigate('/user/chat')
   }
+
+    const handleViewDetails = (bookingId: string) => {
+    navigate(`/booking-details/${bookingId}`);
+  };
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-100 p-6 mt-12">
@@ -293,26 +293,27 @@ const ProfilePage: React.FC = () => {
                 <table className="w-full bg-white border-collapse">
                   <thead>
                     <tr>
-                      <th className="p-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Booking ID</th>
+                      {/* <th className="p-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Booking ID</th> */}
                       <th className="p-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Venue</th>
+                      <th className="p-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Sports</th>
                       <th className="p-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Date</th>
                       <th className="p-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Time</th>
-                      <th className="p-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Status</th>
                       <th className="p-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">Action</th>
                       <th className="p-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">chat</th>
+                      <th className="p-3 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-600 uppercase tracking-wider">View Details</th>
                     </tr>
                   </thead>
                   <tbody>
                     {bookings.length > 0 ? (
                       bookings.map((booking) => (
                         <tr key={booking._id}>
-                          <td className="p-3 border-b border-gray-200 text-sm text-gray-700">{booking._id}</td>
+                          {/* <td className="p-3 border-b border-gray-200 text-sm text-gray-700">{booking._id}</td> */}
                           <td className="p-3 border-b border-gray-200 text-sm text-gray-700">{booking.venueId.name}</td>
+                          <td className="p-3 border-b border-gray-200 text-sm text-gray-700">{booking.venueId.sportsitem}</td>
                           <td className="p-3 border-b border-gray-200 text-sm text-gray-700">{booking.date}</td>
                           <td className="p-3 border-b border-gray-200 text-sm text-gray-700">
-                            {formatTime(booking.startTime)} - {formatTime(booking.endTime)}
+                            {(booking.startTime)} - {(booking.endTime)}
                           </td>
-                          <td className="p-3 border-b border-gray-200 text-sm text-gray-700">{booking.bookingStatus}</td>
                           <td className="p-3 border-b border-gray-200 text-sm text-gray-700">
                             {booking.bookingStatus === 'confirmed' && (
                               <button
@@ -326,13 +327,21 @@ const ProfilePage: React.FC = () => {
                               </button>
                             )}
                           </td>
-                          
-                        <td className="py-2 px-4 border-b text-center">
-                          <MessageSquare
-                            style={{ cursor: 'pointer', color: 'green' }}
-                            onClick={() => handleChat()}
-                          />
-                        </td>
+
+                          <td className="py-2 px-4 border-b text-center">
+                            <MessageSquare
+                              style={{ cursor: 'pointer', color: 'green' }}
+                              onClick={() => handleChat()}
+                            />
+                          </td>
+                          <td className="p-3 border-b border-gray-200 text-sm text-gray-700">
+                            <button
+                              className="text-indigo-600 hover:text-indigo-900"
+                              onClick={() => handleViewDetails(booking._id)}
+                            >
+                              View Details
+                            </button>
+                          </td>
                         </tr>
                       ))
                     ) : (
@@ -368,7 +377,7 @@ const ProfilePage: React.FC = () => {
           )}
         </div>
       </div>
-      
+
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="fixed inset-0 bg-black opacity-50"></div>
