@@ -1,17 +1,24 @@
 import bookingEntity, { BookingEntityType } from '../../../../enitity/bookingEntity';
 import {bookingDbRepositoryInterface } from '../../../Interfaces/bookingDbRepository';
-import { BookingReportFilter } from '../../../../types/BookingReportInterface';
 import Stripe from "stripe";
 import configKeys from '../../../../config';
-import { v4 as uuidv4 } from 'uuid';
 
 
-// export const createBooking = async (data: any, 
+import { Server } from "socket.io";
+
+let io: Server;
+
+
+// export const createBooking = async (
+//     data: any,
 //     userId: string,
 //     bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
 // ) => {
 //     console.log("booking");
     
+//     const bookingId = Math.floor(10000000 + Math.random() * 90000000).toString(); // Generates an 8-digit number
+
+
 //     const { venueId, slotId, fees, paymentStatus, bookingStatus, date, startTime, endTime } = data;
 
 //     const booking: BookingEntityType = bookingEntity(
@@ -23,39 +30,23 @@ import { v4 as uuidv4 } from 'uuid';
 //         bookingStatus,
 //         date,
 //         startTime,
-//         endTime
+//         endTime,
+//         bookingId // Pass the generated booking ID
 //     );
 
-//    const bookings = await bookingDbRepository.createbooking(booking);
-// //    console.log(bookings, "bookingsssssssssss");
-//    return bookings;
+//     const bookings = await bookingDbRepository.createbooking(booking);
+//     return bookings;
 // };
-
-
-
-// const generateUniqueBookingId = async (bookingDbRepository: ReturnType<bookingDbRepositoryInterface>): Promise<string> => {
-//     let uniqueId: string;
-//     let isUnique: boolean = false;
-
-//     // do {
-//         uniqueId = Math.floor(10000000 + Math.random() * 90000000).toString(); // Generates an 8-digit number
-//         // isUnique = !(await bookingDbRepository.isBookingIdExists(uniqueId)); // Check if the ID already exists
-//     // } while (!isUnique);
-
-//     return uniqueId;
-// };
-
 
 
 export const createBooking = async (
     data: any,
     userId: string,
-    bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
+    bookingDbRepository: ReturnType<bookingDbRepositoryInterface>,
 ) => {
-    console.log("booking");
+    // console.log("booking");
     
     const bookingId = Math.floor(10000000 + Math.random() * 90000000).toString(); // Generates an 8-digit number
-
 
     const { venueId, slotId, fees, paymentStatus, bookingStatus, date, startTime, endTime } = data;
 
@@ -73,6 +64,36 @@ export const createBooking = async (
     );
 
     const bookings = await bookingDbRepository.createbooking(booking);
+    // console.log(bookings,"bookings nottiiii bookk///");
+    
+// console.log(bookings.venueId,"hahahhhah");
+// console.log(bookings.venueId.toString(), "hahahhhah2");
+
+
+const venueID = bookings.venueId.toString()
+
+    // Emit a booking notification after successfully creating the booking
+  
+    const ownerId = await bookingDbRepository.getVenueOwnerId(venueID); 
+    console.log(ownerId,"34");
+    
+
+    if (ownerId) {
+        io?.emit("sendBookingNotification", {
+            senderId: userId,
+            receiverId: ownerId,
+            text: `You have a new booking with ID: ${bookingId}`,
+            bookingId
+        });
+        console.log(`Notification sent to ${ownerId}: bookingssssss`, {
+            senderId: userId,
+            text: `You have a new booking with ID: ${bookingId}`,
+            bookingId
+        });
+    } else {
+        console.log(`Venue owner with ID ${ownerId} not found`);
+    }
+
     return bookings;
 };
 
@@ -81,6 +102,8 @@ export const createBooking = async (
 const stripe = new Stripe(configKeys.STRIPE_SECRET_KEY);
 
 export const createPayment = async (userName: string, email: string, bookingId: string, totalAmount: number) => {
+    // console.log("heyyyyy");
+    
     const customer = await stripe.customers.create({
         name: userName,
         email: email,
@@ -106,9 +129,6 @@ export const createPayment = async (userName: string, email: string, bookingId: 
 };
 
 
-// export const createPayment = async ()=>{
-
-// }
 export const updateSlotStatus = async (
     slotId: string,
     status: string,
@@ -151,18 +171,10 @@ export const updateBookingStatus = async (
 
 
 export const cancelbooking = async (id: string, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
-    // console.log("booking.ts");
-    // console.log(id,"di ");
-    
     const updatedData: Record<string, any> = {
-        bookingStatus: 'cancelled',
-    
-        
+        bookingStatus: 'cancelled',   
     };
-
-    const bookingData = await bookingDbRepository.changeBookingStatus(id, updatedData);
-    // console.log(bookingData,id,"data bookig.ts");
-    
+    const bookingData = await bookingDbRepository.changeBookingStatus(id, updatedData);    
     return bookingData;
 };
 
@@ -173,10 +185,6 @@ export const getBookingById = async (id: string,bookingDbRepository: ReturnType<
 };
 
 
-// export const fetchBookingHistory = async (userId: string, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>) => {
-//     const { bookings, total } = await bookingDbRepository.bookingHistory(userId);
-//     return { bookings, total };
-// };
 export const fetchBookingHistory = async (userId: string, bookingDbRepository: ReturnType<bookingDbRepositoryInterface>, page: number, limit: number) => {
     const { bookings, total } = await bookingDbRepository.bookingHistory(userId, page, limit);
     return { bookings, total };
@@ -201,7 +209,7 @@ export const updateWallet = async (
     description: string,
     bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
 ) => {
-    console.log("hello bookinf");
+    // console.log("hello bookinf");
     
     const walletUpdate = await bookingDbRepository.updateWallet(userId, amount, type, description);
     return walletUpdate;
@@ -234,7 +242,7 @@ export const createWalletBooking = async (data: any,
     userId: string,
     bookingDbRepository: ReturnType<bookingDbRepositoryInterface>
 ) => {
-    console.log("booking");
+    // console.log("booking");
     
     const { venueId, slotId, fees, paymentStatus, bookingStatus, date, startTime, endTime,bookingId } = data;
 
@@ -261,34 +269,18 @@ export const createWalletBooking = async (data: any,
 
 export const getBookings = async(bookingId:string,bookingDbRepository: ReturnType<bookingDbRepositoryInterface>)=>{
     const booking = await bookingDbRepository.getBookings(bookingId)
-    console.log(booking,"booking booking");
+    // console.log(booking,"booking booking");
     
     return booking
 }
 
 export const getallBookings = async(bookingDbRepository: ReturnType<bookingDbRepositoryInterface>)=>{
     const bookings = await bookingDbRepository.getallBookings()
-    console.log(bookings,"bookings ///");
+    // console.log(bookings,"bookings ///");
     return bookings
 }
 
-// export const generateBookingReport = async(
-//     ownerId: string,
-//     startDate: string,
-//     endDate: string,
-//     bookingDbRepository: ReturnType<bookingDbRepositoryInterface>,
-// )=>{
-//     const filter: BookingReportFilter = {
-//         ownerId: new Types.ObjectId(ownerId),
-//         createdAt: {
-//           $gte: new Date(startDate),
-//           $lte: new Date(endDate),
-//         },
-//       };
-//       const report  =  await bookingDbRepository.getBookingReport(filter);
-//       console.log(report ,"reportrt booking.ts");
-//       return report
-// }
+
 
 export const generateBookingReport = async (
     ownerId: string,
@@ -296,17 +288,19 @@ export const generateBookingReport = async (
     endDate: Date,
     bookingDbRepository: ReturnType<bookingDbRepositoryInterface>,
 ) => {
-    // const filter: BookingReportFilter = {
-    //     ownerId: new Types.ObjectId(ownerId),
-    //     createdAt: {
-    //         $gte: startDate,
-    //         $lte: endDate,
-    //     },
-    // };
-    // console.log('Filter:', JSON.stringify(filter));
     const report = await bookingDbRepository.getBookingReport(ownerId,startDate,endDate);
     const { bookings, totalAmount } = report;
-    console.log('Report:', report);
+    // console.log('Report:', report);
     return { bookings, totalAmount };
-    // return report;
 };
+
+export const createNotification = async(venueId:string,bookingId:string,bookingDbRepository:ReturnType<bookingDbRepositoryInterface>)=>{
+    const notification = await bookingDbRepository.createNotification(venueId,bookingId)
+    return notification
+}
+
+
+export const getNotifications  = async(ownerId:string,bookingDbRepository:ReturnType<bookingDbRepositoryInterface>)=>{
+    const notification = await bookingDbRepository.getNotifications(ownerId)
+    return notification
+}

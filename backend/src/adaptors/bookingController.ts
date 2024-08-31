@@ -5,7 +5,6 @@
     import { Request,Response,NextFunction } from "express"
     import { HttpStatus } from "../types/httpStatus"
     import { getUserbyId } from "../app/use-cases/user/auth/userAuth"
-    import { v4 as uuidv4 } from 'uuid';
     import { createBooking,
         createPayment,
         updateSlotStatus,
@@ -20,10 +19,15 @@
         getWalletbyUserId,
         getBookings,
         getallBookings,
-        generateBookingReport
+        generateBookingReport,
+        createNotification,
+        getNotifications
     } from "../app/use-cases/user/auth/booking"
 
-    
+
+    import { Server } from "socket.io";
+
+
 
     const bookingController = (
         userDbRepository: userDbInterface,
@@ -36,6 +40,8 @@
 
         const bookVenue = async (req: Request, res: Response, next: NextFunction) => {
             try {
+                // console.log("wallet and");
+                
                 const data = req.body;
                 const userId = req.user.id;
 
@@ -47,6 +53,10 @@
                 // Update slot status
                 await updateSlotStatus(data.slotId, 'booked', dbBookingRepository);
 
+                await createNotification(data.venueId, booking.id,dbBookingRepository);
+                // console.log(data.venueId, booking.id,"notiiiiiiiii");
+                
+
                 res.status(HttpStatus.OK).json({
                     success: true,
                     message: "Booking created successfully",
@@ -56,6 +66,13 @@
                 next(error);
             }
         };
+
+
+          
+        
+
+        
+        
 
 
         const retryPayment = async (req: Request, res: Response, next: NextFunction) => {
@@ -137,12 +154,13 @@
 
         const  adminBookingHistory = async (req: Request, res: Response, next: NextFunction) =>{
             try {
-                // console.log(req.params,"req params admin");
+                console.log(req.params,"req params admin");
                 const {userId} = req.params
+                console.log(userId,"req params adddsmin");
                 const page = parseInt(req.query.page as string) || 1;
                 const limit = parseInt(req.query.limit as string) || 5;
                 //@ts-ignore
-                const {bookings,total} =  await fetchBookingHistory(userId, page, limit, dbBookingRepository);
+                const {bookings,total} =  await fetchBookingHistory(userId,dbBookingRepository, page, limit);
                 
                 res.status(HttpStatus.OK).json({
                     success: true,
@@ -213,12 +231,12 @@ const cancelBooking = async (req: Request, res: Response, next: NextFunction) =>
 
         // Create a valid ISO date-time string
         const dateTimeString = `${bookingDate}T${startTime24h}:00.000Z`;
-        console.log(dateTimeString, "formatted dateTimeString");
+        // console.log(dateTimeString, "formatted dateTimeString");
 
         let slotStartTime;
         try {
             slotStartTime = Date.parse(dateTimeString);
-            console.log(slotStartTime, "parsed slotStartTime");
+            // console.log(slotStartTime, "parsed slotStartTime");
 
             if (isNaN(slotStartTime)) {
                 throw new Error("Invalid start time");
@@ -308,6 +326,8 @@ const handleWalletPayment = async (req: Request, res: Response, next: NextFuncti
         // Update slot status
         await updateSlotStatus(slotId, 'booked', dbBookingRepository);
 
+        await createNotification(venueId,booking.id,dbBookingRepository)
+
         res.status(HttpStatus.OK).json({
             success: true,
             message: "Booking created successfully",
@@ -385,13 +405,13 @@ const getAllBookings = async (req: Request, res: Response, next: NextFunction) =
 const generateReports = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const ownerId = req.owner.id;
-        console.log(ownerId, "owner id report controller");
+        // console.log(ownerId, "owner id report controller");
 
         const { startDate, endDate } = req.query as {
             startDate: string;
             endDate: string;
         };
-        console.log(startDate, endDate, "dates report controller");
+        // console.log(startDate, endDate, "dates report controller");
 
         // Convert date strings to Date objects
         const start = new Date(startDate);
@@ -400,8 +420,8 @@ const generateReports = async (req: Request, res: Response, next: NextFunction) 
         // Adjust end date to include the whole end day
         end.setUTCHours(23, 59, 59, 999);
 
-        console.log('Parsed Start Date:', start);
-        console.log('Parsed End Date:', end);
+        // console.log('Parsed Start Date:', start);
+        // console.log('Parsed End Date:', end);
 
         const report = await generateBookingReport(
             ownerId,
@@ -409,7 +429,7 @@ const generateReports = async (req: Request, res: Response, next: NextFunction) 
             end,
             dbBookingRepository
         );
-        console.log('Report generated:', report);
+        // console.log('Report generated:', report);
 
         res.status(HttpStatus.OK).json({
             success: true,
@@ -418,11 +438,28 @@ const generateReports = async (req: Request, res: Response, next: NextFunction) 
         });
 
     } catch (error) {
-        console.error('Error generating report:', error);
+        // console.error('Error generating report:', error);
         next(error);
     }
 };
 
+
+const getNotification = async (req: Request, res: Response, next: NextFunction)=>{
+    try {
+        const ownerId = req.params.ownerId
+        // console.log(ownerId," ownerId notti");
+        const notification = await getNotifications(ownerId,dbBookingRepository)
+        // console.log(notification,"got noti contler");
+        
+        res.status(HttpStatus.OK).json({
+            success: true,
+            // message: "Report generated successfully",
+            notification,
+        });
+    } catch (error) {
+        
+    }
+}
 
 
 
@@ -439,11 +476,11 @@ const generateReports = async (req: Request, res: Response, next: NextFunction) 
             retryPayment,
             getBookingDetails,
             getAllBookings,
-            generateReports
+            generateReports,
+            getNotification
         }
     }
 
     export default bookingController;
-
 
 

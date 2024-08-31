@@ -14,7 +14,7 @@ export const getVenue = async (venueDbRepository:ReturnType<venueDbInterface>)=>
 export const findTimeSlotsByVenueIdAndDate = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string, date: string) => {
     try {
         const timeSlots = await venueDbRepository.getTimeSlotsByVenueIdAndDate(venueId, date);
-        console.log(timeSlots, "Retrieved time slots in userRead");
+        // console.log(timeSlots, "Retrieved time slots in userRead");
         return timeSlots;
     } catch (error) {
         throw error;

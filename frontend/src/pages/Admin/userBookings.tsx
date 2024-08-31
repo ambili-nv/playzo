@@ -4,6 +4,7 @@ import axiosInstance from '../../utils/axiosInstance';
 import showToast from '../../utils/toaster';
 import BookingCard from './BookingCard';
 import { ADMIN_API } from '../../constants';
+import axios from 'axios';
 
 interface Booking {
   _id: string;
@@ -36,7 +37,7 @@ const BookingHistory: React.FC = () => {
 
   const fetchBookingHistory = async (page: number) => {
     try {
-      const response = await axiosInstance.get<BookingResponse>(`${ADMIN_API}/bookings/user/${userId}`, {
+      const response = await axios.get<BookingResponse>(`${ADMIN_API}/bookings/user/${userId}`, {
         params: { page, limit: itemsPerPage }
       });
 
@@ -49,6 +50,7 @@ const BookingHistory: React.FC = () => {
         setBookings(bookingsData);
       } else if (typeof bookingsData === 'object' && bookingsData.bookings) {
         // bookingsData is an object with a bookings property
+        console.log(bookingsData.bookings);
         setBookings(bookingsData.bookings);
       } else {
         console.error('Invalid data format:', bookingsData);
@@ -60,7 +62,7 @@ const BookingHistory: React.FC = () => {
       setTotalPages(Math.ceil(response.data.total / itemsPerPage));
     } catch (err) {
       console.error('Failed to fetch booking history:', err);
-      showToast('Failed to fetch booking history');
+      showToast('Failed to fetch booking history',"error");
       setError('Failed to fetch booking history');
     } finally {
       setLoading(false);

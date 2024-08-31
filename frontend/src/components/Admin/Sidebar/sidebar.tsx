@@ -45,16 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, setIsSidebarOpen }) =>
               Dashboard
             </Link>
           </li>
-          <li className={linkClasses('/admin/venues')}>
-            <Verified className="mr-3" />
-            <Link
-              to="/admin/venues"
-              className="text-white"
-              onClick={() => handleLinkClick('/admin/venues')}
-            >
-              Verification
-            </Link>
-          </li>
+
           <li className={linkClasses('/admin/users')}>
             <Users className="mr-3" />
             <Link

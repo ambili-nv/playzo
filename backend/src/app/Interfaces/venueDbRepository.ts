@@ -35,7 +35,7 @@ const addTimeSlots = async (timeSlots: TimeSlotEntity[]) => {
 
 const getVenue = async()=>{
     const venue  = await repository.getVenue()
-    console.log(venue,"enue repo");
+    // console.log(venue,"enue repo");
     return venue
 }
 
@@ -45,10 +45,10 @@ const getVenue = async()=>{
 const getTimeSlotsByVenueId = async (venueId: string) => await repository.getTimeSlotsByVenueId(venueId);
 
 const getTimeSlotsByVenueIdAndDate = async (venueId: string, date: string) => {
-    console.log(venueId, date, "Received venueId and date in venueDbRepository");
+    // console.log(venueId, date, "Received venueId and date in venueDbRepository");
 
     const timeSlots = await repository.getTimeSlotsByVenueIdAndDate(venueId, date); 
-    console.log(timeSlots, "Retrieved time slots in venueDbRepository");
+    // console.log(timeSlots, "Retrieved time slots in venueDbRepository");
 
     return timeSlots;
 };

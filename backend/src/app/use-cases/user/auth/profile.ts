@@ -17,6 +17,6 @@ export const updateUser = async (
     userRepository:ReturnType<userDbInterface>
 )=>{
     const user = await userRepository.editProfile(userId,updateData)
-    console.log(user,"user - edit - profile");
+    // console.log(user,"user - edit - profile");
     return user
 }

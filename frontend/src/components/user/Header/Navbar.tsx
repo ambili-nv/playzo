@@ -93,12 +93,31 @@ const Navbar = () => {
           <Link to="/contact" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-black ">
             Contact Us
           </Link>
-          <Link to="/userlogin" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-black ">
-            Login
-          </Link>
-          <Link to="/userlogin" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-black ">
-            Sign UP
-          </Link>
+          {user.isAuthenticated && user.role === "user" ? (
+                  <>
+                 <Link to="/user-profile" className="text-blcak dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
+                 Profile
+                 </Link>
+
+                         <button
+                          onClick={handleLogout}
+                         className="bg-green-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                     >
+                         Logout
+                     </button>
+                     </>
+                ) : (
+                  <span className="text-black dark:text-black px-3 py-2 rounded-md text-sm font-medium hover:text-gray-700 hover:underline">
+                  <Link to="/login" className="hover:underline">
+                    Login
+                  </Link>
+                  /
+                  <Link to="/register" className="hover:underline">
+                    Sign Up
+                  </Link>
+                </span>
+
+                )}
         </div>
       </div>
     </nav>

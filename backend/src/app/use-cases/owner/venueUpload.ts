@@ -38,7 +38,7 @@ export const uploadVenue = async (
     ownerRepository: ReturnType<ownerDbInterface>
   ) => {
     const { name, sportsitem, place, description, primaryImage, secondaryImages, coordinates } = venueData;
-  console.log(venueData,"vnwuw data upload vnue ");
+//   console.log(venueData,"vnwuw data upload vnue ");
   
     const venueEntity: VenueEntity = createVenueEntity(
       ownerId,
@@ -53,7 +53,7 @@ export const uploadVenue = async (
   
     // Add the venue to the repository
     const newVenue = await ownerRepository.addVenue(venueEntity);
-   console.log(newVenue,"new Vwnuw vwnuw uplod");
+//    console.log(newVenue,"new Vwnuw vwnuw uplod");
    
     if (!newVenue) {
       throw new CustomError("Venue upload failed", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,7 +76,7 @@ export const findVenues = async (venueDbRepository: ReturnType<venueDbInterface>
 export const findVenueDetails = async (venueDbRepository: ReturnType<venueDbInterface>, venueId: string) => {
     try {
         const venueDetails = await venueDbRepository.getVenueById(venueId);
-        console.log(venueDetails, "venue details adminread");
+        // console.log(venueDetails, "venue details adminread");
         return venueDetails;
     } catch (error) {
         throw error;
@@ -159,7 +159,7 @@ export const saveTimeSlots = async (
     venueRepository: ReturnType<venueDbInterface>
 ) => {
     const { startDate, endDate, slots } = timeSlotData; // Change `timeSlots` to `slots`
-    console.log(startDate, endDate, slots, "startDate, endDate, slots");
+    // console.log(startDate, endDate, slots, "startDate, endDate, slots");
 
     if (!Array.isArray(slots)) {
         throw new Error("slots should be an array");

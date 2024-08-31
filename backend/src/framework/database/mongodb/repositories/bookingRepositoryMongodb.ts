@@ -7,6 +7,7 @@ import user from "../models/user";
 import venues from "../models/venues";
 import { populate } from "dotenv";
 import { BookingReportFilter } from "../../../../types/BookingReportInterface";
+import Notification from "../models/Notification";
 
 export const bookingRepositoryMongodb = () => {
 
@@ -243,7 +244,7 @@ export const bookingRepositoryMongodb = () => {
                 select: 'name', // Select the fields you want from the Owner model
               }
             });
-      console.log(booking,"booking db//////////");
+    //   console.log(booking,"booking db//////////");
       
           return booking;
         } catch (error) {
@@ -307,21 +308,57 @@ const getBookingReport = async (
             // Calculate total amount
         const totalAmount = bookings.reduce((sum, booking) => sum + booking.fees, 0);
 
-            console.log(bookings , "bookings from db");
-            console.log(totalAmount , "db");
+            // console.log(bookings , "bookings from db");
+            // console.log(totalAmount , "db");
     
         return { bookings,totalAmount };
     } catch (error) {
-        console.error('Error retrieving bookings:', error);
+        // console.error('Error retrieving bookings:', error);
         throw error;
     }
 };
 
 
 
+const createNotification = async (venueId: string, bookingId: string) => {
+    const venue = await venues.findById(venueId).populate('ownerId').exec();
+
+    if (!venue || !venue.ownerId) {
+        throw new Error('Venue or owner not found');
+    }
+
+    const message = `Your venue "${venue.name}" has been booked with Booking ID: ${bookingId}.`;
+
+    const notification = new Notification({
+        ownerId: venue.ownerId,
+        message,
+    });
+
+    await notification.save();
+};
 
 
+const getNotifications = async(ownerId:string)=>{
+    const notificaion = await Notification.find({ownerId})
+    return notificaion
+}
 
+
+const getVenueOwnerId = async (venueID: string): Promise<string | null> => {
+    try {
+        const venue = await venues.findById(venueID).select('ownerId').lean(); 
+        if (!venue) {
+            // console.log(`Venue with ID ${venueID} not found`);
+            return null;
+        }
+        const ownerId = venue.ownerId; 
+        console.log(ownerId, "Owner ID");
+        return ownerId ? ownerId.toString() : null;
+    } catch (error) {
+        // console.error('Error retrieving venue owner ID:', error);
+        return null;
+    }
+};
 
 
 
@@ -339,7 +376,10 @@ const getBookingReport = async (
         getWalletbyUserId,
         getBookingDetail,
         getallBookings,
-        getBookingReport
+        getBookingReport,
+        createNotification,
+        getNotifications,
+        getVenueOwnerId
     }
 }
 

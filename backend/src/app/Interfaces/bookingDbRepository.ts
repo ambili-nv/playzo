@@ -33,6 +33,9 @@
             return { bookings, total };
         };
 
+
+        
+
         const getAllBookings = async (id:string,page: number, limit: number) => {
             const bookings = await repository.getAllBookings(id,page, limit);
             return bookings;
@@ -68,7 +71,7 @@
 
         const getBookings = async(bookingId:string)=>{
             const booking = await repository.getBookingDetail(bookingId);
-            console.log(booking,"booking repo/'////////");
+            // console.log(booking,"booking repo/'////////");
             return booking
             
         }
@@ -76,7 +79,7 @@
 
         const getallBookings = async()=>{
             const bookings = await repository.getallBookings()
-            console.log(bookings,"////////");
+            // console.log(bookings,"////////");
             return bookings
         }
 
@@ -84,11 +87,31 @@
 
             const report  = await repository.getBookingReport(ownerId,startDate,endDate);
             const { bookings, totalAmount } = report;
-            console.log(report,"in");
+            // console.log(report,"in");
             return { bookings, totalAmount }
             // return report
         }
         
+        const createNotification = async(venueId:string,bookingId:string)=>{
+            const notification = await repository.createNotification(venueId,bookingId)
+            return notification
+        }
+
+
+        const getNotifications = async(ownerId:string)=>{
+            const notification = await repository.getNotifications(ownerId)
+            return notification
+        }
+
+
+        const getVenueOwnerId = async(venueID:string)=>{
+            const venueId = await repository.getVenueOwnerId(venueID)
+            // console.log(venueId,"2");
+            
+            return venueId
+        }
+
+
 
         return {
             createbooking,
@@ -103,7 +126,9 @@
             getWalletbyUserId,
             getBookings,
             getallBookings,
-            getBookingReport
+            getBookingReport,
+            createNotification,
+            getNotifications,getVenueOwnerId
         }
     }
 

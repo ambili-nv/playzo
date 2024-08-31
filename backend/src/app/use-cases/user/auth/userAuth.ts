@@ -181,7 +181,7 @@ export const deleteOTP = async (
             name,email,email_verified
         )
 
-        console.log(googleSignInUser,"googleSignUser");
+        // console.log(googleSignInUser,"googleSignUser");
         
 
         const createdUser = await userDbRepository.registerGoogleSignInUser(
@@ -189,8 +189,8 @@ export const deleteOTP = async (
         )
       
         const userId = createdUser._id 
-        console.log(userId,"userid-g auth");
-        console.log(createdUser,"created user - g");
+        // console.log(userId,"userid-g auth");
+        // console.log(createdUser,"created user - g");
         
         
         const accessToken = authService.createTokens(

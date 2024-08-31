@@ -47,7 +47,7 @@ const adminRoutes =()=>{
 
 
 
-        router.get('/bookings/user/:userId',booking_Controller.adminBookingHistory)
+        router.get('/bookings/user/:userId' ,booking_Controller.adminBookingHistory)
         router.get('/bookings',booking_Controller.getAllBookings)
 
 

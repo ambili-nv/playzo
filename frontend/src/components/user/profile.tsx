@@ -73,36 +73,6 @@ const [totalPages, setTotalPages] = useState(1);
     fetchProfile();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchBookings = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(`${USER_API}/booking-history`, {
-
-  //       });
-  //       console.log(response.data, "booking hsitory");
-
-  //       if (response.data && response.data.bookings) {
-  //         const sortedBookings = response.data.bookings.sort((a: Booking, b: Booking) =>
-  //           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  //         );
-  //         setBookings(sortedBookings);
-
-  //         // Extract and save the current owner ID
-  //         if (sortedBookings.length > 0) {
-  //           const ownerId = sortedBookings[0].venueId.ownerId._id;
-  //           setCurrentOwnerId(ownerId);
-  //         }
-  //       } else {
-  //         console.log('No bookings found in response');
-  //       }
-  //     } catch (error) {
-  //       console.error('Failed to fetch bookings', error);
-  //     }
-  //   };
-
-  //   fetchBookings();
-  // });
-
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -235,11 +205,6 @@ const [totalPages, setTotalPages] = useState(1);
     }
   };
   
-
-
-
-
-
   const handleChat = () => {
     axiosInstance
       .post(CHAT_API + '/conversations', {
@@ -450,3 +415,6 @@ const [totalPages, setTotalPages] = useState(1);
 };
 
 export default ProfilePage;
+
+
+

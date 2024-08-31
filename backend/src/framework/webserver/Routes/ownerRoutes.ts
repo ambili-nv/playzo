@@ -55,7 +55,8 @@ const ownerRoutes = ()=>{
     router.get('/bookings/:ownerId',authenticateOwner,booking_Controller.bookingController)
     router.get('/booking-details/:bookingId',authenticateOwner,booking_Controller.getBookingDetails)
     router.get('/generate-report',authenticateOwner,booking_Controller.generateReports);
-
+    
+    router.get('/notifications/:ownerId',booking_Controller.getNotification)
      return router
 }
 

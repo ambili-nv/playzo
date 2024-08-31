@@ -43,6 +43,8 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import SocketProvider from './context/socketContext';
 import NotificationComponent from './components/Notifications/notification';  // Import your NotificationComponent
+import BookingNotification from './pages/Owner/notifications';
+
 
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -54,6 +56,7 @@ function App() {
           <Router>
             <SocketProvider>
               <NotificationComponent />  
+              <BookingNotification/>
               <MainRouter />
               <Toaster />
             </SocketProvider>

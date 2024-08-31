@@ -7,6 +7,7 @@ import { PublicRouteUser,PublicRouteOwner,PublicRouteAdmin } from "./publicRoute
 const ErrorPAge =  lazy(()=> import ('../pages/Page404'))
 
 const Home = lazy(()=> import ('../pages/User/Home'))
+const ContactUS = lazy(()=> import ('../pages/User/contact'))
 const UserLogin = lazy(() => import('../pages/User/Login'));
 const UserSignUP = lazy(()=>import ('../pages/User/signup'))
 const UserOTP = lazy(()=>import('../pages/User/OTP'))
@@ -36,6 +37,7 @@ const BookingPage = lazy(()=> import('../pages/Owner/bookingsPage'))
 const OwnerChatPage = lazy(()=> import('../pages/Owner/chat'))
 const OwnerBookingDetailsPage = lazy(()=> import('../components/owner/bookingDetails'))
 const ViewSlots = lazy(()=> import('../components/owner/viewSlots'))
+const Notificaion = lazy(()=>import('../pages/Owner/notifications'))
 
             // Admin Routes
 
@@ -59,6 +61,7 @@ export const MainRouter = () => {
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/reset-password/:id" element={<ResetPassword/>}/>
         <Route path="/single-venue/:venueId" element={<SingleVenuePage/>}/>
+        <Route path="/contact" element={<ContactUS/>}/>
         {/* </Route> */}
 
         <Route path = "" element = {<ProtectRoute/>}>
@@ -89,6 +92,7 @@ export const MainRouter = () => {
         <Route path="/owner/chat/" element={<OwnerChatPage />} />
         <Route path="/owner/booking-details/:bookingId" element={<OwnerBookingDetailsPage/>}/>
         <Route path="/owner/viewslots/:venueId" element={<ViewSlots/>}/>
+        <Route path="/owner/notifications/" element={<Notificaion/>}/>
 
         </Route>
 

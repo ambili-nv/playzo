@@ -7,7 +7,7 @@ export const getUsers = async (userDbRepository: ReturnType<userDbInterface>, pa
     try {
         //@ts-ignore
         const { users, totalUsers } = await userDbRepository.getAllUsers(page, limit);
-        console.log(users, "get users data from db");
+        // console.log(users, "get users data from db");
         return { users, totalUsers }; // return the data for further use
     } catch (error) {
         console.error("Error in getUsers function:", error);
@@ -27,9 +27,9 @@ export const getOwners = async (ownerDbRepository: ReturnType<ownerDbInterface>,
 
 export const getAllVenue =  async(venueDbRepository:ReturnType<venueDbInterface>)=>{
     try {
-        console.log("request got");
+        // console.log("request got");
         const Venue = venueDbRepository.getVenue()
-        console.log(Venue);
+        // console.log(Venue);
         return Venue
     } catch (error) {
         
@@ -41,7 +41,7 @@ export const getAllVenue =  async(venueDbRepository:ReturnType<venueDbInterface>
 export const getVenues = async(venueDbRepository:ReturnType<venueDbInterface>, ownerId: string, page: number, limit: number)=>{
     try {
         const venues = await venueDbRepository.getVenuesByOwner(ownerId,page,limit);
-        console.log(venues,"venues adminread");
+        // console.log(venues,"venues adminread");
         
         return venues;
     } catch (error) {
